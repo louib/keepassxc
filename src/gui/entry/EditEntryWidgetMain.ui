@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>372</width>
-    <height>364</height>
+    <height>467</height>
    </rect>
   </property>
   <layout class="QFormLayout" name="formLayout">
@@ -84,24 +84,24 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="urlLabel">
      <property name="text">
       <string>URL:</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="9" column="1">
     <widget class="QLineEdit" name="urlEdit"/>
    </item>
-   <item row="8" column="0">
+   <item row="10" column="0">
     <widget class="QCheckBox" name="expireCheck">
      <property name="text">
       <string>Expires</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="10" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QDateTimeEdit" name="expireDatePicker">
@@ -122,14 +122,14 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0">
+   <item row="11" column="0">
     <widget class="QLabel" name="notesLabel">
      <property name="text">
       <string>Notes:</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="11" column="1">
     <widget class="QPlainTextEdit" name="notesEdit">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -141,6 +141,16 @@
    </item>
    <item row="6" column="1">
     <widget class="PasswordGeneratorWidget" name="passwordGenerator" native="true"/>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <widget class="PasswordEditWidget" name="widget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>60</height>
+      </size>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -155,6 +165,12 @@
    <class>PasswordEdit</class>
    <extends>QLineEdit</extends>
    <header>gui/PasswordEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PasswordEditWidget</class>
+   <extends>QWidget</extends>
+   <header>gui/entry/PasswordEditWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

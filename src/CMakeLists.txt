@@ -90,6 +90,7 @@ set(keepassx_SOURCES
     gui/MainWindow.cpp
     gui/MessageBox.cpp
     gui/PasswordEdit.cpp
+    gui/entry/PasswordEditWidget.cpp
     gui/PasswordGeneratorWidget.cpp
     gui/PasswordComboBox.cpp
     gui/SettingsWidget.cpp
@@ -139,6 +140,8 @@ set(keepassx_FORMS
     gui/SettingsWidgetGeneral.ui
     gui/SettingsWidgetSecurity.ui
     gui/WelcomeWidget.ui
+    gui/entry/PasswordEditWidget.ui
+    gui/entry/EditEntryWidgetAdvanced.ui
     gui/entry/EditEntryWidgetAdvanced.ui
     gui/entry/EditEntryWidgetAutoType.ui
     gui/entry/EditEntryWidgetHistory.ui
