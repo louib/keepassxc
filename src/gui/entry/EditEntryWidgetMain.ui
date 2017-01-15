@@ -147,7 +147,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>60</height>
+       <height>100</height>
       </size>
      </property>
     </widget>
@@ -156,15 +156,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>PasswordEdit</class>
+   <extends>QLineEdit</extends>
+   <header>gui/PasswordEdit.h</header>
+  </customwidget>
+  <customwidget>
    <class>PasswordGeneratorWidget</class>
    <extends>QWidget</extends>
    <header>gui/PasswordGeneratorWidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>PasswordEdit</class>
-   <extends>QLineEdit</extends>
-   <header>gui/PasswordEdit.h</header>
   </customwidget>
   <customwidget>
    <class>PasswordEditWidget</class>
