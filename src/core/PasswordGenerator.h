@@ -46,7 +46,7 @@ public:
 public:
     PasswordGenerator();
 
-    double calculateEntropy(QString password);
+    static double calculateEntropy(QString password);
     void setLength(int length);
     void setCharClasses(const CharClasses& classes);
     void setFlags(const GeneratorFlags& flags);
