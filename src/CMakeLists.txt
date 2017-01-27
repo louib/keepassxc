@@ -92,6 +92,8 @@ set(keepassx_SOURCES
     gui/PasswordEdit.cpp
     gui/PasswordGeneratorWidget.cpp
     gui/PasswordComboBox.cpp
+    gui/RoundsSelectionWidget.cpp
+    gui/RoundsSelectionWidget.h
     gui/SettingsWidget.cpp
     gui/SearchWidget.cpp
     gui/SortFilterHideProxyModel.cpp
@@ -135,6 +137,7 @@ set(keepassx_FORMS
     gui/EditWidgetProperties.ui
     gui/MainWindow.ui
     gui/PasswordGeneratorWidget.ui
+    gui/RoundsSelectionWidget.ui
     gui/SearchWidget.ui
     gui/SettingsWidgetGeneral.ui
     gui/SettingsWidgetSecurity.ui

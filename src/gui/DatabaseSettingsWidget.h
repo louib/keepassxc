@@ -21,6 +21,7 @@
 #include <QScopedPointer>
 
 #include "gui/DialogyWidget.h"
+#include "gui/RoundsSelectionWidget.h"
 
 class Database;
 
@@ -44,13 +45,13 @@ Q_SIGNALS:
 private Q_SLOTS:
     void save();
     void reject();
-    void transformRoundsBenchmark();
 
 private:
     void truncateHistories();
 
     const QScopedPointer<Ui::DatabaseSettingsWidget> m_ui;
     Database* m_db;
+    RoundsSelectionWidget* m_roundsSelection;
 
     Q_DISABLE_COPY(DatabaseSettingsWidget)
 };

@@ -18,6 +18,7 @@
 #include "DatabaseSettingsWidget.h"
 #include "ui_DatabaseSettingsWidget.h"
 
+#include "gui/RoundsSelectionWidget.h"
 #include "core/Database.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
@@ -36,7 +37,11 @@ DatabaseSettingsWidget::DatabaseSettingsWidget(QWidget* parent)
             m_ui->historyMaxItemsSpinBox, SLOT(setEnabled(bool)));
     connect(m_ui->historyMaxSizeCheckBox, SIGNAL(toggled(bool)),
             m_ui->historyMaxSizeSpinBox, SLOT(setEnabled(bool)));
-    connect(m_ui->transformBenchmarkButton, SIGNAL(clicked()), SLOT(transformRoundsBenchmark()));
+
+    m_roundsSelection = new RoundsSelectionWidget();
+    m_ui->roundsHorizontalLayout->addWidget(m_roundsSelection);
+    m_roundsSelection->setEnabled(true);
+    m_roundsSelection->show();
 }
 
 DatabaseSettingsWidget::~DatabaseSettingsWidget()
@@ -53,7 +58,7 @@ void DatabaseSettingsWidget::load(Database* db)
     m_ui->dbDescriptionEdit->setText(meta->description());
     m_ui->recycleBinEnabledCheckBox->setChecked(meta->recycleBinEnabled());
     m_ui->defaultUsernameEdit->setText(meta->defaultUserName());
-    m_ui->transformRoundsSpinBox->setValue(m_db->transformRounds());
+    m_roundsSelection->setRounds(m_db->transformRounds());
     if (meta->historyMaxItems() > -1) {
         m_ui->historyMaxItemsSpinBox->setValue(meta->historyMaxItems());
         m_ui->historyMaxItemsCheckBox->setChecked(true);
@@ -83,9 +88,9 @@ void DatabaseSettingsWidget::save()
     meta->setDescription(m_ui->dbDescriptionEdit->text());
     meta->setDefaultUserName(m_ui->defaultUsernameEdit->text());
     meta->setRecycleBinEnabled(m_ui->recycleBinEnabledCheckBox->isChecked());
-    if (static_cast<quint64>(m_ui->transformRoundsSpinBox->value()) != m_db->transformRounds()) {
+    if (static_cast<quint64>(m_roundsSelection->getRounds()) != m_db->transformRounds()) {
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        m_db->setTransformRounds(m_ui->transformRoundsSpinBox->value());
+        m_db->setTransformRounds(m_roundsSelection->getRounds());
         QApplication::restoreOverrideCursor();
     }
 
@@ -125,16 +130,6 @@ void DatabaseSettingsWidget::save()
 void DatabaseSettingsWidget::reject()
 {
     Q_EMIT editFinished(false);
-}
-
-void DatabaseSettingsWidget::transformRoundsBenchmark()
-{
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    int rounds = CompositeKey::transformKeyBenchmark(1000);
-    if (rounds != -1) {
-        m_ui->transformRoundsSpinBox->setValue(rounds);
-    }
-    QApplication::restoreOverrideCursor();
 }
 
 void DatabaseSettingsWidget::truncateHistories()
