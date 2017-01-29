@@ -7,28 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>256</height>
+    <height>394</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="headlineLabel"/>
-   </item>
-   <item>
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <widget class="QLabel" name="headlineLabel">
+     <property name="margin">
+      <number>6</number>
      </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>1</width>
-       <height>3</height>
-      </size>
-     </property>
-    </spacer>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="passwordGroup">
@@ -122,6 +110,21 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="roundsLabel">
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Transformation rounds</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="roundsLayout"/>
    </item>
    <item>
     <spacer name="verticalSpacer">

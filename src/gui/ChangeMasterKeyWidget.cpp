@@ -19,10 +19,11 @@
 #include "ui_ChangeMasterKeyWidget.h"
 
 #include "core/FilePath.h"
-#include "keys/FileKey.h"
-#include "keys/PasswordKey.h"
 #include "gui/FileDialog.h"
 #include "gui/MessageBox.h"
+#include "gui/RoundsSelectionWidget.h"
+#include "keys/FileKey.h"
+#include "keys/PasswordKey.h"
 
 ChangeMasterKeyWidget::ChangeMasterKeyWidget(QWidget* parent)
     : DialogyWidget(parent)
@@ -37,6 +38,9 @@ ChangeMasterKeyWidget::ChangeMasterKeyWidget(QWidget* parent)
     m_ui->repeatPasswordEdit->enableVerifyMode(m_ui->enterPasswordEdit);
     connect(m_ui->createKeyFileButton, SIGNAL(clicked()), SLOT(createKeyFile()));
     connect(m_ui->browseKeyFileButton, SIGNAL(clicked()), SLOT(browseKeyFile()));
+
+    m_roundsSelection = new RoundsSelectionWidget();
+    m_ui->roundsLayout->addWidget(m_roundsSelection);
 }
 
 ChangeMasterKeyWidget::~ChangeMasterKeyWidget()

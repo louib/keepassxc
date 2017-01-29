@@ -21,6 +21,7 @@
 #include <QScopedPointer>
 
 #include "gui/DialogyWidget.h"
+#include "gui/RoundsSelectionWidget.h"
 #include "keys/CompositeKey.h"
 
 class QLabel;
@@ -51,6 +52,7 @@ private Q_SLOTS:
 private:
     const QScopedPointer<Ui::ChangeMasterKeyWidget> m_ui;
     CompositeKey m_key;
+    RoundsSelectionWidget* m_roundsSelection;
 
     Q_DISABLE_COPY(ChangeMasterKeyWidget)
 };

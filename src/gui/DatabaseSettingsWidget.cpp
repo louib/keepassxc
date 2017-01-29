@@ -18,10 +18,10 @@
 #include "DatabaseSettingsWidget.h"
 #include "ui_DatabaseSettingsWidget.h"
 
-#include "gui/RoundsSelectionWidget.h"
 #include "core/Database.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
+#include "gui/RoundsSelectionWidget.h"
 #include "keys/CompositeKey.h"
 
 DatabaseSettingsWidget::DatabaseSettingsWidget(QWidget* parent)
@@ -39,9 +39,7 @@ DatabaseSettingsWidget::DatabaseSettingsWidget(QWidget* parent)
             m_ui->historyMaxSizeSpinBox, SLOT(setEnabled(bool)));
 
     m_roundsSelection = new RoundsSelectionWidget();
-    m_ui->roundsHorizontalLayout->addWidget(m_roundsSelection);
-    m_roundsSelection->setEnabled(true);
-    m_roundsSelection->show();
+    m_ui->roundsLayout->addWidget(m_roundsSelection);
 }
 
 DatabaseSettingsWidget::~DatabaseSettingsWidget()
