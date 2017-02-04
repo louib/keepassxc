@@ -25,6 +25,7 @@ UnlockDatabaseWidget::UnlockDatabaseWidget(QWidget* parent)
     : DatabaseOpenWidget(parent)
 {
     m_ui->labelHeadline->setText(tr("Unlock database"));
+    m_ui->editPassword->setFocus();
 }
 
 void UnlockDatabaseWidget::clearForms()

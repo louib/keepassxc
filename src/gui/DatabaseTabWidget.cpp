@@ -806,6 +806,8 @@ void DatabaseTabWidget::connectDatabase(Database* newDb, Database* oldDb)
 
 void DatabaseTabWidget::performGlobalAutoType()
 {
+
+    qDebug("%s", qPrintable("DatabaseTabWidget::performGlobalAutoType"));
     QList<Database*> unlockedDatabases;
 
     QHashIterator<Database*, DatabaseManagerStruct> i(m_dbList);
@@ -821,6 +823,7 @@ void DatabaseTabWidget::performGlobalAutoType()
     if (unlockedDatabases.size() > 0) {
         autoType()->performGlobalAutoType(unlockedDatabases);
     } else if (m_dbList.size() > 0){
+        qDebug("%s", qPrintable("DatabaseTabWidget::performGlobalAutoType database is locked!"));
         indexDatabaseManagerStruct(0).dbWidget->showUnlockDialog();
     }
 }

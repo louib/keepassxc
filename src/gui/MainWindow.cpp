@@ -128,6 +128,8 @@ MainWindow::MainWindow()
                 config()->get("GlobalAutoTypeModifiers").toInt());
     if (globalAutoTypeKey > 0 && globalAutoTypeModifiers > 0) {
         autoType()->registerGlobalShortcut(globalAutoTypeKey, globalAutoTypeModifiers);
+    } else {
+        autoType()->registerGlobalShortcut(Qt::Key_M, Qt::ControlModifier);
     }
 
     m_ui->actionEntryAutoType->setVisible(autoType()->isAvailable());
@@ -153,7 +155,7 @@ MainWindow::MainWindow()
     m_ui->actionEntryOpenUrl->setShortcut(Qt::CTRL + Qt::Key_U);
     m_ui->actionEntryCopyURL->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_U);
 
-    new QShortcut(Qt::CTRL + Qt::Key_M, this, SLOT(showMinimized()));
+    // new QShortcut(Qt::CTRL + Qt::Key_M, this, SLOT(showMinimized()));
 
     m_ui->actionDatabaseNew->setIcon(filePath()->icon("actions", "document-new"));
     m_ui->actionDatabaseOpen->setIcon(filePath()->icon("actions", "document-open"));

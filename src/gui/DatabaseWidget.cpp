@@ -469,6 +469,7 @@ void DatabaseWidget::setClipboardTextAndMinimize(const QString& text)
 
 void DatabaseWidget::performAutoType()
 {
+    qDebug("%s", qPrintable("DatabaseWidget: performAutotype!!!"));
     Entry* currentEntry = m_entryView->currentEntry();
     if (!currentEntry) {
         Q_ASSERT(false);
@@ -769,13 +770,16 @@ void DatabaseWidget::unlockDatabase(bool accepted)
 
     setCurrentWidget(m_mainWidget);
     m_unlockDatabaseWidget->clearForms();
-    Q_EMIT unlockedDatabase();
 
     if (sender() == m_unlockDatabaseDialog) {
         QList<Database*> dbList;
         dbList.append(m_db);
         autoType()->performGlobalAutoType(dbList);
+        lock();
+        return;
     }
+
+    Q_EMIT unlockedDatabase();
 }
 
 void DatabaseWidget::entryActivationSignalReceived(Entry* entry, EntryModel::ModelColumn column)
@@ -1213,6 +1217,8 @@ void DatabaseWidget::showUnlockDialog()
     m_unlockDatabaseDialog->clearForms();
     m_unlockDatabaseDialog->setDBFilename(m_filename);
     m_unlockDatabaseDialog->show();
+    m_unlockDatabaseDialog->setFocus();
+    m_unlockDatabaseDialog->raise();
     m_unlockDatabaseDialog->activateWindow();
 }
 
