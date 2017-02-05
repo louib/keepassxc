@@ -29,9 +29,6 @@ UnlockDatabaseDialog::UnlockDatabaseDialog(QWidget *parent)
 {
     connect(m_view, SIGNAL(editFinished(bool)), this, SLOT(complete(bool)));
     m_view->setFocus();
-    m_view->raise();
-    m_view->activateWindow();
-    qDebug("%s", qPrintable("UnlockDatabaseDialog::UnlockDatabaseDialog"));
 }
 
 void UnlockDatabaseDialog::setDBFilename(const QString &filename)

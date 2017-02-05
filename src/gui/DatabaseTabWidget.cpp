@@ -824,6 +824,7 @@ void DatabaseTabWidget::performGlobalAutoType()
         autoType()->performGlobalAutoType(unlockedDatabases);
     } else if (m_dbList.size() > 0){
         qDebug("%s", qPrintable("DatabaseTabWidget::performGlobalAutoType database is locked!"));
+        autoType()->copyWindowTitle();
         indexDatabaseManagerStruct(0).dbWidget->showUnlockDialog();
     }
 }

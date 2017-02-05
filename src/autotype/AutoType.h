@@ -36,9 +36,10 @@ class AutoType : public QObject
 public:
     QStringList windowTitles();
     void performAutoType(const Entry* entry, QWidget* hideWindow = nullptr,
-                         const QString& customSequence = QString(), WId window = 0);
+                         const QString& customSequence = QString(), QString targetWindowTitle = QString());
     bool registerGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers);
     void unregisterGlobalShortcut();
+    QString copyWindowTitle();
     int callEventFilter(void* event);
 
     inline bool isAvailable() {
@@ -73,6 +74,7 @@ private:
     Qt::Key m_currentGlobalKey;
     Qt::KeyboardModifiers m_currentGlobalModifiers;
     QPluginLoader* m_pluginLoader;
+    QString m_currentWindowTitle;
     AutoTypePlatformInterface* m_plugin;
     AutoTypeExecutor* m_executor;
     WId m_windowFromGlobal;

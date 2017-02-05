@@ -127,7 +127,7 @@ QStringList AutoType::windowTitles()
     return m_plugin->windowTitles();
 }
 
-void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QString& customSequence, WId window)
+void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QString& customSequence, QString targetWindowTitle)
 {
     if (m_inAutoType || !m_plugin) {
         return;
@@ -160,14 +160,18 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
 
     Tools::wait(m_plugin->initialTimeout());
 
-    if (!window) {
-        window = m_plugin->activeWindow();
+    if (m_currentWindow) {
+      targetWindowTitle = m_currentWindow;
+      m_currentWindow = QString();
+    }
+    if (!targetWindowTitle) {
+        window = m_plugin->activeWindowTitle();
     }
 
     QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
 
     for (AutoTypeAction* action : asConst(actions)) {
-        if (m_plugin->activeWindow() != window) {
+        if (m_plugin->activeWindowTitle() != m_currentWindow()) {
             qWarning("Active window changed, interrupting auto-type.");
             break;
         }
@@ -179,6 +183,10 @@ void AutoType::performAutoType(const Entry* entry, QWidget* hideWindow, const QS
     m_inAutoType = false;
 }
 
+QString AutoType::copyWindowTitle() {
+    return m_currentWindowTitle = m_plugin->activeWindowTitle();
+}
+
 void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
 {
     qDebug("%s", qPrintable("AutoType::performGlobalAutoType"));
@@ -186,9 +194,7 @@ void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
         return;
     }
 
-    QString windowTitle = m_plugin->activeWindowTitle();
-
-    if (windowTitle.isEmpty()) {
+    if (m_currentWindowTitle.isEmpty() && copyWindowTitle().isEmpty()) {
         return;
     }
 
@@ -200,7 +206,7 @@ void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
     for (Database* db : dbList) {
         const QList<Entry*> dbEntries = db->rootGroup()->entriesRecursive();
         for (Entry* entry : dbEntries) {
-            QString sequence = autoTypeSequence(entry, windowTitle);
+            QString sequence = autoTypeSequence(entry, m_currentWindowTitle);
             if (!sequence.isEmpty()) {
                 entryList << entry;
                 sequenceHash.insert(entry, sequence);
@@ -209,17 +215,20 @@ void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
     }
 
     if (entryList.isEmpty()) {
+        qDebug("%s", qPrintable("first option"));
         m_inAutoType = false;
         QString message = tr("Couldn't find an entry that matches the window title:");
         message.append("\n\n");
-        message.append(windowTitle);
+        message.append(m_currentWindowTitle);
         MessageBox::information(nullptr, tr("Auto-Type - KeePassXC"), message);
     }
     else if ((entryList.size() == 1) && !config()->get("security/autotypeask").toBool()) {
+        qDebug("%s", qPrintable("second option"));
         m_inAutoType = false;
         performAutoType(entryList.first(), nullptr, sequenceHash[entryList.first()]);
     }
     else {
+        qDebug("%s", qPrintable("third option"));
         m_windowFromGlobal = m_plugin->activeWindow();
         AutoTypeSelectDialog* selectDialog = new AutoTypeSelectDialog();
         connect(selectDialog, SIGNAL(entryActivated(Entry*,QString)),
@@ -233,6 +242,7 @@ void AutoType::performGlobalAutoType(const QList<Database*>& dbList)
         selectDialog->show();
         // necessary when the main window is minimized
         selectDialog->activateWindow();
+        selectDialog->exec();
     }
 }
 

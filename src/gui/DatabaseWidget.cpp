@@ -775,8 +775,9 @@ void DatabaseWidget::unlockDatabase(bool accepted)
         QList<Database*> dbList;
         dbList.append(m_db);
         autoType()->performGlobalAutoType(dbList);
-        lock();
-        return;
+        if (config()->get("security/autotyperelock").toBool()) {
+            lock();
+        }
     }
 
     Q_EMIT unlockedDatabase();
@@ -1218,7 +1219,6 @@ void DatabaseWidget::showUnlockDialog()
     m_unlockDatabaseDialog->setDBFilename(m_filename);
     m_unlockDatabaseDialog->show();
     m_unlockDatabaseDialog->setFocus();
-    m_unlockDatabaseDialog->raise();
     m_unlockDatabaseDialog->activateWindow();
 }
 
