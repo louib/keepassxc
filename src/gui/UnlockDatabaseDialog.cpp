@@ -19,8 +19,8 @@
 #include "UnlockDatabaseWidget.h"
 
 #include "autotype/AutoType.h"
-#include "gui/DragTabBar.h"
 #include "core/Database.h"
+#include "gui/DragTabBar.h"
 
 
 UnlockDatabaseDialog::UnlockDatabaseDialog(QWidget *parent)

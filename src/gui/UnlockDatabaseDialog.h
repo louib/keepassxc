@@ -15,12 +15,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_AUTOTYPEUNLOCKDIALOG_H
-#define KEEPASSX_AUTOTYPEUNLOCKDIALOG_H
+#ifndef KEEPASSX_UNLOCKDATABASEDIALOG_H
+#define KEEPASSX_UNLOCKDATABASEDIALOG_H
 
 #include <QDialog>
-
-//#include <gui/DatabaseTabWidget.h>
 
 #include "core/Global.h"
 
@@ -46,4 +44,4 @@ private:
     UnlockDatabaseWidget* const m_view;
 };
 
-#endif // KEEPASSX_AUTOTYPEUNLOCKDIALOG_H
+#endif // KEEPASSX_UNLOCKDATABASEDIALOG_H
