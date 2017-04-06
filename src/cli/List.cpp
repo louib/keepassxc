@@ -21,11 +21,12 @@
 #include "List.h"
 
 #include <QCommandLineParser>
-#include <QCoreApplication>
+#include <QApplication>
 #include <QStringList>
 #include <QTextStream>
 
 #include "core/Database.h"
+#include "gui/UnlockDatabaseDialog.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "keys/CompositeKey.h"
@@ -57,7 +58,10 @@ void printGroup(Group* group, QString baseName, int depth) {
 
 int List::execute(int argc, char **argv)
 {
-    QCoreApplication app(argc, argv);
+
+
+    QApplication app(argc, argv);
+    Database* database = UnlockDatabaseDialog::prompt(QString("lol"));
     QTextStream out(stdout);
 
     QCommandLineParser parser;

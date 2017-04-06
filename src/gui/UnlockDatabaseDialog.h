@@ -34,6 +34,7 @@ public:
     explicit UnlockDatabaseDialog(QWidget *parent = Q_NULLPTR);
     void setDBFilename(const QString& filename);
     void clearForms();
+    static Database* prompt(const QString&);
     Database* database();
 
 signals:

@@ -14,6 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <QApplication>
 
 #include "UnlockDatabaseDialog.h"
 #include "UnlockDatabaseWidget.h"
@@ -40,7 +41,7 @@ void UnlockDatabaseDialog::clearForms()
     m_view->clearForms();
 }
 
-Database *UnlockDatabaseDialog::database()
+Database* UnlockDatabaseDialog::database()
 {
     return m_view->database();
 }
@@ -53,4 +54,19 @@ void UnlockDatabaseDialog::complete(bool r)
     } else {
         reject();
     }
+}
+
+Database* UnlockDatabaseDialog::prompt(const QString& databaseFilename) {
+    UnlockDatabaseDialog * dialog = new UnlockDatabaseDialog();
+    dialog->setDBFilename(databaseFilename);
+    dialog->setWindowFlags(Qt::Window);
+    dialog->show();
+    dialog->raise();
+    dialog->activateWindow();
+    {
+        QEventLoop loop;
+        loop.connect(dialog, SIGNAL(unlockDone(bool)), SLOT(quit()));
+        loop.exec();
+    }
+    return dialog->database();
 }
