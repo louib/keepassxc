@@ -20,6 +20,7 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QStringList>
+#include <QTextStream>
 
 #include <cli/EntropyMeter.h>
 #include <cli/Extract.h>
@@ -97,6 +98,18 @@ int main(int argc, char **argv)
     } else if (commandName == "show") {
         argv[0] = const_cast<char*>("keepassxc-cli show");
         exitCode = Show::execute(argc, argv);
+    } else if (commandName == "shell") {
+        QTextStream out(stdout);
+        out << "KeePassXC " << KEEPASSX_VERSION << " interactive shell.\n";
+        static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
+        while (true) {
+            out << "> ";
+            out.flush();
+            QString line = inputTextStream.readLine();
+            if (line == QString("quit")) {
+                break;
+            }
+        }
     } else {
         qCritical("Invalid command %s.", qPrintable(commandName));
         parser.showHelp();
