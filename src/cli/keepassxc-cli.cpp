@@ -121,6 +121,9 @@ int main(int argc, char** argv)
         --argc;
         argv[0] = const_cast<char*>("keepassxc-cli show");
         exitCode = Show::execute(argc, argv);
+    } else if (commandName == "shell") {
+        argv[0] = const_cast<char*>("keepassxc-cli shell");
+        exitCode = Shell::execute(argc, argv);
     } else {
         qCritical("Invalid command %s.", qPrintable(commandName));
         QCoreApplication app(argc, argv);

@@ -221,6 +221,8 @@ set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_NONE QT_NO_DEBUG)
 
 find_package(LibGPGError REQUIRED)
 
+find_package(Readline REQUIRED)
+
 find_package(Gcrypt 1.6.0 REQUIRED)
 
 find_package(ZLIB REQUIRED)
@@ -267,7 +269,7 @@ if(UNIX)
   endif()
 endif()
 
-include_directories(SYSTEM ${GCRYPT_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
+include_directories(SYSTEM ${GCRYPT_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} ${Readline_INCLUDE_DIR})
 
 include(FeatureSummary)
 

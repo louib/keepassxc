@@ -24,11 +24,13 @@ set(cli_SOURCES
     List.h
     Merge.cpp
     Merge.h
+    Shell.cpp
+    Shell.h
     Show.cpp
     Show.h)
 
 add_library(cli STATIC ${cli_SOURCES})
-target_link_libraries(cli Qt5::Core Qt5::Widgets)
+target_link_libraries(cli Qt5::Core Qt5::Widgets ${Readline_LIBRARY})
 
 add_executable(keepassxc-cli keepassxc-cli.cpp)
 target_link_libraries(keepassxc-cli
@@ -38,6 +40,7 @@ target_link_libraries(keepassxc-cli
                       ${GCRYPT_LIBRARIES}
                       ${GPGERROR_LIBRARIES}
                       ${ZLIB_LIBRARIES}
+                      ${Readline_LIBRARY}
                       zxcvbn)
 
 install(TARGETS keepassxc-cli
