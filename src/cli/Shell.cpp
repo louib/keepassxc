@@ -24,7 +24,6 @@
 #include <QCommandLineParser>
 #include <QClipboard>
 #include <QStringList>
-#include <QSaveFile>
 #include <QTextStream>
 
 #include "gui/UnlockDatabaseDialog.h"
@@ -32,37 +31,12 @@
 #include "core/Metadata.h"
 #include "core/Entry.h"
 #include "core/Group.h"
-#include "format/KeePass2Writer.h"
 #include "gui/Clipboard.h"
 #include "keys/CompositeKey.h"
 #include "config-keepassx.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 
-
-QString saveDatabaseAs(Database* db, QString filename)
-{
-
-    KeePass2Writer m_writer;
-    QSaveFile saveFile(filename);
-    if (saveFile.open(QIODevice::WriteOnly)) {
-
-        m_writer.writeDatabase(&saveFile, db);
-
-        if (m_writer.hasError()) {
-            return QString("Writing the database failed.\n").append(m_writer.errorString());
-        }
-
-        if (saveFile.commit()) {
-            return QString("");
-        } else {
-            return QString("Writing the database failed.\n").append(saveFile.errorString());
-        }
-    } else {
-        return QString("Writing the database failed.\n").append(saveFile.errorString());
-    }
-
-}
 
 int Shell::execute(int argc, char** argv)
 {
@@ -134,6 +108,27 @@ int Shell::execute(int argc, char** argv)
           out.flush();
           continue;
       }
+      if (line.startsWith(QString("rm"))) {
+          QStringList arguments = line.split(" ");
+          if (arguments.length() != 2) {
+              out << "Usage: rm entry\n";
+              out.flush();
+              continue;
+          }
+          QString entryName = arguments.at(1);
+          Entry* entry = db->rootGroup()->findEntry(entryName);
+          if (!entry) {
+              qCritical("Entry %s not found.", qPrintable(entryName));
+              continue;
+          }
+          QString entryTitle = entry->title();
+          // TODO send to recycle bin instead!
+          delete entry;
+          databaseModified = true;
+          out << "Successfully removed entry " << entryTitle << ".\n";
+          out.flush();
+          continue;
+      }
       if (commandName == QString("mv")) {
           QStringList arguments = line.split(" ");
           if (arguments.length() != 3) {
@@ -148,7 +143,8 @@ int Shell::execute(int argc, char** argv)
               qCritical("Entry %s not found.", qPrintable(entryId));
               continue;
           }
-          Group* group = db->rootGroup()->findChild(groupId);
+          // Group* group = db->rootGroup()->findChild(groupId);
+          Group* group = nullptr;
           if (!group) {
               qCritical("Group %s not found.", qPrintable(groupId));
               continue;
@@ -185,7 +181,8 @@ int Shell::execute(int argc, char** argv)
 
           QString newEntryName = path.takeLast();
 
-          Group* parentGroup = db->rootGroup()->findChildByPath(path.join("/"));
+          // Group* parentGroup = db->rootGroup()->findChildByPath(path.join("/"));
+          Group* parentGroup = nullptr;
           if (!parentGroup) {
               qCritical("Group %s not found.", qPrintable(path.join("/")));
               continue;
@@ -204,20 +201,21 @@ int Shell::execute(int argc, char** argv)
           if (databaseModified) {
               char * chars = readline("The database was modified, do you want to save it? [y/n] ");
               if (QString(chars) == QString("y")) {
-                  QString errorMessage = saveDatabaseAs(db, args.at(0));
+                  QString errorMessage = db->saveToFile(args.at(0));
                   if (errorMessage.isEmpty()) {
                       databaseModified = false;
                       out << QString("Successfully saved database " + args.at(0) + "\n");
                   } else {
                       out << errorMessage;
                   }
+                  out.flush();
               }
 
           }
           break;
       }
       if (line == QString("save")) {
-          QString errorMessage = saveDatabaseAs(db, args.at(0));
+          QString errorMessage = db->saveToFile(args.at(0));
           if (errorMessage.isEmpty()) {
               databaseModified = false;
               out << QString("Successfully saved database " + args.at(0));

@@ -27,6 +27,7 @@
 #include <cli/Extract.h>
 #include <cli/List.h>
 #include <cli/Merge.h>
+#include <cli/Shell.h>
 #include <cli/Show.h>
 
 #include "config-keepassx.h"
