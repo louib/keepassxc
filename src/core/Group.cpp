@@ -753,6 +753,27 @@ void Group::addEntry(Entry* entry)
     emit entryAdded(entry);
 }
 
+Entry* Group::addEntryWithPath(QString entryPath)
+{
+    Q_ASSERT(!entryPath.isNull());
+
+    QStringList groups = entryPath.split("/");
+    QString entryTitle = groups.takeLast();
+    QString groupPath = groups.join("/");
+
+    Group* group = this->findGroupByPath(groupPath);
+    if (!group) {
+        return nullptr;
+    }
+
+    Entry* entry = new Entry();
+    entry->setTitle(entryTitle);
+    entry->setGroup(group);
+
+    return entry;
+
+}
+
 void Group::removeEntry(Entry* entry)
 {
     Q_ASSERT(m_entries.contains(entry));

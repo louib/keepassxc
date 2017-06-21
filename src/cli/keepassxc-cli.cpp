@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QTextStream>
 
+#include <cli/Add.h>
 #include <cli/Clip.h>
 #include <cli/EntropyMeter.h>
 #include <cli/Extract.h>
@@ -57,6 +58,7 @@ int main(int argc, char** argv)
 
     QString description("KeePassXC command line interface.");
     description = description.append(QString("\n\nAvailable commands:"));
+    description = description.append(QString("\n  add\t\tAdd a password to the database."));
     description = description.append(QString("\n  clip\t\tCopy a password to the clipboard."));
     description = description.append(QString("\n  extract\tExtract and print the content of a database."));
     description = description.append(QString("\n  entropy-meter\tCalculate password entropy."));
@@ -91,8 +93,13 @@ int main(int argc, char** argv)
 
     int exitCode = EXIT_FAILURE;
 
-    if (commandName == "clip") {
+    if (commandName == "add") {
         // Removing the first cli argument before dispatching.
+        ++argv;
+        --argc;
+        argv[0] = const_cast<char*>("keepassxc-cli add");
+        exitCode = Add::execute(argc, argv);
+    } else if (commandName == "clip") {
         ++argv;
         --argc;
         argv[0] = const_cast<char*>("keepassxc-cli clip");

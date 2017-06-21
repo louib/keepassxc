@@ -62,11 +62,16 @@ void PasswordInput::setStdinEcho(bool enable = true)
 
 QString PasswordInput::getPassword()
 {
+    static QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
     static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
 
     setStdinEcho(false);
     QString line = inputTextStream.readLine();
     setStdinEcho(true);
+
+    // The line jump is also not echoed, but we want to echo it.
+    outputTextStream << "\n";
+    outputTextStream.flush();
 
     return line;
 }
