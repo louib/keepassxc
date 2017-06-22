@@ -50,7 +50,6 @@ char* commandNameCompletion(const char* text, int state)
   static int list_index, len;
   char* name;
 
-  qDebug("Completing with %s", qPrintable(text));
   /* If this is a new word to complete, initialize now.  This
      includes saving the length of TEXT for efficiency, and
      initializing the index variable to 0. */
@@ -84,12 +83,10 @@ char** keepassxc_completion (const char* text, int start, int end)
   matches = (char **)NULL;
 
   QString line = QString::fromUtf8(text);
-  qDebug("this is the text right now", qPrintable(line));
   /* If this word is at the start of the line, then it is a command
      to complete.  Otherwise it is the name of a file in the current
      directory. */
   if (start == 0) {
-    qDebug("start is at 0 %s", qPrintable("yeah"));
     matches = rl_completion_matches (text, commandNameCompletion);
   }
 
@@ -141,6 +138,8 @@ int Shell::execute(int argc, char** argv)
       }
 
       QString line(chars);
+      line = line.trimmed();
+
       if (line.isEmpty()) {
           continue;
       }
