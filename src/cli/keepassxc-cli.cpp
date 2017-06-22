@@ -22,7 +22,7 @@
 #include <QStringList>
 #include <QTextStream>
 
-#include <cli/Clip.h>
+#include <cli/Command.h>
 #include <cli/EntropyMeter.h>
 #include <cli/Extract.h>
 #include <cli/List.h>
@@ -90,37 +90,13 @@ int main(int argc, char** argv)
 
     int exitCode = EXIT_FAILURE;
 
-    if (commandName == "clip") {
+    Command* command = Command::getCommand(commandName);
+    if (command != nullptr) {
         // Removing the first cli argument before dispatching.
         ++argv;
         --argc;
         argv[0] = const_cast<char*>("keepassxc-cli clip");
-        exitCode = Clip::execute(argc, argv);
-    } else if (commandName == "entropy-meter") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli entropy-meter");
-        exitCode = EntropyMeter::execute(argc, argv);
-    } else if (commandName == "extract") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli extract");
-        exitCode = Extract::execute(argc, argv);
-    } else if (commandName == "list") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli list");
-        exitCode = List::execute(argc, argv);
-    } else if (commandName == "merge") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli merge");
-        exitCode = Merge::execute(argc, argv);
-    } else if (commandName == "show") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli show");
-        exitCode = Show::execute(argc, argv);
+        exitCode = command->execute(argc, argv);
     } else {
         qCritical("Invalid command %s.", qPrintable(commandName));
         QCoreApplication app(argc, argv);

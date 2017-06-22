@@ -18,10 +18,14 @@
 #ifndef KEEPASSXC_SHOW_H
 #define KEEPASSXC_SHOW_H
 
-class Show
+#include "Command.h"
+
+class Show : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    int execute(int argc, char** argv);
+    QString name;
+    QString description;
 };
 
 #endif // KEEPASSXC_SHOW_H

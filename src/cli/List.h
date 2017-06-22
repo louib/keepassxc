@@ -18,10 +18,14 @@
 #ifndef KEEPASSXC_LIST_H
 #define KEEPASSXC_LIST_H
 
-class List
+#include "Command.h"
+
+class List : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    int execute(int argc, char** argv);
+    QString name;
+    QString description;
 };
 
 #endif // KEEPASSXC_LIST_H

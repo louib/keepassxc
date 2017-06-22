@@ -18,10 +18,14 @@
 #ifndef KEEPASSXC_CLIP_H
 #define KEEPASSXC_CLIP_H
 
-class Clip
+#include "Command.h"
+
+class Clip : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    int execute(int argc, char** argv);
+    QString name;
+    QString description;
 };
 
 #endif // KEEPASSXC_CLIP_H
