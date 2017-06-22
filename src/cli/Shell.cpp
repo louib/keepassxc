@@ -22,6 +22,7 @@
 #include "Shell.h"
 
 #include <QApplication>
+#include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QClipboard>
 #include <QStringList>
@@ -38,8 +39,9 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-char* commandNames[4] = {
+char* commandNames[] = {
   const_cast<char*>("show"),
+  const_cast<char*>("clip"),
   const_cast<char*>("quit"),
   const_cast<char*>("save")
 };
@@ -58,9 +60,8 @@ char* commandNameCompletion(const char* text, int state)
     len = strlen (text);
   }
 
-  /* Return the next name which partially matches from the
-     command list. */
-  while (name = commandNames[list_index]) {
+  name = commandNames[list_index];
+  while (name != nullptr && list_index < 4) {
       list_index++;
 
       // Each string the generator function returns as a match
@@ -95,26 +96,42 @@ char** keepassxc_completion (const char* text, int start, int end)
 
 int Shell::execute(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    QStringList arguments;
+    for (int i = 0; i < argc; ++i) {
+        arguments << QString(argv[i]);
+    }
     QTextStream out(stdout);
 
     QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::translate("main", "Copy a password to the clipboard"));
-    parser.addPositionalArgument("database", QCoreApplication::translate("main", "Path of the database."));
-    parser.process(app);
+    parser.setApplicationDescription(QCoreApplication::translate("main", "Start KeePassXC's shell"));
+    parser.addPositionalArgument("database",
+                                 QCoreApplication::translate("main", "Path of the database."));
+    QCommandLineOption guiPrompt(
+        QStringList() << "g"
+                      << "gui-prompt",
+        QCoreApplication::translate("main", "Use a GUI prompt unlocking the database."));
+    parser.addOption(guiPrompt);
+    parser.process(arguments);
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 1) {
+        QCoreApplication app(argc, argv);
         parser.showHelp(EXIT_FAILURE);
     }
 
-    static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-    bool databaseModified = false;
+    Database* db = nullptr;
+    QApplication app(argc, argv);
+    if (parser.isSet("gui-prompt")) {
+        db = UnlockDatabaseDialog::openDatabasePrompt(args.at(0));
+    } else {
+        db = Database::unlockFromStdin(args.at(0));
+    }
 
-    Database* db = UnlockDatabaseDialog::openDatabasePrompt(args.at(0));
     if (!db) {
         return EXIT_FAILURE;
     }
+
+    bool databaseModified = false;
 
     out << "KeePassXC " << KEEPASSX_VERSION << " interactive shell\n";
     if (!db->metadata()->name().isNull()) {
@@ -124,8 +141,6 @@ int Shell::execute(int argc, char** argv)
     }
     out.flush();
 
-    rl_read_init_file("~/.inputrc");
-    rl_readline_name = "KeePassXC";
     rl_attempted_completion_function = keepassxc_completion;
 
     while (true) {

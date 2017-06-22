@@ -123,6 +123,8 @@ int main(int argc, char** argv)
         argv[0] = const_cast<char*>("keepassxc-cli show");
         exitCode = Show::execute(argc, argv);
     } else if (commandName == "shell") {
+        ++argv;
+        --argc;
         argv[0] = const_cast<char*>("keepassxc-cli shell");
         exitCode = Shell::execute(argc, argv);
     } else {
