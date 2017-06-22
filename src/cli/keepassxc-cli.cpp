@@ -54,14 +54,10 @@ int main(int argc, char** argv)
     }
     QCommandLineParser parser;
 
-    QString description("KeePassXC command line interface.");
-    description = description.append(QString("\n\nAvailable commands:"));
-    description = description.append(QString("\n  clip\t\tCopy a password to the clipboard."));
-    description = description.append(QString("\n  extract\tExtract and print the content of a database."));
-    description = description.append(QString("\n  entropy-meter\tCalculate password entropy."));
-    description = description.append(QString("\n  list\t\tList database entries."));
-    description = description.append(QString("\n  merge\t\tMerge two databases."));
-    description = description.append(QString("\n  show\t\tShow a password."));
+    QString description("KeePassXC command line interface.\n\nAvailable commands:");
+    for (Command* command : Command::getCommands()) {
+        description = description.append(QString("\n" + command->name + "\t\t" + command->description));
+    }
     parser.setApplicationDescription(QCoreApplication::translate("main", qPrintable(description)));
 
     parser.addPositionalArgument("command", QCoreApplication::translate("main", "Name of the command to execute."));
