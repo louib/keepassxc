@@ -17,6 +17,7 @@
 
 #include <cstdlib>
 #include <stdio.h>
+#include <string.h>
 
 #include "Shell.h"
 
@@ -37,6 +38,63 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+char* commandNames[4] = {
+  const_cast<char*>("show"),
+  const_cast<char*>("quit"),
+  const_cast<char*>("save")
+};
+
+//Each string the generator function returns as a match must be allocated with malloc();
+char* commandNameCompletion(const char* text, int state)
+{
+  static int list_index, len;
+  char* name;
+
+  qDebug("Completing with %s", qPrintable(text));
+  /* If this is a new word to complete, initialize now.  This
+     includes saving the length of TEXT for efficiency, and
+     initializing the index variable to 0. */
+  if (state == 0) {
+    list_index = 0;
+    len = strlen (text);
+  }
+
+  /* Return the next name which partially matches from the
+     command list. */
+  while (name = commandNames[list_index]) {
+      list_index++;
+
+      // Each string the generator function returns as a match
+      // must be allocated with malloc();
+      if (strncmp (name, text, len) == 0) {
+        char* response = (char*)malloc(strlen(name));
+        response = strcpy(response, name);
+        return response;
+      }
+  }
+
+  /* If no names matched, then return NULL. */
+  return ((char *)NULL);
+}
+
+char** keepassxc_completion (const char* text, int start, int end)
+{
+  char** matches;
+
+  matches = (char **)NULL;
+
+  QString line = QString::fromUtf8(text);
+  qDebug("this is the text right now", qPrintable(line));
+  /* If this word is at the start of the line, then it is a command
+     to complete.  Otherwise it is the name of a file in the current
+     directory. */
+  if (start == 0) {
+    qDebug("start is at 0 %s", qPrintable("yeah"));
+    matches = rl_completion_matches (text, commandNameCompletion);
+  }
+
+  return (matches);
+}
 
 int Shell::execute(int argc, char** argv)
 {
@@ -50,8 +108,7 @@ int Shell::execute(int argc, char** argv)
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 1) {
-        parser.showHelp();
-        return EXIT_FAILURE;
+        parser.showHelp(EXIT_FAILURE);
     }
 
     static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
@@ -70,8 +127,9 @@ int Shell::execute(int argc, char** argv)
     }
     out.flush();
 
-    // Verify what's the purpose of these parameters... not clear from the header file.
-    rl_vi_editing_mode(0, 0);
+    rl_read_init_file("~/.inputrc");
+    rl_readline_name = "KeePassXC";
+    rl_attempted_completion_function = keepassxc_completion;
 
     while (true) {
 
