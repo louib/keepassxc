@@ -26,7 +26,6 @@ public:
     Merge();
     ~Merge();
     int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_MERGE_H

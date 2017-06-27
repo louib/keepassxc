@@ -43,7 +43,7 @@ int Command::execute(int, char**)
     return EXIT_FAILURE;
 }
 
-int Command::executeFromShell(Database*, QStringList)
+int Command::executeFromShell(Database*, QString, QStringList)
 {
     return EXIT_FAILURE;
 }
@@ -59,6 +59,11 @@ QString Command::getDescriptionLine()
     response = response.append("\n");
     return response;
 
+}
+
+bool Command::isShellCommand()
+{
+    return !this->shellUsage.isEmpty();
 }
 
 void populateCommands()

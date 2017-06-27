@@ -138,8 +138,3 @@ int EntropyMeter::execute(int argc, char **argv)
     }
     return 0;
 }
-
-int EntropyMeter::executeFromShell(Database*, QStringList)
-{
-    return EXIT_FAILURE;
-}

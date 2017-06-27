@@ -94,8 +94,3 @@ int Extract::execute(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
-
-int Extract::executeFromShell(Database*, QStringList)
-{
-    return EXIT_FAILURE;
-}

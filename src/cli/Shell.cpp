@@ -156,7 +156,6 @@ char* commandNameCompletion(const char* text, int state)
         commandNames << "mkdir";
         commandNames << "quit";
         commandNames << "rmdir";
-        commandNames << "save";
         commandNames << "clip";
         commandNames << "add";
         commandNames << "gen";
@@ -202,24 +201,6 @@ char** keepassxc_completion(const char* text, int start, int)
     return nullptr;
 }
 #endif
-
-bool saveDatabase(QString filename)
-{
-
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-
-    QString errorMessage = database->saveToFile(filename);
-    if (errorMessage.isEmpty()) {
-        outputTextStream << QString("Successfully saved database.\n");
-        outputTextStream.flush();
-        return true;
-    }
-
-    outputTextStream << errorMessage;
-    outputTextStream.flush();
-    return false;
-
-}
 
 bool regenerate(QString entryPath, int passwordLength = 20)
 {
@@ -564,7 +545,6 @@ void printHelp()
     //outputTextStream << "mv\t\tMove an entry of a directory.\n";
     //outputTextStream << "rmdir\t\tRemove a directory from the database.\n";
     //outputTextStream << "mkdir\t\tCreate a directory in the database.\n";
-    //outputTextStream << "save\t\tSave the database.\n";
     //outputTextStream << "show\t\tShow an entry from the database.\n";
     //outputTextStream << "help\t\tShow the available commands.\n";
     outputTextStream.flush();
@@ -658,8 +638,7 @@ int Shell::execute(int argc, char** argv)
 
       Command* command = Command::getCommand(commandName);
       if (command && !command->shellUsage.isEmpty()) {
-          command->executeFromShell(database, arguments);
-          database->saveToFile(args.at(0));
+          command->executeFromShell(database, args.at(0), arguments);
       } else if (commandName == QString("help")) {
           printHelp();
       } else if (commandName == QString("edit")) {
@@ -719,22 +698,7 @@ int Shell::execute(int argc, char** argv)
           }
           databaseModified |= addGroup(arguments.at(1));
       } else if (commandName == QString("quit")) {
-          if (!databaseModified) {
-              break;
-          }
-          if (!Utils::askYesNoQuestion("The database was modified, do you want to save it?")) {
-              break;
-          }
-          QString errorMessage = database->saveToFile(args.at(0));
-          if (errorMessage.isEmpty()) {
-              databaseModified = false;
-              out << QString("Successfully saved database " + args.at(0) + "\n");
-          } else {
-              out << errorMessage;
-          }
           break;
-      } else if (commandName == QString("save")) {
-          databaseModified = (databaseModified && !saveDatabase(args.at(0)));
       } else {
           out << QString("Invalid command '" + commandName + "'\n");
       }

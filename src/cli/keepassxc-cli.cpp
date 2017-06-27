@@ -81,17 +81,9 @@ int main(int argc, char** argv)
     }
 
     QString commandName = parser.positionalArguments().at(0);
-
-    int exitCode = EXIT_FAILURE;
-
     Command* command = Command::getCommand(commandName);
-    if (command) {
-        // Removing the first cli argument before dispatching.
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>(qPrintable("keepassxc-cli " + commandName));
-        exitCode = command->execute(argc, argv);
-    } else {
+
+    if (command == nullptr) {
         qCritical("Invalid command %s.", qPrintable(commandName));
         QCoreApplication app(argc, argv);
         app.setApplicationVersion(KEEPASSX_VERSION);
@@ -99,6 +91,12 @@ int main(int argc, char** argv)
         // exit code here.
         parser.showHelp(EXIT_FAILURE);
     }
+
+    // Removing the first cli argument before dispatching.
+    ++argv;
+    --argc;
+    argv[0] = const_cast<char*>(qPrintable(QString("keepassxc-cli ").append(commandName)));
+    int exitCode = command->execute(argc, argv);
 
 #if defined(WITH_ASAN) && defined(WITH_LSAN)
     // do leak check here to prevent massive tail of end-of-process leak errors from third-party libraries

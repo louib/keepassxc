@@ -26,7 +26,6 @@ public:
     EntropyMeter();
     ~EntropyMeter();
     int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_ENTROPYMETER_H

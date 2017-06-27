@@ -101,8 +101,3 @@ int Create::execute(int argc, char** argv)
     outputTextStream.flush();
     return EXIT_SUCCESS;
 }
-
-int Create::executeFromShell(Database*, QStringList)
-{
-    return EXIT_FAILURE;
-}

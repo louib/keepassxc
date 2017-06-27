@@ -26,7 +26,7 @@ public:
     Clip();
     ~Clip();
     int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
+    int executeFromShell(Database* database, QString databasePath, QStringList arguments);
 };
 
 #endif // KEEPASSXC_CLIP_H

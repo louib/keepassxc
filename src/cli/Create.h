@@ -26,7 +26,6 @@ public:
     Create();
     ~Create();
     int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_CREATE_H

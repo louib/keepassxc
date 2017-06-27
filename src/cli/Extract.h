@@ -26,7 +26,6 @@ public:
     Extract();
     ~Extract();
     int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_EXTRACT_H

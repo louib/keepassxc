@@ -112,8 +112,3 @@ int Merge::execute(int argc, char** argv)
     return EXIT_SUCCESS;
 
 }
-
-int Merge::executeFromShell(Database*, QStringList)
-{
-    return EXIT_FAILURE;
-}
