@@ -35,7 +35,9 @@ public:
     QString shellUsage;
     QString getDescriptionLine();
     bool isShellCommand();
+
     static QList<Command*> getCommands();
+    static QList<Command*> getShellCommands();
     static Command* getCommand(QString commandName);
 };
 

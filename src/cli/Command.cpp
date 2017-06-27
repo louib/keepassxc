@@ -95,3 +95,16 @@ QList<Command*> Command::getCommands()
     populateCommands();
     return commands.values();
 }
+
+QList<Command*> Command::getShellCommands()
+{
+    populateCommands();
+
+    QList<Command*> shellCommands;
+    for (Command* command : commands.values()) {
+        if (command->isShellCommand()) {
+            shellCommands << command;
+        }
+    }
+    return shellCommands;
+}

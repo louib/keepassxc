@@ -151,18 +151,10 @@ char* commandNameCompletion(const char* text, int state)
     static QStringList commandNames;
 
     if (commandNames.isEmpty()) {
-        commandNames << "show";
-        commandNames << "rm";
-        commandNames << "mkdir";
-        commandNames << "quit";
-        commandNames << "rmdir";
-        commandNames << "clip";
-        commandNames << "add";
-        commandNames << "gen";
-        commandNames << "regen";
-        commandNames << "edit";
-        commandNames << "help";
-        commandNames << "ls";
+        for (Command* command : Command::getShellCommands()) {
+            commandNames << command->name;
+        }
+        commandNames << QString("quit");
     }
 
     if (state == 0) {
@@ -531,10 +523,8 @@ void printHelp()
 {
 
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-    for (Command* command : Command::getCommands()) {
-        if (!command->isShellCommand()) {
-            outputTextStream << command->getDescriptionLine();
-        }
+    for (Command* command : Command::getShellCommands()) {
+        outputTextStream << command->getDescriptionLine();
     }
 
     //outputTextStream << "clip\t\tCopy an entry's password to the clipboard.\n";
