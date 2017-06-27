@@ -155,6 +155,7 @@ char* commandNameCompletion(const char* text, int state)
             commandNames << command->name;
         }
         commandNames << QString("quit");
+        commandNames << QString("help");
     }
 
     if (state == 0) {
