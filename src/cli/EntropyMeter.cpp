@@ -29,6 +29,16 @@
 #endif
 #endif
 
+EntropyMeter::EntropyMeter()
+{
+    this->name = QString("entropy-meter");
+    this->description = QString("Calculate password entropy.");
+}
+
+EntropyMeter::~EntropyMeter()
+{
+}
+
 static void calculate(const char *pwd, int advanced)
 {
     double e;
@@ -127,4 +137,9 @@ int EntropyMeter::execute(int argc, char **argv)
         }
     }
     return 0;
+}
+
+int EntropyMeter::executeFromShell(Database*, QStringList)
+{
+    return EXIT_FAILURE;
 }

@@ -23,9 +23,6 @@
 #include <QTextStream>
 
 #include <cli/Command.h>
-#include <cli/Create.h>
-#include <cli/EntropyMeter.h>
-#include <cli/Extract.h>
 #include <cli/List.h>
 #include <cli/Merge.h>
 #include <cli/Shell.h>
@@ -61,8 +58,6 @@ int main(int argc, char** argv)
     for (Command* command : Command::getCommands()) {
         description = description.append(command->getDescriptionLine());
     }
-    description = description.append(QString("\n  extract\tExtract and print the content of a database."));
-    description = description.append(QString("\n  entropy-meter\tCalculate password entropy."));
     description = description.append(QString("\n  list\t\tList database entries."));
     description = description.append(QString("\n  merge\t\tMerge two databases."));
     description = description.append(QString("\n  shell\t\tLaunch the interactive shell."));
@@ -102,16 +97,6 @@ int main(int argc, char** argv)
         --argc;
         argv[0] = const_cast<char*>(qPrintable("keepassxc-cli " + commandName));
         exitCode = command->execute(argc, argv);
-    } else if (commandName == "entropy-meter") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli entropy-meter");
-        exitCode = EntropyMeter::execute(argc, argv);
-    } else if (commandName == "extract") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli extract");
-        exitCode = Extract::execute(argc, argv);
     } else if (commandName == "list") {
         ++argv;
         --argc;

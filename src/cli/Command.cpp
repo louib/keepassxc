@@ -24,6 +24,8 @@
 
 #include "Clip.h"
 #include "Create.h"
+#include "EntropyMeter.h"
+#include "Extract.h"
 
 QMap<QString, Command*> commands;
 
@@ -54,27 +56,27 @@ QString Command::getDescriptionLine()
 
 }
 
-
-Command* Command::getCommand(QString commandName)
+void populateCommands()
 {
-
     if (commands.isEmpty()) {
         commands.insert(QString("clip"), new Clip());
         commands.insert(QString("create"), new Create());
+        commands.insert(QString("entropy-meter"), new EntropyMeter());
+        commands.insert(QString("extract"), new Extract());
     }
+}
 
+Command* Command::getCommand(QString commandName)
+{
+    populateCommands();
     if (commands.contains(commandName)) {
         return commands[commandName];
     }
-
     return nullptr;
-
 }
 
 QList<Command*> Command::getCommands()
 {
-
-    Command::getCommand("invalid");
+    populateCommands();
     return commands.values();
-
 }

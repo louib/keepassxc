@@ -18,10 +18,15 @@
 #ifndef KEEPASSXC_ENTROPYMETER_H
 #define KEEPASSXC_ENTROPYMETER_H
 
-class EntropyMeter
+#include "Command.h"
+
+class EntropyMeter : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    EntropyMeter();
+    ~EntropyMeter();
+    int execute(int argc, char** argv);
+    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_ENTROPYMETER_H

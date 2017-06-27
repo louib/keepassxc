@@ -18,10 +18,15 @@
 #ifndef KEEPASSXC_EXTRACT_H
 #define KEEPASSXC_EXTRACT_H
 
-class Extract
+#include "Command.h"
+
+class Extract : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    Extract();
+    ~Extract();
+    int execute(int argc, char** argv);
+    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_EXTRACT_H

@@ -31,6 +31,16 @@
 #include "keys/CompositeKey.h"
 #include "cli/PasswordInput.h"
 
+Extract::Extract()
+{
+    this->name = QString("extract");
+    this->description = QString("Extract and print the content of a database.");
+}
+
+Extract::~Extract()
+{
+}
+
 int Extract::execute(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
@@ -83,4 +93,9 @@ int Extract::execute(int argc, char** argv)
     out << xmlData.constData() << "\n";
 
     return EXIT_SUCCESS;
+}
+
+int Extract::executeFromShell(Database*, QStringList)
+{
+    return EXIT_FAILURE;
 }
