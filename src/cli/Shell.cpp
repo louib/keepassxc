@@ -64,7 +64,6 @@ char* commandArgumentsCompletion(const char*, int state)
         firstArguments.insert("mv", "entry");
         firstArguments.insert("show", "entry");
         firstArguments.insert("clip", "entry");
-        firstArguments.insert("regen", "entry");
         firstArguments.insert("edit", "entry");
         firstArguments.insert("rmdir", "group");
         firstArguments.insert("mkdir", "group");
@@ -194,67 +193,6 @@ char** keepassxc_completion(const char* text, int start, int)
     return nullptr;
 }
 #endif
-
-bool editEntry(QString entryPath, QString fieldName)
-{
-
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-
-    Entry* entry = database->rootGroup()->findEntryByPath(entryPath);
-    if (!entry) {
-        qCritical("Entry %s does not exist!", qPrintable(entryPath));
-        return false;
-    }
-
-    if (fieldName == "url") {
-
-        outputTextStream << "enter new url: ";
-        outputTextStream.flush();
-        QString url = inputTextStream.readLine();
-
-        entry->beginUpdate();
-        entry->setUrl(url);
-        entry->endUpdate();
-
-    } else if (fieldName == "username") {
-
-        outputTextStream << "enter new username: ";
-        outputTextStream.flush();
-        QString username = inputTextStream.readLine();
-
-        entry->beginUpdate();
-        entry->setUsername(username);
-        entry->endUpdate();
-
-    } else if (fieldName == "password") {
-
-        outputTextStream << "enter new password: ";
-        outputTextStream.flush();
-        QString password = Utils::getPassword();
-
-        outputTextStream << "confirm new password: ";
-        outputTextStream.flush();
-        QString passwordConfirmation = Utils::getPassword();
-
-        if (password != passwordConfirmation) {
-            qCritical("Passwords do not match.");
-            return false;
-        }
-
-        entry->beginUpdate();
-        entry->setPassword(password);
-        entry->endUpdate();
-
-    } else {
-        qCritical("Invalid field name %s.", qPrintable(fieldName));
-        return false;
-    }
-
-    outputTextStream << "Successfully edited entry!\n";
-    return true;
-
-}
 
 int clipText(QString text)
 {
@@ -493,12 +431,6 @@ int Shell::execute(int argc, char** argv)
           command->executeFromShell(database, args.at(0), arguments);
       } else if (commandName == QString("help")) {
           printHelp();
-      } else if (commandName == QString("edit")) {
-          if (arguments.length() != 3) {
-              out << "Usage: edit entry field_name\n";
-              continue;
-          }
-          databaseModified |= editEntry(arguments.at(1), arguments.at(2));
       } else if (commandName == QString("clip")) {
           if (arguments.length() != 2) {
               out << "Usage: clip entry\n";
