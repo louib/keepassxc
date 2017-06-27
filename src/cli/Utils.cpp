@@ -94,3 +94,16 @@ bool Utils::askYesNoQuestion(QString question, bool askContinue)
     return false;
 
 }
+
+void Utils::createRecycleBin(Database* database)
+{
+
+    Group* recycleBin = database->metadata()->recycleBin();
+    if (recycleBin == nullptr) {
+        database->createRecycleBin();
+        database->metadata()->recycleBin()->setName("trash");
+    } else if (recycleBin->name() != "trash") {
+        recycleBin->setName("trash");
+    }
+
+}

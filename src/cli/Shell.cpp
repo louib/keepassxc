@@ -419,49 +419,6 @@ bool addGroup(QString groupPath)
 }
 
 
-void createRecycleBin()
-{
-
-    Group* recycleBin = database->metadata()->recycleBin();
-    if (recycleBin == nullptr) {
-        database->createRecycleBin();
-        database->metadata()->recycleBin()->setName("trash");
-    } else if (recycleBin->name() != "trash") {
-        recycleBin->setName("trash");
-    }
-
-}
-
-bool removeEntry(QString entryPath)
-{
-
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-    Entry* entry = database->rootGroup()->findEntry(entryPath);
-    if (!entry) {
-        qCritical("Entry %s not found.", qPrintable(entryPath));
-        return false;
-    }
-
-    createRecycleBin();
-
-    QString entryTitle = entry->title();
-    if (Tools::hasChild(database->metadata()->recycleBin(), entry) || !database->metadata()->recycleBinEnabled()) {
-        if (!Utils::askYesNoQuestion("You are about to remove entry " + entryTitle + " permanently.", true)) {
-            return false;
-        }
-        delete entry;
-        outputTextStream << "Successfully removed entry " << entryTitle << ".\n";
-        outputTextStream.flush();
-    } else {
-        database->recycleEntry(entry);
-        outputTextStream << "Successfully recycled entry " << entryTitle << ".\n";
-        outputTextStream.flush();
-    };
-
-    return true;
-
-}
-
 bool removeGroup(QString groupPath)
 {
 
@@ -472,7 +429,7 @@ bool removeGroup(QString groupPath)
         return false;
     }
 
-    createRecycleBin();
+    Utils::createRecycleBin(database);
     QString groupName = group->name();
     bool inRecycleBin = Tools::hasChild(database->metadata()->recycleBin(), group);
     bool isRecycleBin = (group == database->metadata()->recycleBin());
@@ -668,12 +625,6 @@ int Shell::execute(int argc, char** argv)
               continue;
           }
           databaseModified |= removeGroup(arguments.at(0));
-      } else if (commandName == QString("rm")) {
-          if (arguments.length() != 1) {
-              out << "Usage: rm entry\n";
-              continue;
-          }
-          databaseModified |= removeEntry(arguments.at(0));
       } else if (commandName == QString("mv")) {
           if (arguments.length() != 3) {
               out << "Usage: mv entry|group group\n";

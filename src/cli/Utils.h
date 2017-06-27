@@ -20,6 +20,10 @@
 
 #include <QtCore/qglobal.h>
 
+#include "core/Database.h"
+#include "core/Group.h"
+#include "core/Metadata.h"
+
 class Utils
 {
 public:
@@ -27,6 +31,7 @@ public:
     static void setStdinEcho(bool enable);
     static QString getPassword();
     static bool askYesNoQuestion(QString question, bool askContinue = false);
+    static void createRecycleBin(Database* database);
 };
 
 #endif // KEEPASSXC_UTILS_H

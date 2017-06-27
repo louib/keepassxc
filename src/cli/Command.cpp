@@ -29,6 +29,7 @@
 #include "Extract.h"
 #include "List.h"
 #include "Merge.h"
+#include "Remove.h"
 #include "Show.h"
 #include "Shell.h"
 
@@ -76,6 +77,7 @@ void populateCommands()
         commands.insert(QString("extract"), new Extract());
         commands.insert(QString("list"), new List());
         commands.insert(QString("merge"), new Merge());
+        commands.insert(QString("rm"), new Remove());
         commands.insert(QString("shell"), new Shell());
         commands.insert(QString("show"), new Show());
     }
