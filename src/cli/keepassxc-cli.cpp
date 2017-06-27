@@ -61,7 +61,6 @@ int main(int argc, char** argv)
     for (Command* command : Command::getCommands()) {
         description = description.append(command->getDescriptionLine());
     }
-    description = description.append(QString("\n  create\tCreate a new database."));
     description = description.append(QString("\n  extract\tExtract and print the content of a database."));
     description = description.append(QString("\n  entropy-meter\tCalculate password entropy."));
     description = description.append(QString("\n  list\t\tList database entries."));
@@ -103,11 +102,6 @@ int main(int argc, char** argv)
         --argc;
         argv[0] = const_cast<char*>(qPrintable("keepassxc-cli " + commandName));
         exitCode = command->execute(argc, argv);
-    } else if (commandName == "create") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli create");
-        exitCode = Create::execute(argc, argv);
     } else if (commandName == "entropy-meter") {
         ++argv;
         --argc;

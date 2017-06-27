@@ -33,6 +33,17 @@
 #include "core/Metadata.h"
 #include "cli/PasswordInput.h"
 
+Create::Create()
+{
+    this->name = QString("create");
+    this->description = QString("Create a new database");
+}
+
+Create::~Create()
+{
+
+}
+
 int Create::execute(int argc, char** argv)
 {
 
@@ -90,4 +101,9 @@ int Create::execute(int argc, char** argv)
     outputTextStream << "Successfully created new KeePassXC database.\n";
     outputTextStream.flush();
     return EXIT_SUCCESS;
+}
+
+int Create::executeFromShell(Database*, QStringList)
+{
+    return EXIT_FAILURE;
 }

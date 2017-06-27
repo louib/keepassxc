@@ -95,6 +95,5 @@ int Clip::execute(int argc, char** argv)
 
 int Clip::executeFromShell(Database*, QStringList)
 {
-    return EXIT_SUCCESS;
+    return EXIT_FAILURE;
 }
-

@@ -18,10 +18,15 @@
 #ifndef KEEPASSXC_CREATE_H
 #define KEEPASSXC_CREATE_H
 
-class Create
+#include "Command.h"
+
+class Create : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    Create();
+    ~Create();
+    int execute(int argc, char** argv);
+    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_CREATE_H

@@ -23,6 +23,7 @@
 #include "Command.h"
 
 #include "Clip.h"
+#include "Create.h"
 
 QMap<QString, Command*> commands;
 
@@ -59,6 +60,7 @@ Command* Command::getCommand(QString commandName)
 
     if (commands.isEmpty()) {
         commands.insert(QString("clip"), new Clip());
+        commands.insert(QString("create"), new Create());
     }
 
     if (commands.contains(commandName)) {
