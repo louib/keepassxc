@@ -29,7 +29,7 @@ class Command
 public:
     virtual ~Command();
     virtual int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QString databasePath, QStringList arguments);
+    virtual int executeFromShell(Database* database, QString databasePath, QStringList arguments);
     QString name;
     QString description;
     QString shellUsage;

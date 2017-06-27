@@ -707,8 +707,3 @@ int Shell::execute(int argc, char** argv)
     delete database;
     return EXIT_SUCCESS;
 }
-
-int Shell::executeFromShell(Database*, QStringList)
-{
-    return EXIT_FAILURE;
-}

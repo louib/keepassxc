@@ -72,7 +72,7 @@ int Show::execute(int argc, char** argv)
     return this->showEntry(db, args.at(1));
 }
 
-int Show::executeFromShell(Database* database, QStringList arguments)
+int Show::executeFromShell(Database* database, QString, QStringList arguments)
 {
 
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);

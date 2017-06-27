@@ -28,7 +28,7 @@ public:
     Show();
     ~Show();
     int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
+    int executeFromShell(Database* database, QString databasePath, QStringList arguments);
     int showEntry(Database* database, QString entryPath);
 };
 

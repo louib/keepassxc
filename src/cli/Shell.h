@@ -26,7 +26,6 @@ public:
     Shell();
     ~Shell();
     int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_SHELL_H
