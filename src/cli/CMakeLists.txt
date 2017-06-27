@@ -26,6 +26,8 @@ set(cli_SOURCES
     EntropyMeter.h
     Extract.cpp
     Extract.h
+    Generate.cpp
+    Generate.h
     List.cpp
     List.h
     Merge.cpp

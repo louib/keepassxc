@@ -336,68 +336,6 @@ bool clipEntry(QString entryPath)
 
 }
 
-bool addEntry(QString entryPath, bool generate = false, int passwordLength = 20)
-{
-
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-
-    Entry* entry = database->rootGroup()->findEntryByPath(entryPath);
-    if (entry) {
-        qCritical("Entry %s already exists!", qPrintable(entryPath));
-        return false;
-    }
-
-    entry = database->rootGroup()->addEntryWithPath(entryPath);
-    if (!entry) {
-        qCritical("Could not create entry with path %s.", qPrintable(entryPath));
-        return false;
-    }
-
-    outputTextStream << "username: ";
-    outputTextStream.flush();
-    QString username = inputTextStream.readLine();
-
-    QString password;
-    if (generate) {
-        PasswordGenerator passwordGenerator;
-        passwordGenerator.setLength(passwordLength);
-        passwordGenerator.setCharClasses(PasswordGenerator::LowerLetters | PasswordGenerator::UpperLetters |
-                                         PasswordGenerator::Numbers | PasswordGenerator::SpecialCharacters);
-
-        password = passwordGenerator.generatePassword();
-
-    } else {
-
-        outputTextStream << "password: ";
-        outputTextStream.flush();
-        password = Utils::getPassword();
-
-        outputTextStream << "  repeat: ";
-        outputTextStream.flush();
-        QString passwordConfirmation = Utils::getPassword();
-
-        if (password != passwordConfirmation) {
-            qCritical("Passwords do not match.");
-            return false;
-        }
-
-    }
-
-    outputTextStream << "     URL: ";
-    outputTextStream.flush();
-    QString url = inputTextStream.readLine();
-
-    entry->setPassword(password);
-    entry->setUsername(username);
-    entry->setUrl(url);
-
-    outputTextStream << "Successfully added new entry!\n";
-    outputTextStream.flush();
-    return true;
-
-}
-
 bool addGroup(QString groupPath)
 {
 
@@ -599,16 +537,6 @@ int Shell::execute(int argc, char** argv)
               continue;
           }
           clipEntry(arguments.at(1));
-      } else if (commandName == QString("gen")) {
-          if (arguments.length() < 2) {
-              out << "Usage: gen entry [password_length]\n";
-              continue;
-          }
-          int passwordLength = 20;
-          if (arguments.length() == 3 && arguments.at(2).toInt()) {
-              passwordLength = arguments.at(2).toInt();
-          }
-          databaseModified |= addEntry(arguments.at(1), true, passwordLength);
       } else if (commandName == QString("regen")) {
           if (arguments.length() < 2) {
               out << "Usage: regen entry [password_length]\n";
