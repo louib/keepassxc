@@ -22,6 +22,7 @@
 
 #include "Command.h"
 
+#include "Add.h"
 #include "Clip.h"
 #include "Create.h"
 #include "EntropyMeter.h"
@@ -63,6 +64,7 @@ QString Command::getDescriptionLine()
 void populateCommands()
 {
     if (commands.isEmpty()) {
+        commands.insert(QString("add"), new Add());
         commands.insert(QString("clip"), new Clip());
         commands.insert(QString("create"), new Create());
         commands.insert(QString("entropy-meter"), new EntropyMeter());

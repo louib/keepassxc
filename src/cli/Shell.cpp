@@ -550,17 +550,23 @@ void printHelp()
 {
 
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-    outputTextStream << "add\t\tAdd an entry to the database.\n";
-    outputTextStream << "clip\t\tCopy an entry's password to the clipboard.\n";
-    outputTextStream << "gen\t\tAdd an entry with generated password to the database.\n";
-    outputTextStream << "regen\t\tGenerate a new password for an entry.\n";
-    outputTextStream << "rm\t\tRemove an entry from the database.\n";
-    outputTextStream << "mv\t\tMove an entry of a directory.\n";
-    outputTextStream << "rmdir\t\tRemove a directory from the database.\n";
-    outputTextStream << "mkdir\t\tCreate a directory in the database.\n";
-    outputTextStream << "save\t\tSave the database.\n";
-    outputTextStream << "show\t\tShow an entry from the database.\n";
-    outputTextStream << "help\t\tShow the available commands.\n";
+    for (Command* command : Command::getCommands()) {
+        if (!command->shellUsage.isEmpty()) {
+            outputTextStream << command->getDescriptionLine();
+        }
+    }
+
+    //outputTextStream << "add\t\tAdd an entry to the database.\n";
+    //outputTextStream << "clip\t\tCopy an entry's password to the clipboard.\n";
+    //outputTextStream << "gen\t\tAdd an entry with generated password to the database.\n";
+    //outputTextStream << "regen\t\tGenerate a new password for an entry.\n";
+    //outputTextStream << "rm\t\tRemove an entry from the database.\n";
+    //outputTextStream << "mv\t\tMove an entry of a directory.\n";
+    //outputTextStream << "rmdir\t\tRemove a directory from the database.\n";
+    //outputTextStream << "mkdir\t\tCreate a directory in the database.\n";
+    //outputTextStream << "save\t\tSave the database.\n";
+    //outputTextStream << "show\t\tShow an entry from the database.\n";
+    //outputTextStream << "help\t\tShow the available commands.\n";
     outputTextStream.flush();
 
 }
@@ -653,28 +659,9 @@ int Shell::execute(int argc, char** argv)
       Command* command = Command::getCommand(commandName);
       if (command && !command->shellUsage.isEmpty()) {
           command->executeFromShell(database, arguments);
-      } else if (commandName == QString("ls")) {
-          if (arguments.length() > 2) {
-              out << "Usage: ls [group]\n";
-              continue;
-          }
-          Group* group = database->rootGroup();
-          if (arguments.length() == 2) {
-              group = database->rootGroup()->findGroupByPath(arguments.at(1));
-          }
-          if (group == nullptr) {
-              qCritical("Group %s not found.", qPrintable(arguments.at(1)));
-              continue;
-          }
-          out << group->print();
+          database->saveToFile(args.at(0));
       } else if (commandName == QString("help")) {
           printHelp();
-      } else if (commandName == QString("add")) {
-          if (arguments.length() != 2) {
-              out << "Usage: add entry\n";
-              continue;
-          }
-          databaseModified |= addEntry(arguments.at(1));
       } else if (commandName == QString("edit")) {
           if (arguments.length() != 3) {
               out << "Usage: edit entry field_name\n";
