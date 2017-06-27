@@ -532,12 +532,11 @@ void printHelp()
 
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
     for (Command* command : Command::getCommands()) {
-        if (!command->shellUsage.isEmpty()) {
+        if (!command->isShellCommand()) {
             outputTextStream << command->getDescriptionLine();
         }
     }
 
-    //outputTextStream << "add\t\tAdd an entry to the database.\n";
     //outputTextStream << "clip\t\tCopy an entry's password to the clipboard.\n";
     //outputTextStream << "gen\t\tAdd an entry with generated password to the database.\n";
     //outputTextStream << "regen\t\tGenerate a new password for an entry.\n";
@@ -637,7 +636,7 @@ int Shell::execute(int argc, char** argv)
       QString commandName = arguments.takeFirst();
 
       Command* command = Command::getCommand(commandName);
-      if (command && !command->shellUsage.isEmpty()) {
+      if (command && command->isShellCommand()) {
           command->executeFromShell(database, args.at(0), arguments);
       } else if (commandName == QString("help")) {
           printHelp();
