@@ -27,7 +27,6 @@
 #include "Create.h"
 #include "EntropyMeter.h"
 #include "Extract.h"
-#include "Generate.h"
 #include "List.h"
 #include "Merge.h"
 #include "Remove.h"
@@ -76,7 +75,6 @@ void populateCommands()
         commands.insert(QString("create"), new Create());
         commands.insert(QString("entropy-meter"), new EntropyMeter());
         commands.insert(QString("extract"), new Extract());
-        commands.insert(QString("gen"), new Generate());
         commands.insert(QString("list"), new List());
         commands.insert(QString("merge"), new Merge());
         commands.insert(QString("rm"), new Remove());
