@@ -23,10 +23,12 @@
 #include <QTextStream>
 
 #include <cli/Clip.h>
+#include <cli/Create.h>
 #include <cli/EntropyMeter.h>
 #include <cli/Extract.h>
 #include <cli/List.h>
 #include <cli/Merge.h>
+#include <cli/Shell.h>
 #include <cli/Show.h>
 
 #include "config-keepassx.h"
@@ -57,10 +59,12 @@ int main(int argc, char** argv)
     QString description("KeePassXC command line interface.");
     description = description.append(QString("\n\nAvailable commands:"));
     description = description.append(QString("\n  clip\t\tCopy a password to the clipboard."));
+    description = description.append(QString("\n  create\tCreate a new database."));
     description = description.append(QString("\n  extract\tExtract and print the content of a database."));
     description = description.append(QString("\n  entropy-meter\tCalculate password entropy."));
     description = description.append(QString("\n  list\t\tList database entries."));
     description = description.append(QString("\n  merge\t\tMerge two databases."));
+    description = description.append(QString("\n  shell\t\tLaunch the interactive shell."));
     description = description.append(QString("\n  show\t\tShow a password."));
     parser.setApplicationDescription(QCoreApplication::translate("main", qPrintable(description)));
 
@@ -96,6 +100,11 @@ int main(int argc, char** argv)
         --argc;
         argv[0] = const_cast<char*>("keepassxc-cli clip");
         exitCode = Clip::execute(argc, argv);
+    } else if (commandName == "create") {
+        ++argv;
+        --argc;
+        argv[0] = const_cast<char*>("keepassxc-cli create");
+        exitCode = Create::execute(argc, argv);
     } else if (commandName == "entropy-meter") {
         ++argv;
         --argc;
@@ -116,6 +125,11 @@ int main(int argc, char** argv)
         --argc;
         argv[0] = const_cast<char*>("keepassxc-cli merge");
         exitCode = Merge::execute(argc, argv);
+    } else if (commandName == "shell") {
+        ++argv;
+        --argc;
+        argv[0] = const_cast<char*>("keepassxc-cli shell");
+        exitCode = Shell::execute(argc, argv);
     } else if (commandName == "show") {
         ++argv;
         --argc;

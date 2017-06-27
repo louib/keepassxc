@@ -401,7 +401,7 @@ Database* Database::unlockFromStdin(QString databaseFilename)
 {
     QTextStream outputTextStream(stdout);
 
-    outputTextStream << QString("Insert password to unlock " + databaseFilename + "\n> ");
+    outputTextStream << QString("Insert password to unlock " + databaseFilename + ": ");
     outputTextStream.flush();
 
     QString line = PasswordInput::getPassword();
