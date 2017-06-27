@@ -33,6 +33,17 @@
 #include "keys/CompositeKey.h"
 
 
+List::List()
+{
+    this->name = QString("list");
+    this->shellUsage = QString("list [group_path]");
+    this->description = QString("List database entries.");
+}
+
+List::~List()
+{
+}
+
 int List::execute(int argc, char** argv)
 {
     QStringList arguments;
@@ -91,4 +102,9 @@ int List::execute(int argc, char** argv)
     out << group->print(parser.isSet("print-uuids"));
     out.flush();
     return EXIT_SUCCESS;
+}
+
+int List::executeFromShell(Database* database, QStringList arguments)
+{
+    return EXIT_FAILURE;
 }
