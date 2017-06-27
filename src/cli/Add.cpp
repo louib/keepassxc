@@ -110,7 +110,7 @@ int Add::addEntry(Database* database, QString databasePath, QString entryPath)
     QString password;
     if (Utils::askYesNoQuestion("Do you want to generate a new password?")) {
         PasswordGenerator passwordGenerator;
-        passwordGenerator.setLength(20);
+        passwordGenerator.setLength(PasswordGenerator::DefaultLength);
         passwordGenerator.setCharClasses(PasswordGenerator::LowerLetters | PasswordGenerator::UpperLetters |
                                          PasswordGenerator::Numbers | PasswordGenerator::SpecialCharacters);
 
