@@ -424,14 +424,10 @@ void printHelp()
     }
 
     //outputTextStream << "clip\t\tCopy an entry's password to the clipboard.\n";
-    //outputTextStream << "gen\t\tAdd an entry with generated password to the database.\n";
     //outputTextStream << "regen\t\tGenerate a new password for an entry.\n";
-    //outputTextStream << "rm\t\tRemove an entry from the database.\n";
     //outputTextStream << "mv\t\tMove an entry of a directory.\n";
     //outputTextStream << "rmdir\t\tRemove a directory from the database.\n";
     //outputTextStream << "mkdir\t\tCreate a directory in the database.\n";
-    //outputTextStream << "show\t\tShow an entry from the database.\n";
-    //outputTextStream << "help\t\tShow the available commands.\n";
     outputTextStream.flush();
 
 }
