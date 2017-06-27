@@ -28,6 +28,7 @@
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/Group.h"
+#include "core/PasswordGenerator.h"
 #include "keys/CompositeKey.h"
 #include "cli/Utils.h"
 
@@ -106,17 +107,28 @@ int Add::addEntry(Database* database, QString databasePath, QString entryPath)
     outputTextStream.flush();
     QString username = inputTextStream.readLine();
 
-    outputTextStream << "password: ";
-    outputTextStream.flush();
-    QString password = Utils::getPassword();
+    QString password;
+    if (Utils::askYesNoQuestion("Do you want to generate a new password?")) {
+        PasswordGenerator passwordGenerator;
+        passwordGenerator.setLength(20);
+        passwordGenerator.setCharClasses(PasswordGenerator::LowerLetters | PasswordGenerator::UpperLetters |
+                                         PasswordGenerator::Numbers | PasswordGenerator::SpecialCharacters);
 
-    outputTextStream << "  repeat: ";
-    outputTextStream.flush();
-    QString passwordConfirmation = Utils::getPassword();
+        password = passwordGenerator.generatePassword();
+    } else {
+        outputTextStream << "password: ";
+        outputTextStream.flush();
+        password = Utils::getPassword();
 
-    if (password != passwordConfirmation) {
-        qCritical("Passwords do not match.");
-        return EXIT_FAILURE;
+        outputTextStream << "  repeat: ";
+        outputTextStream.flush();
+        QString passwordConfirmation = Utils::getPassword();
+
+        if (password != passwordConfirmation) {
+            qCritical("Passwords do not match.");
+            return EXIT_FAILURE;
+        }
+
     }
 
     outputTextStream << "     URL: ";

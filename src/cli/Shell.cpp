@@ -195,34 +195,6 @@ char** keepassxc_completion(const char* text, int start, int)
 }
 #endif
 
-bool regenerate(QString entryPath, int passwordLength = 20)
-{
-
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-
-    Entry* entry = database->rootGroup()->findEntryByPath(entryPath);
-    if (!entry) {
-        qCritical("Entry %s does not exist!", qPrintable(entryPath));
-        return false;
-    }
-
-    PasswordGenerator passwordGenerator;
-    passwordGenerator.setLength(passwordLength);
-    passwordGenerator.setCharClasses(PasswordGenerator::LowerLetters | PasswordGenerator::UpperLetters |
-                                     PasswordGenerator::Numbers | PasswordGenerator::SpecialCharacters);
-
-    QString password = passwordGenerator.generatePassword();
-    entry->beginUpdate();
-    entry->setPassword(password);
-    entry->endUpdate();
-
-    outputTextStream << "Successfully generated new password for entry!\n";
-    outputTextStream.flush();
-    return true;
-
-}
-
 bool editEntry(QString entryPath, QString fieldName)
 {
 
@@ -424,7 +396,6 @@ void printHelp()
     }
 
     //outputTextStream << "clip\t\tCopy an entry's password to the clipboard.\n";
-    //outputTextStream << "regen\t\tGenerate a new password for an entry.\n";
     //outputTextStream << "mv\t\tMove an entry of a directory.\n";
     //outputTextStream << "rmdir\t\tRemove a directory from the database.\n";
     //outputTextStream << "mkdir\t\tCreate a directory in the database.\n";
@@ -534,16 +505,6 @@ int Shell::execute(int argc, char** argv)
               continue;
           }
           clipEntry(arguments.at(1));
-      } else if (commandName == QString("regen")) {
-          if (arguments.length() < 2) {
-              out << "Usage: regen entry [password_length]\n";
-              continue;
-          }
-          int passwordLength = 20;
-          if (arguments.length() == 3 && arguments.at(2).toInt()) {
-              passwordLength = arguments.at(2).toInt();
-          }
-          databaseModified |= regenerate(arguments.at(1), passwordLength);
       } else if (commandName == QString("rmdir")) {
           if (arguments.length() != 1) {
               out << "Usage: rm entry\n";
