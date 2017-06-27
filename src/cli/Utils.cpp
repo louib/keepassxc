@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PasswordInput.h"
+#include "Utils.h"
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -27,11 +27,7 @@
 #include <QTextStream>
 
 
-PasswordInput::PasswordInput()
-{
-}
-
-void PasswordInput::setStdinEcho(bool enable = true)
+void Utils::setStdinEcho(bool enable = true)
 {
 #ifdef Q_OS_WIN
     HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -60,7 +56,7 @@ void PasswordInput::setStdinEcho(bool enable = true)
 #endif
 }
 
-QString PasswordInput::getPassword()
+QString Utils::getPassword()
 {
     static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
     static QTextStream outputTextStream(stdout, QIODevice::WriteOnly);

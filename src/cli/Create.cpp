@@ -31,7 +31,7 @@
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
-#include "cli/PasswordInput.h"
+#include "cli/Utils.h"
 
 Create::Create()
 {
@@ -76,11 +76,11 @@ int Create::execute(int argc, char** argv)
 
     outputTextStream << "master password: ";
     outputTextStream.flush();
-    QString password = PasswordInput::getPassword();
+    QString password = Utils::getPassword();
 
     outputTextStream << "confirm password: ";
     outputTextStream.flush();
-    QString passwordConfirmation = PasswordInput::getPassword();
+    QString passwordConfirmation = Utils::getPassword();
 
     if (password != passwordConfirmation) {
         qCritical("Passwords do not match.");

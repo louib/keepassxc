@@ -29,7 +29,7 @@
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "keys/CompositeKey.h"
-#include "cli/PasswordInput.h"
+#include "cli/Utils.h"
 
 Show::Show()
 {
@@ -61,7 +61,7 @@ int Show::execute(int argc, char** argv)
     out << "Insert the database password\n> ";
     out.flush();
 
-    QString line = PasswordInput::getPassword();
+    QString line = Utils::getPassword();
     CompositeKey key = CompositeKey::readFromLine(line);
 
     Database* db = Database::openDatabaseFile(args.at(0), key);

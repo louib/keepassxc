@@ -29,7 +29,7 @@
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "core/Tools.h"
-#include "cli/PasswordInput.h"
+#include "cli/Utils.h"
 #include "keys/CompositeKey.h"
 #include "config-keepassx.h"
 
@@ -308,11 +308,11 @@ bool editEntry(QString entryPath, QString fieldName)
 
         outputTextStream << "enter new password: ";
         outputTextStream.flush();
-        QString password = PasswordInput::getPassword();
+        QString password = Utils::getPassword();
 
         outputTextStream << "confirm new password: ";
         outputTextStream.flush();
-        QString passwordConfirmation = PasswordInput::getPassword();
+        QString passwordConfirmation = Utils::getPassword();
 
         if (password != passwordConfirmation) {
             qCritical("Passwords do not match.");
@@ -421,11 +421,11 @@ bool addEntry(QString entryPath, bool generate = false, int passwordLength = 20)
 
         outputTextStream << "password: ";
         outputTextStream.flush();
-        password = PasswordInput::getPassword();
+        password = Utils::getPassword();
 
         outputTextStream << "  repeat: ";
         outputTextStream.flush();
-        QString passwordConfirmation = PasswordInput::getPassword();
+        QString passwordConfirmation = Utils::getPassword();
 
         if (password != passwordConfirmation) {
             qCritical("Passwords do not match.");

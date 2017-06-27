@@ -29,7 +29,7 @@
 #include "core/Database.h"
 #include "format/KeePass2Reader.h"
 #include "keys/CompositeKey.h"
-#include "cli/PasswordInput.h"
+#include "cli/Utils.h"
 
 Extract::Extract()
 {
@@ -60,7 +60,7 @@ int Extract::execute(int argc, char** argv)
     out << "Insert the database password\n> ";
     out.flush();
 
-    QString line = PasswordInput::getPassword();
+    QString line = Utils::getPassword();
     CompositeKey key = CompositeKey::readFromLine(line);
 
     QString databaseFilename = args.at(0);

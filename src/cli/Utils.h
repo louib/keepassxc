@@ -15,17 +15,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_PASSWORDINPUT_H
-#define KEEPASSXC_PASSWORDINPUT_H
+#ifndef KEEPASSXC_UTILS_H
+#define KEEPASSXC_UTILS_H
 
 #include <QtCore/qglobal.h>
 
-class PasswordInput
+class Utils
 {
 public:
-    PasswordInput();
+    Utils();
     static void setStdinEcho(bool enable);
     static QString getPassword();
 };
 
-#endif // KEEPASSXC_PASSWORDINPUT_H
+#endif // KEEPASSXC_UTILS_H
