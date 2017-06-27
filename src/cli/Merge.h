@@ -18,10 +18,15 @@
 #ifndef KEEPASSXC_MERGE_H
 #define KEEPASSXC_MERGE_H
 
-class Merge
+#include "Command.h"
+
+class Merge : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    Merge();
+    ~Merge();
+    int execute(int argc, char** argv);
+    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_MERGE_H

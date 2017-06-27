@@ -36,12 +36,11 @@
 Create::Create()
 {
     this->name = QString("create");
-    this->description = QString("Create a new database");
+    this->description = QString("Create a new database.");
 }
 
 Create::~Create()
 {
-
 }
 
 int Create::execute(int argc, char** argv)

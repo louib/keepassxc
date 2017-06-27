@@ -27,6 +27,9 @@
 #include "EntropyMeter.h"
 #include "Extract.h"
 #include "List.h"
+#include "Merge.h"
+#include "Show.h"
+#include "Shell.h"
 
 QMap<QString, Command*> commands;
 
@@ -65,6 +68,9 @@ void populateCommands()
         commands.insert(QString("entropy-meter"), new EntropyMeter());
         commands.insert(QString("extract"), new Extract());
         commands.insert(QString("list"), new List());
+        commands.insert(QString("merge"), new Merge());
+        commands.insert(QString("shell"), new Shell());
+        commands.insert(QString("show"), new Show());
     }
 }
 

@@ -41,7 +41,6 @@ Clip::Clip()
 
 Clip::~Clip()
 {
-
 }
 
 int Clip::execute(int argc, char** argv)

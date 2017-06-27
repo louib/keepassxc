@@ -18,10 +18,15 @@
 #ifndef KEEPASSXC_SHELL_H
 #define KEEPASSXC_SHELL_H
 
-class Shell
+#include "Command.h"
+
+class Shell : public Command
 {
 public:
-    static int execute(int argc, char** argv);
+    Shell();
+    ~Shell();
+    int execute(int argc, char** argv);
+    int executeFromShell(Database* database, QStringList arguments);
 };
 
 #endif // KEEPASSXC_SHELL_H

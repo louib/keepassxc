@@ -23,9 +23,7 @@
 #include <QTextStream>
 
 #include <cli/Command.h>
-#include <cli/Merge.h>
 #include <cli/Shell.h>
-#include <cli/Show.h>
 
 #include "config-keepassx.h"
 #include "core/Tools.h"
@@ -57,12 +55,10 @@ int main(int argc, char** argv)
     for (Command* command : Command::getCommands()) {
         description = description.append(command->getDescriptionLine());
     }
-    description = description.append(QString("\n  merge\t\tMerge two databases."));
-    description = description.append(QString("\n  shell\t\tLaunch the interactive shell."));
-    description = description.append(QString("\n  show\t\tShow a password."));
     parser.setApplicationDescription(QCoreApplication::translate("main", qPrintable(description)));
 
-    parser.addPositionalArgument("command", QCoreApplication::translate("main", "Name of the command to execute."));
+    parser.addPositionalArgument("command",
+                                 QCoreApplication::translate("main", "Name of the command to execute."));
 
     parser.addHelpOption();
     parser.addVersionOption();
@@ -95,21 +91,6 @@ int main(int argc, char** argv)
         --argc;
         argv[0] = const_cast<char*>(qPrintable("keepassxc-cli " + commandName));
         exitCode = command->execute(argc, argv);
-    } else if (commandName == "merge") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli merge");
-        exitCode = Merge::execute(argc, argv);
-    } else if (commandName == "shell") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli shell");
-        exitCode = Shell::execute(argc, argv);
-    } else if (commandName == "show") {
-        ++argv;
-        --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli show");
-        exitCode = Show::execute(argc, argv);
     } else {
         qCritical("Invalid command %s.", qPrintable(commandName));
         QCoreApplication app(argc, argv);

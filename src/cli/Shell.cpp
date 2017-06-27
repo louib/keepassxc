@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Shell.h"
+#include "Command.h"
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
@@ -37,6 +38,15 @@
 #include <readline/history.h>
 #endif
 
+Shell::Shell()
+{
+    this->name = QString("shell");
+    this->description = QString("Launch the interactive shell.");
+}
+
+Shell::~Shell()
+{
+}
 
 Database* database;
 
@@ -458,25 +468,6 @@ bool addGroup(QString groupPath)
     return true;
 }
 
-void showEntry(QString entryPath)
-{
-
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-
-    Entry* entry = database->rootGroup()->findEntry(entryPath);
-    if (!entry) {
-        qCritical("Could not find entry with path %s.", qPrintable(entryPath));
-        return;
-    }
-
-    outputTextStream << "   title: " << entry->title() << "\n";
-    outputTextStream << "username: " << entry->username() << "\n";
-    outputTextStream << "password: " << entry->password() << "\n";
-    outputTextStream << "     URL: " << entry->url() << "\n";
-    outputTextStream.flush();
-
-}
 
 void createRecycleBin()
 {
@@ -678,10 +669,14 @@ int Shell::execute(int argc, char** argv)
           continue;
       }
 
-      QStringList arguments = line.trimmed().split(QRegExp(" "));
-      QString commandName = arguments.at(0);
 
-      if (commandName == QString("ls")) {
+      QStringList arguments = line.trimmed().split(QRegExp(" "));
+      QString commandName = arguments.takeFirst();
+
+      Command* command = Command::getCommand(commandName);
+      if (command && !command->shellUsage.isEmpty()) {
+          command->executeFromShell(database, arguments);
+      } else if (commandName == QString("ls")) {
           if (arguments.length() > 2) {
               out << "Usage: ls [group]\n";
               continue;
@@ -735,12 +730,6 @@ int Shell::execute(int argc, char** argv)
               passwordLength = arguments.at(2).toInt();
           }
           databaseModified |= regenerate(arguments.at(1), passwordLength);
-      } else if (commandName == QString("show")) {
-          if (arguments.length() != 2) {
-              out << "Usage: show entry\n";
-              continue;
-          }
-          showEntry(arguments.at(1));
       } else if (commandName == QString("rmdir")) {
           if (arguments.length() != 2) {
               out << "Usage: rm entry\n";
@@ -790,4 +779,9 @@ int Shell::execute(int argc, char** argv)
 
     delete database;
     return EXIT_SUCCESS;
+}
+
+int Shell::executeFromShell(Database*, QStringList)
+{
+    return EXIT_FAILURE;
 }

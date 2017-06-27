@@ -31,6 +31,17 @@
 #include "keys/CompositeKey.h"
 #include "cli/PasswordInput.h"
 
+Show::Show()
+{
+    this->name = QString("show");
+    this->shellUsage = QString("show entry_path");
+    this->description = QString("Show an entry's information.");
+}
+
+Show::~Show()
+{
+}
+
 int Show::execute(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
@@ -58,13 +69,38 @@ int Show::execute(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    QString entryId = args.at(1);
-    Entry* entry = db->rootGroup()->findEntry(entryId);
+    return this->showEntry(db, args.at(1));
+}
+
+int Show::executeFromShell(Database* database, QStringList arguments)
+{
+
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    if (arguments.size() != 1) {
+        outputTextStream << this->shellUsage << "\n";
+        outputTextStream.flush();
+        return EXIT_FAILURE;
+    }
+    return this->showEntry(database, arguments.at(0));
+}
+
+int Show::showEntry(Database* database, QString entryPath)
+{
+
+    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+
+    Entry* entry = database->rootGroup()->findEntry(entryPath);
     if (!entry) {
-        qCritical("Entry %s not found.", qPrintable(entryId));
+        qCritical("Could not find entry with path %s.", qPrintable(entryPath));
         return EXIT_FAILURE;
     }
 
-    out << entry->password() << "\n";
+    outputTextStream << "   title: " << entry->title() << "\n";
+    outputTextStream << "username: " << entry->username() << "\n";
+    outputTextStream << "password: " << entry->password() << "\n";
+    outputTextStream << "     URL: " << entry->url() << "\n";
+    outputTextStream.flush();
     return EXIT_SUCCESS;
+
 }
