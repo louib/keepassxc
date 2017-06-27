@@ -327,18 +327,11 @@ bool move(QString groupEntryPath, QString destinationPath)
 
 void printHelp()
 {
-
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
     for (Command* command : Command::getShellCommands()) {
         outputTextStream << command->getDescriptionLine();
     }
-
-    //outputTextStream << "clip\t\tCopy an entry's password to the clipboard.\n";
-    //outputTextStream << "mv\t\tMove an entry of a directory.\n";
-    //outputTextStream << "rmdir\t\tRemove a directory from the database.\n";
-    //outputTextStream << "mkdir\t\tCreate a directory in the database.\n";
     outputTextStream.flush();
-
 }
 
 QString getLine(QString prompt)
@@ -393,8 +386,6 @@ int Shell::execute(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    bool databaseModified = false;
-
     out << "KeePassXC " << KEEPASSX_VERSION << " interactive shell\n";
     if (!database->metadata()->name().isNull()) {
         out << "Using database " << database->metadata()->name() << '\n';
@@ -412,12 +403,7 @@ int Shell::execute(int argc, char** argv)
     while (true) {
 
       out.flush();
-      QString line;
-      if (databaseModified) {
-          line = getLine("KeePassXC*> ");
-      } else {
-          line = getLine("KeePassXC> ");
-      }
+      QString line = getLine("KeePassXC> ");
       if (line.isEmpty()) {
           continue;
       }
@@ -442,19 +428,19 @@ int Shell::execute(int argc, char** argv)
               out << "Usage: rm entry\n";
               continue;
           }
-          databaseModified |= removeGroup(arguments.at(0));
+          removeGroup(arguments.at(0));
       } else if (commandName == QString("mv")) {
           if (arguments.length() != 3) {
               out << "Usage: mv entry|group group\n";
               continue;
           }
-          databaseModified |= move(arguments.at(1), arguments.at(2));
+          move(arguments.at(1), arguments.at(2));
       } else if (commandName == QString("mkdir")) {
           if (arguments.length() != 2) {
               out << "Usage: mkdir group\n";
               continue;
           }
-          databaseModified |= addGroup(arguments.at(1));
+          addGroup(arguments.at(1));
       } else if (commandName == QString("quit")) {
           break;
       } else {
