@@ -15,17 +15,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_CLIP_H
-#define KEEPASSXC_CLIP_H
+#ifndef KEEPASSXC_COMMAND_H
+#define KEEPASSXC_COMMAND_H
 
-#include "Command.h"
+#include <QList>
+#include <QString>
+#include <QStringList>
 
-class Clip : public Command
+#include "core/Database.h"
+
+class Command
 {
 public:
-    Clip();
-    int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
+    ~Command();
+    virtual int execute(int argc, char** argv);
+    virtual int executeFromShell(Database* database, QStringList arguments);
+    QString name;
+    QString description;
+    QString shellUsage;
+    static QList<Command*> getCommands();
+    static Command* getCommand(QString commandName);
 };
 
-#endif // KEEPASSXC_CLIP_H
+#endif // KEEPASSXC_COMMAND_H

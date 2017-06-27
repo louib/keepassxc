@@ -16,6 +16,8 @@
 set(cli_SOURCES
     Clip.cpp
     Clip.h
+    Command.cpp
+    Command.h
     Create.cpp
     Create.h
     EntropyMeter.cpp

@@ -32,6 +32,13 @@
 #include "core/Group.h"
 #include "gui/Clipboard.h"
 
+Clip::Clip()
+{
+    this->name = QString("clip");
+    this->shellUsage = QString("clip entry_path [clip_clear_timeout]");
+    this->description = QString("Copy an entry's password to the clipboard.");
+}
+
 int Clip::execute(int argc, char** argv)
 {
 
@@ -80,3 +87,9 @@ int Clip::execute(int argc, char** argv)
     Clipboard::instance()->setText(entry->password());
     return EXIT_SUCCESS;
 }
+
+int Clip::executeFromShell(Database* database, QStringList arguments)
+{
+    return EXIT_SUCCESS;
+}
+

@@ -23,6 +23,7 @@
 #include <QTextStream>
 
 #include <cli/Clip.h>
+#include <cli/Command.h>
 #include <cli/Create.h>
 #include <cli/EntropyMeter.h>
 #include <cli/Extract.h>
@@ -99,7 +100,7 @@ int main(int argc, char** argv)
         ++argv;
         --argc;
         argv[0] = const_cast<char*>("keepassxc-cli clip");
-        exitCode = Clip::execute(argc, argv);
+        exitCode = (new Clip())->execute(argc, argv);
     } else if (commandName == "create") {
         ++argv;
         --argc;

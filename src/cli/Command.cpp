@@ -15,17 +15,39 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_CLIP_H
-#define KEEPASSXC_CLIP_H
+#include <QMap>
 
 #include "Command.h"
 
-class Clip : public Command
-{
-public:
-    Clip();
-    int execute(int argc, char** argv);
-    int executeFromShell(Database* database, QStringList arguments);
-};
+#include "Clip.h"
 
-#endif // KEEPASSXC_CLIP_H
+QMap<QString, Command*> commands;
+
+Command::~Command()
+{
+
+}
+
+
+Command* Command::getCommand(QString commandName)
+{
+
+    if (commands.isEmpty()) {
+        commands.insert(QString("clip"), new Clip());
+    }
+
+    if (commands.contains(commandName)) {
+        return commands[commandName];
+    }
+
+    return nullptr;
+
+}
+
+QList<Command*> Command::getCommands()
+{
+
+    Command::getCommand("invalid");
+    return commands.values();
+
+}
