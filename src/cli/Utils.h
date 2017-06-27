@@ -26,6 +26,7 @@ public:
     Utils();
     static void setStdinEcho(bool enable);
     static QString getPassword();
+    static bool askYesNoQuestion(QString question, bool askContinue = false);
 };
 
 #endif // KEEPASSXC_UTILS_H

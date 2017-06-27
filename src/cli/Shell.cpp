@@ -50,29 +50,6 @@ Shell::~Shell()
 
 Database* database;
 
-bool askYesNoQuestion(QString question, bool askContinue = false)
-{
-
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-
-    if (askContinue) {
-        outputTextStream << question << "\n" << "Do you want to continue? [Y/n] ";
-    } else {
-        outputTextStream << question << " [Y/n] ";
-    }
-    outputTextStream.flush();
-
-    QString answer = inputTextStream.readLine();
-
-    if (answer.trimmed() == "y" || answer.trimmed() == "Y") {
-        return true;
-    }
-
-    return false;
-
-}
-
 
 #ifdef WITH_XC_READLINE
 char* commandArgumentsCompletion(const char*, int state)
@@ -496,7 +473,7 @@ bool removeEntry(QString entryPath)
 
     QString entryTitle = entry->title();
     if (Tools::hasChild(database->metadata()->recycleBin(), entry) || !database->metadata()->recycleBinEnabled()) {
-        if (!askYesNoQuestion("You are about to remove entry " + entryTitle + " permanently.", true)) {
+        if (!Utils::askYesNoQuestion("You are about to remove entry " + entryTitle + " permanently.", true)) {
             return false;
         }
         delete entry;
@@ -528,7 +505,7 @@ bool removeGroup(QString groupPath)
     bool isRecycleBin = (group == database->metadata()->recycleBin());
     bool isRecycleBinSubgroup = Tools::hasChild(group, database->metadata()->recycleBin());
     if (inRecycleBin || isRecycleBin || isRecycleBinSubgroup || !database->metadata()->recycleBinEnabled()) {
-        if (!askYesNoQuestion("You are about to remove group " + groupName + " permanently.", true)) {
+        if (!Utils::askYesNoQuestion("You are about to remove group " + groupName + " permanently.", true)) {
             return false;
         }
         delete group;
@@ -731,17 +708,17 @@ int Shell::execute(int argc, char** argv)
           }
           databaseModified |= regenerate(arguments.at(1), passwordLength);
       } else if (commandName == QString("rmdir")) {
-          if (arguments.length() != 2) {
+          if (arguments.length() != 1) {
               out << "Usage: rm entry\n";
               continue;
           }
-          databaseModified |= removeGroup(arguments.at(1));
+          databaseModified |= removeGroup(arguments.at(0));
       } else if (commandName == QString("rm")) {
-          if (arguments.length() != 2) {
+          if (arguments.length() != 1) {
               out << "Usage: rm entry\n";
               continue;
           }
-          databaseModified |= removeEntry(arguments.at(1));
+          databaseModified |= removeEntry(arguments.at(0));
       } else if (commandName == QString("mv")) {
           if (arguments.length() != 3) {
               out << "Usage: mv entry|group group\n";
@@ -758,7 +735,7 @@ int Shell::execute(int argc, char** argv)
           if (!databaseModified) {
               break;
           }
-          if (!askYesNoQuestion("The database was modified, do you want to save it?")) {
+          if (!Utils::askYesNoQuestion("The database was modified, do you want to save it?")) {
               break;
           }
           QString errorMessage = database->saveToFile(args.at(0));

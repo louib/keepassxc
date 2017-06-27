@@ -71,3 +71,26 @@ QString Utils::getPassword()
 
     return line;
 }
+
+bool Utils::askYesNoQuestion(QString question, bool askContinue)
+{
+
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
+
+    if (askContinue) {
+        outputTextStream << question << "\n" << "Do you want to continue? [Y/n] ";
+    } else {
+        outputTextStream << question << " [Y/n] ";
+    }
+    outputTextStream.flush();
+
+    QString answer = inputTextStream.readLine();
+
+    if (answer.trimmed() == "y" || answer.trimmed() == "Y") {
+        return true;
+    }
+
+    return false;
+
+}
