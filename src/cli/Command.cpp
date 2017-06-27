@@ -15,6 +15,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <stdio.h>
+
 #include <QMap>
 
 #include "Command.h"
@@ -25,6 +28,28 @@ QMap<QString, Command*> commands;
 
 Command::~Command()
 {
+}
+
+int Command::execute(int, char**)
+{
+    return EXIT_FAILURE;
+}
+
+int Command::executeFromShell(Database*, QStringList)
+{
+    return EXIT_FAILURE;
+}
+
+QString Command::getDescriptionLine()
+{
+
+    QString response = this->name;
+    QString space(" ");
+    QString spaces = space.repeated(15 - this->name.length());
+    response = response.append(spaces);
+    response = response.append(this->description);
+    response = response.append("\n");
+    return response;
 
 }
 

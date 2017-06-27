@@ -39,6 +39,11 @@ Clip::Clip()
     this->description = QString("Copy an entry's password to the clipboard.");
 }
 
+Clip::~Clip()
+{
+
+}
+
 int Clip::execute(int argc, char** argv)
 {
 
@@ -88,7 +93,7 @@ int Clip::execute(int argc, char** argv)
     return EXIT_SUCCESS;
 }
 
-int Clip::executeFromShell(Database* database, QStringList arguments)
+int Clip::executeFromShell(Database*, QStringList)
 {
     return EXIT_SUCCESS;
 }

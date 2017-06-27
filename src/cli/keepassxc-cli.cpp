@@ -22,7 +22,6 @@
 #include <QStringList>
 #include <QTextStream>
 
-#include <cli/Clip.h>
 #include <cli/Command.h>
 #include <cli/Create.h>
 #include <cli/EntropyMeter.h>
@@ -58,8 +57,10 @@ int main(int argc, char** argv)
     QCommandLineParser parser;
 
     QString description("KeePassXC command line interface.");
-    description = description.append(QString("\n\nAvailable commands:"));
-    description = description.append(QString("\n  clip\t\tCopy a password to the clipboard."));
+    description = description.append(QString("\n\nAvailable commands:\n"));
+    for (Command* command : Command::getCommands()) {
+        description = description.append(command->getDescriptionLine());
+    }
     description = description.append(QString("\n  create\tCreate a new database."));
     description = description.append(QString("\n  extract\tExtract and print the content of a database."));
     description = description.append(QString("\n  entropy-meter\tCalculate password entropy."));
@@ -95,12 +96,13 @@ int main(int argc, char** argv)
 
     int exitCode = EXIT_FAILURE;
 
-    if (commandName == "clip") {
+    Command* command = Command::getCommand(commandName);
+    if (command) {
         // Removing the first cli argument before dispatching.
         ++argv;
         --argc;
-        argv[0] = const_cast<char*>("keepassxc-cli clip");
-        exitCode = (new Clip())->execute(argc, argv);
+        argv[0] = const_cast<char*>(qPrintable("keepassxc-cli " + commandName));
+        exitCode = command->execute(argc, argv);
     } else if (commandName == "create") {
         ++argv;
         --argc;

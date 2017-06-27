@@ -24,6 +24,7 @@ class Clip : public Command
 {
 public:
     Clip();
+    ~Clip();
     int execute(int argc, char** argv);
     int executeFromShell(Database* database, QStringList arguments);
 };

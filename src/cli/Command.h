@@ -27,12 +27,13 @@
 class Command
 {
 public:
-    ~Command();
-    virtual int execute(int argc, char** argv);
-    virtual int executeFromShell(Database* database, QStringList arguments);
+    virtual ~Command();
+    virtual int execute(int, char**);
+    virtual int executeFromShell(Database*, QStringList);
     QString name;
     QString description;
     QString shellUsage;
+    QString getDescriptionLine();
     static QList<Command*> getCommands();
     static Command* getCommand(QString commandName);
 };
