@@ -27,7 +27,6 @@
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
-#include "core/Tools.h"
 #include "cli/Utils.h"
 #include "config-keepassx.h"
 
@@ -245,36 +244,6 @@ bool clipEntry(QString entryPath)
 
 }
 
-bool removeGroup(QString groupPath)
-{
-
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-    Group* group = database->rootGroup()->findGroupByPath(groupPath);
-    if (!group) {
-        qCritical("Group %s not found.", qPrintable(groupPath));
-        return false;
-    }
-
-    Utils::createRecycleBin(database);
-    QString groupName = group->name();
-    bool inRecycleBin = Tools::hasChild(database->metadata()->recycleBin(), group);
-    bool isRecycleBin = (group == database->metadata()->recycleBin());
-    bool isRecycleBinSubgroup = Tools::hasChild(group, database->metadata()->recycleBin());
-    if (inRecycleBin || isRecycleBin || isRecycleBinSubgroup || !database->metadata()->recycleBinEnabled()) {
-        if (!Utils::askYesNoQuestion("You are about to remove group " + groupName + " permanently.", true)) {
-            return false;
-        }
-        delete group;
-        outputTextStream << "Successfully removed group.\n";
-    } else {
-        outputTextStream << "Successfully recycled group " << groupName << ".\n";
-        database->recycleGroup(group);
-    }
-
-    return true;
-
-}
-
 bool move(QString groupEntryPath, QString destinationPath)
 {
 
@@ -385,7 +354,6 @@ int Shell::execute(int argc, char** argv)
           continue;
       }
 
-
       QStringList arguments = line.trimmed().split(QRegExp(" "));
       QString commandName = arguments.takeFirst();
 
@@ -400,12 +368,6 @@ int Shell::execute(int argc, char** argv)
               continue;
           }
           clipEntry(arguments.at(1));
-      } else if (commandName == QString("rmdir")) {
-          if (arguments.length() != 1) {
-              out << "Usage: rm entry\n";
-              continue;
-          }
-          removeGroup(arguments.at(0));
       } else if (commandName == QString("mv")) {
           if (arguments.length() != 3) {
               out << "Usage: mv entry|group group\n";

@@ -31,7 +31,9 @@
 #include "Extract.h"
 #include "List.h"
 #include "Merge.h"
+#include "Move.h"
 #include "Remove.h"
+#include "RemoveGroup.h"
 #include "Show.h"
 #include "Shell.h"
 
@@ -78,10 +80,12 @@ void populateCommands()
         commands.insert(QString("edit"), new Edit());
         commands.insert(QString("entropy-meter"), new EntropyMeter());
         commands.insert(QString("extract"), new Extract());
-        commands.insert(QString("list"), new List());
+        commands.insert(QString("ls"), new List());
         commands.insert(QString("merge"), new Merge());
         commands.insert(QString("mkdir"), new AddGroup());
+        commands.insert(QString("mv"), new Move());
         commands.insert(QString("rm"), new Remove());
+        commands.insert(QString("rmdir"), new RemoveGroup());
         commands.insert(QString("shell"), new Shell());
         commands.insert(QString("show"), new Show());
     }

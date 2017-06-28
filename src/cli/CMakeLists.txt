@@ -34,8 +34,12 @@ set(cli_SOURCES
     List.h
     Merge.cpp
     Merge.h
+    Move.cpp
+    Move.h
     Remove.cpp
     Remove.h
+    RemoveGroup.cpp
+    RemoveGroup.h
     Shell.cpp
     Shell.h
     Show.cpp

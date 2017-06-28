@@ -35,8 +35,8 @@
 
 List::List()
 {
-    this->name = QString("list");
-    this->shellUsage = QString("list [group_path]");
+    this->name = QString("ls");
+    this->shellUsage = QString("ls [group_path]");
     this->description = QString("List database entries.");
 }
 
