@@ -93,6 +93,7 @@ char* commandArgumentsCompletion(const char*, int state)
     QString commandName = arguments.at(0);
 
     QString currentText = arguments.last();
+    QStringList suggestions;
 
     if (arguments.size() == 2) {
 
@@ -100,51 +101,27 @@ char* commandArgumentsCompletion(const char*, int state)
             return nullptr;
         }
 
-        QStringList suggestions;
         if (firstArguments[commandName] == "entry") {
             suggestions = database->rootGroup()->getSuggestions(arguments.at(1), true);
         } else {
             suggestions = database->rootGroup()->getSuggestions(arguments.at(1), false);
         }
 
-        while (currentIndex < suggestions.size()) {
-
-            const char* suggestion = qPrintable(suggestions.at(currentIndex++));
-
-            // Each string the generator function returns as a match
-            // must be allocated with malloc();
-            char* response = static_cast<char*>(malloc(sizeof(char) * strlen(suggestion)));
-            strcpy(response, suggestion);
-            return response;
-
-        }
-
     } else if (arguments.size() == 3) {
 
-        QStringList suggestions;
         if (commandName == "edit") {
             suggestions = QStringList(fieldNames);
         } else if (commandName == "mv") {
             suggestions = database->rootGroup()->getSuggestions(arguments.at(1), false);
         }
 
-        while (currentIndex < suggestions.size()) {
+    }
 
-            QString currentSuggestion = suggestions.at(currentIndex++);
-
-            if (currentSuggestion.startsWith(currentText)) {
-                const char* suggestion = qPrintable(currentSuggestion);
-
-                // Each string the generator function returns as a match
-                // must be allocated with malloc();
-                char* response = static_cast<char*>(malloc(sizeof(char) * strlen(suggestion)));
-                strcpy(response, suggestion);
-                return response;
-
-            }
-
+    while (currentIndex < suggestions.size()) {
+        QString currentSuggestion = suggestions.at(currentIndex++);
+        if (currentSuggestion.startsWith(currentText)) {
+            return createStringCopy(currentSuggestion);
         }
-
     }
 
     return nullptr;
