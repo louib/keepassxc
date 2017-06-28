@@ -21,12 +21,12 @@
 #include "Clip.h"
 
 #include <QApplication>
-#include <QClipboard>
 #include <QCommandLineParser>
 #include <QStringList>
 #include <QTextStream>
 
 #include "gui/UnlockDatabaseDialog.h"
+#include "cli/Utils.h"
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/Group.h"
@@ -60,7 +60,7 @@ int Clip::execute(int argc, char** argv)
                       << "gui-prompt",
         QCoreApplication::translate("main", "Use a GUI prompt unlocking the database."));
     parser.addOption(guiPrompt);
-    parser.addPositionalArgument("entry", QCoreApplication::translate("main", "Name of the entry to clip."));
+    parser.addPositionalArgument("entry", QCoreApplication::translate("main", "Path of the entry to clip."));
     parser.process(arguments);
 
     const QStringList args = parser.positionalArguments();
@@ -80,19 +80,36 @@ int Clip::execute(int argc, char** argv)
     if (!db) {
         return EXIT_FAILURE;
     }
+    return this->clipEntry(db, args.at(1));
+}
 
-    QString entryId = args.at(1);
-    Entry* entry = db->rootGroup()->findEntry(entryId);
+int Clip::executeFromShell(Database* database, QString, QStringList arguments)
+{
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    if (arguments.size() != 1) {
+        outputTextStream << this->shellUsage << "\n";
+        outputTextStream.flush();
+        return EXIT_FAILURE;
+    }
+    return this->clipEntry(database, arguments.at(0));
+}
+
+int Clip::clipEntry(Database* database, QString entryPath)
+{
+
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    Entry* entry = database->rootGroup()->findEntry(entryPath);
     if (!entry) {
-        qCritical("Entry %s not found.", qPrintable(entryId));
+        qCritical("Entry %s not found.", qPrintable(entryPath));
         return EXIT_FAILURE;
     }
 
-    Clipboard::instance()->setText(entry->password());
-    return EXIT_SUCCESS;
-}
+    int exitCode = Utils::clipText(entry->password());
+    if (exitCode == 0) {
+        outputTextStream << "Entry's password copied to the clipboard!\n";
+        outputTextStream.flush();
+    }
 
-int Clip::executeFromShell(Database*, QString databasePath, QStringList)
-{
-    return EXIT_FAILURE;
+    return exitCode;
+
 }

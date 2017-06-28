@@ -25,6 +25,8 @@
 #endif
 
 #include <QTextStream>
+#include <QProcess>
+#include <QStringList>
 
 
 void Utils::setStdinEcho(bool enable = true)
@@ -107,3 +109,42 @@ void Utils::createRecycleBin(Database* database)
     }
 
 }
+
+/*
+ * A valid and running event loop is needed to use the global QClipboard,
+ * so we need to use this from the CLI.
+ */
+int Utils::clipText(QString text)
+{
+
+    QString programName = "";
+    QStringList arguments;
+
+#ifdef Q_OS_MACOS
+    programName = "pbcopy";
+#endif
+
+#ifdef Q_OS_UNIX
+    programName = "xclip";
+    arguments << "-i" << "-selection" << "clipboard";
+#endif
+
+    // TODO add this for windows.
+    if (programName.isEmpty()) {
+        qCritical("No program defined for clipboard manipulation");
+        return EXIT_FAILURE;
+    }
+
+    QProcess* clipProcess = new QProcess(nullptr);
+    clipProcess->start(programName, arguments);
+    clipProcess->waitForStarted();
+
+    const char* data = qPrintable(text);
+    clipProcess->write(data, strlen(data));
+    clipProcess->waitForBytesWritten();
+    clipProcess->closeWriteChannel();
+    clipProcess->waitForFinished();
+
+    return clipProcess->exitCode();
+}
+

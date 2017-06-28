@@ -20,7 +20,6 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QStringList>
-#include <QProcess>
 #include <QTextStream>
 
 #include "core/Database.h"
@@ -191,85 +190,6 @@ char** keepassxc_completion(const char* text, int start, int)
 }
 #endif
 
-int clipText(QString text)
-{
-
-    QString programName = "";
-    QStringList arguments;
-
-#ifdef Q_OS_MACOS
-    programName = "pbcopy";
-#endif
-
-#ifdef Q_OS_UNIX
-    programName = "xclip";
-    arguments << "-i" << "-selection" << "clipboard";
-#endif
-
-    // TODO add this for windows.
-    if (programName.isEmpty()) {
-        qCritical("No program defined for clipboard manipulation");
-        return EXIT_FAILURE;
-    }
-
-    QProcess* clipProcess = new QProcess(nullptr);
-    clipProcess->start(programName, arguments);
-    clipProcess->waitForStarted();
-
-    const char* data = qPrintable(text);
-    clipProcess->write(data, strlen(data));
-    clipProcess->waitForBytesWritten();
-    clipProcess->closeWriteChannel();
-    clipProcess->waitForFinished();
-
-    return clipProcess->exitCode();
-}
-
-
-bool clipEntry(QString entryPath)
-{
-
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-
-    Entry* entry = database->rootGroup()->findEntryByPath(entryPath);
-    if (!entry) {
-        qCritical("Entry %s does not exist!", qPrintable(entryPath));
-        return false;
-    }
-
-    clipText(entry->password());
-
-    outputTextStream << "Successfully copied password to clipboard!\n";
-    return true;
-
-}
-
-bool move(QString groupEntryPath, QString destinationPath)
-{
-
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-    Group* destinationGroup = database->rootGroup()->findGroupByPath(destinationPath);
-    if (!destinationGroup) {
-        qCritical("Group %s not found.", qPrintable(destinationPath));
-        return false;
-    }
-
-    Entry* entry = database->rootGroup()->findEntryByPath(groupEntryPath);
-    if (!entry) {
-        Group* group = database->rootGroup()->findGroupByPath(groupEntryPath);
-        if (group == nullptr) {
-            qCritical("No group or entry found with path %s.", qPrintable(groupEntryPath));
-            return false;
-        }
-        group->setParent(destinationGroup);
-        outputTextStream << QString(group->name() + " moved to " + destinationGroup->name() + "\n");
-    } else {
-        entry->setGroup(destinationGroup);
-        outputTextStream << QString(entry->title() + " moved to " + destinationGroup->name() + "\n");
-    }
-    return true;
-
-}
 
 void printHelp()
 {
@@ -358,22 +278,11 @@ int Shell::execute(int argc, char** argv)
       QString commandName = arguments.takeFirst();
 
       Command* command = Command::getCommand(commandName);
+
       if (command && command->isShellCommand()) {
           command->executeFromShell(database, args.at(0), arguments);
       } else if (commandName == QString("help")) {
           printHelp();
-      } else if (commandName == QString("clip")) {
-          if (arguments.length() != 2) {
-              out << "Usage: clip entry\n";
-              continue;
-          }
-          clipEntry(arguments.at(1));
-      } else if (commandName == QString("mv")) {
-          if (arguments.length() != 3) {
-              out << "Usage: mv entry|group group\n";
-              continue;
-          }
-          move(arguments.at(1), arguments.at(2));
       } else if (commandName == QString("quit")) {
           break;
       } else {

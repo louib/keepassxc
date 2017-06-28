@@ -32,6 +32,7 @@ public:
     static QString getPassword();
     static bool askYesNoQuestion(QString question, bool askContinue = false);
     static void createRecycleBin(Database* database);
+    static int clipText(QString text);
 };
 
 #endif // KEEPASSXC_UTILS_H
