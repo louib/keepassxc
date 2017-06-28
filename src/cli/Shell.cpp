@@ -65,6 +65,17 @@ char* commandArgumentsCompletion(const char*, int state)
     static int currentIndex;
     static QMap<QString, QString> firstArguments;
     static QStringList fieldNames;
+    static QStringList commandNames;
+    static QStringList allCommandNames;
+
+    if (commandNames.isEmpty()) {
+        for (Command* command : Command::getShellCommands()) {
+            commandNames << command->name;
+            allCommandNames << command->name;
+        }
+        allCommandNames << QString("quit");
+        allCommandNames << QString("help");
+    }
 
     if (firstArguments.isEmpty()) {
         firstArguments.insert("rm", "entry");
@@ -94,15 +105,17 @@ char* commandArgumentsCompletion(const char*, int state)
 
     QString currentText = arguments.last();
     QStringList suggestions;
+    rl_completion_suppress_append = 1;
 
-    if (arguments.size() == 2) {
-
-        if (!firstArguments.contains(commandName)) {
-            return nullptr;
-        }
+    if (arguments.size() == 1) {
+        rl_completion_suppress_append = 0;
+        suggestions = allCommandNames;
+    } else if (arguments.size() == 2) {
 
         if (firstArguments[commandName] == "entry") {
             suggestions = database->rootGroup()->getSuggestions(arguments.at(1), true);
+        } else if (commandName == "help") {
+            suggestions = commandNames;
         } else {
             suggestions = database->rootGroup()->getSuggestions(arguments.at(1), false);
         }
@@ -128,49 +141,9 @@ char* commandArgumentsCompletion(const char*, int state)
 
 }
 
-char* commandNameCompletion(const char* text, int state)
+char** shellCompletion(const char* text, int, int)
 {
-    static int currentIndex;
-    static QStringList commandNames;
-
-    if (commandNames.isEmpty()) {
-        for (Command* command : Command::getShellCommands()) {
-            commandNames << command->name;
-        }
-        commandNames << QString("quit");
-        commandNames << QString("help");
-    }
-
-    if (state == 0) {
-        currentIndex = 0;
-    }
-
-    QString currentText(text);
-
-    while (currentIndex < commandNames.size()) {
-        QString commandName = commandNames.at(currentIndex++);
-        if (commandName.startsWith(currentText)) {
-            return createStringCopy(commandName);
-        }
-    }
-
-    return nullptr;
-}
-
-
-char** keepassxc_completion(const char* text, int start, int)
-{
-
-    // First word of the line, so it's a command to complete.
-    if (start == 0) {
-        rl_completion_suppress_append = 0;
-        return rl_completion_matches(text, commandNameCompletion);
-    } else {
-        rl_completion_suppress_append = 1;
-        return rl_completion_matches(text, commandArgumentsCompletion);
-    }
-
-    return nullptr;
+    return rl_completion_matches(text, commandArgumentsCompletion);
 }
 #endif
 
@@ -247,7 +220,7 @@ int Shell::execute(int argc, char** argv)
 
 #ifdef WITH_XC_READLINE
     rl_readline_name = const_cast<char*>("kpxcli");
-    rl_attempted_completion_function = keepassxc_completion;
+    rl_attempted_completion_function = shellCompletion;
 #endif
 
     while (true) {
@@ -266,7 +239,17 @@ int Shell::execute(int argc, char** argv)
       if (command && command->isShellCommand()) {
           command->executeFromShell(database, args.at(0), arguments);
       } else if (commandName == QString("help")) {
-          printHelp();
+          if (arguments.size() == 0) {
+              printHelp();
+              continue;
+          }
+          QString helpCommandName = arguments.at(0);
+          Command* helpCommand = Command::getCommand(helpCommandName);
+          if (!helpCommand) {
+              out << QString("Invalid command '" + commandName + "'\n");
+              continue;
+          }
+          out << "Usage: " << helpCommand->shellUsage << "\n";
       } else if (commandName == QString("quit")) {
           break;
       } else {
