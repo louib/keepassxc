@@ -28,7 +28,6 @@
 #include "core/Database.h"
 #include "core/Group.h"
 #include "core/Tools.h"
-#include "keys/CompositeKey.h"
 #include "cli/Utils.h"
 
 RemoveGroup::RemoveGroup()
@@ -45,7 +44,6 @@ RemoveGroup::~RemoveGroup()
 int RemoveGroup::execute(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
-    QTextStream out(stdout);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::translate("main", "Remove a group from the database."));
@@ -58,13 +56,7 @@ int RemoveGroup::execute(int argc, char** argv)
         parser.showHelp(EXIT_FAILURE);
     }
 
-    out << "Insert the database password\n> ";
-    out.flush();
-
-    QString line = Utils::getPassword();
-    CompositeKey key = CompositeKey::readFromLine(line);
-
-    Database* db = Database::openDatabaseFile(args.at(0), key);
+    Database* db = Database::unlockFromStdin(args.at(0));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }

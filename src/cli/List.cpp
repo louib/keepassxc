@@ -30,7 +30,6 @@
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/Group.h"
-#include "keys/CompositeKey.h"
 
 
 List::List()
@@ -50,7 +49,6 @@ int List::execute(int argc, char** argv)
     for (int i = 0; i < argc; ++i) {
         arguments << QString(argv[i]);
     }
-    QTextStream out(stdout);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::translate("main", "List database entries."));
