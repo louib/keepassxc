@@ -247,27 +247,6 @@ bool clipEntry(QString entryPath)
 
 }
 
-bool addGroup(QString groupPath)
-{
-
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
-
-    Group* group = database->rootGroup()->findGroupByPath(groupPath);
-    if (group != nullptr) {
-	qCritical("Group %s already exists.", qPrintable(groupPath));
-	return false;
-    }
-
-    group = database->rootGroup()->addGroupWithPath(groupPath);
-    if (group == nullptr) {
-        return false;
-    }
-
-    return true;
-}
-
-
 bool removeGroup(QString groupPath)
 {
 
@@ -435,12 +414,6 @@ int Shell::execute(int argc, char** argv)
               continue;
           }
           move(arguments.at(1), arguments.at(2));
-      } else if (commandName == QString("mkdir")) {
-          if (arguments.length() != 2) {
-              out << "Usage: mkdir group\n";
-              continue;
-          }
-          addGroup(arguments.at(1));
       } else if (commandName == QString("quit")) {
           break;
       } else {

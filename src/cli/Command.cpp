@@ -23,6 +23,7 @@
 #include "Command.h"
 
 #include "Add.h"
+#include "AddGroup.h"
 #include "Clip.h"
 #include "Create.h"
 #include "Edit.h"
@@ -79,6 +80,7 @@ void populateCommands()
         commands.insert(QString("extract"), new Extract());
         commands.insert(QString("list"), new List());
         commands.insert(QString("merge"), new Merge());
+        commands.insert(QString("mkdir"), new AddGroup());
         commands.insert(QString("rm"), new Remove());
         commands.insert(QString("shell"), new Shell());
         commands.insert(QString("show"), new Show());

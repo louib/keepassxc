@@ -16,6 +16,8 @@
 set(cli_SOURCES
     Add.cpp
     Add.h
+    AddGroup.cpp
+    AddGroup.h
     Clip.cpp
     Clip.h
     Command.cpp
