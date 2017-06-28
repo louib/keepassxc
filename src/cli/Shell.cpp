@@ -63,8 +63,6 @@ char* commandArgumentsCompletion(const char*, int state)
 {
 
     static int currentIndex;
-    static QMap<QString, QString> firstArguments;
-    static QStringList fieldNames;
     static QStringList commandNames;
     static QStringList allCommandNames;
 
@@ -77,57 +75,28 @@ char* commandArgumentsCompletion(const char*, int state)
         allCommandNames << QString("help");
     }
 
-    if (firstArguments.isEmpty()) {
-        firstArguments.insert("rm", "entry");
-        firstArguments.insert("mv", "entry");
-        firstArguments.insert("show", "entry");
-        firstArguments.insert("clip", "entry");
-        firstArguments.insert("edit", "entry");
-        firstArguments.insert("rmdir", "group");
-        firstArguments.insert("mkdir", "group");
-        firstArguments.insert("gen", "group");
-        firstArguments.insert("ls", "group");
-        firstArguments.insert("add", "group");
-    }
-
-    if (fieldNames.isEmpty()) {
-        fieldNames << "url";
-        fieldNames << "password";
-        fieldNames << "username";
-    }
-
     if (state == 0) {
         currentIndex = 0;
     }
 
     QStringList arguments = QString::fromUtf8(rl_line_buffer).split(QRegExp(" "), QString::KeepEmptyParts);
-    QString commandName = arguments.at(0);
-
     QString currentText = arguments.last();
+    QString commandName = arguments.takeFirst();
+
     QStringList suggestions;
     rl_completion_suppress_append = 1;
 
-    if (arguments.size() == 1) {
+    if (arguments.size() == 0) {
         rl_completion_suppress_append = 0;
         suggestions = allCommandNames;
-    } else if (arguments.size() == 2) {
+    } else {
 
-        if (firstArguments[commandName] == "entry") {
-            suggestions = database->rootGroup()->getSuggestions(arguments.at(1), true);
-        } else if (commandName == "help") {
+        Command* command = Command::getCommand(commandName);
+        if (commandName == "help" && arguments.size() == 1) {
             suggestions = commandNames;
-        } else {
-            suggestions = database->rootGroup()->getSuggestions(arguments.at(1), false);
+        } else if (command) {
+            suggestions = command->getSuggestions(database, arguments);
         }
-
-    } else if (arguments.size() == 3) {
-
-        if (commandName == "edit") {
-            suggestions = QStringList(fieldNames);
-        } else if (commandName == "mv") {
-            suggestions = database->rootGroup()->getSuggestions(arguments.at(1), false);
-        }
-
     }
 
     while (currentIndex < suggestions.size()) {

@@ -66,6 +66,11 @@ QString Command::getDescriptionLine()
 
 }
 
+QStringList Command::getSuggestions(Database*, QStringList)
+{
+    return QStringList();
+}
+
 bool Command::isShellCommand()
 {
     return !this->shellUsage.isEmpty();

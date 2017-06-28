@@ -113,3 +113,12 @@ int Clip::clipEntry(Database* database, QString entryPath)
     return exitCode;
 
 }
+
+QStringList Clip::getSuggestions(Database* database, QStringList arguments)
+{
+    if (arguments.size() != 1) {
+        return QStringList();
+    }
+    QString currentText = arguments.last();
+    return database->rootGroup()->getSuggestions(arguments.at(0), true);
+}

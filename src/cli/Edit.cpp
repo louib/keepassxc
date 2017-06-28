@@ -158,3 +158,21 @@ int Edit::editEntry(Database* database, QString databasePath, QString entryPath,
     return EXIT_SUCCESS;
 
 }
+
+QStringList Edit::getSuggestions(Database* database, QStringList arguments)
+{
+    static QStringList fieldNames;
+    if (fieldNames.isEmpty()) {
+        fieldNames << "url";
+        fieldNames << "password";
+        fieldNames << "username";
+    }
+
+    if (arguments.size() == 1) {
+        return database->rootGroup()->getSuggestions(arguments.at(0), true);
+    } else if (arguments.size() == 2) {
+        return fieldNames;
+    }
+    return QStringList();
+
+}

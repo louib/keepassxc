@@ -30,6 +30,7 @@ public:
     virtual ~Command();
     virtual int execute(int argc, char** argv);
     virtual int executeFromShell(Database* database, QString databasePath, QStringList arguments);
+    virtual QStringList getSuggestions(Database* database, QStringList arguments);
     QString name;
     QString description;
     QString shellUsage;

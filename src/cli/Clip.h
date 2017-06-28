@@ -27,6 +27,7 @@ public:
     ~Clip();
     int execute(int argc, char** argv);
     int executeFromShell(Database* database, QString databasePath, QStringList arguments);
+    QStringList getSuggestions(Database* database, QStringList arguments);
     int clipEntry(Database* database, QString entryPath);
 };
 
