@@ -26,9 +26,7 @@
 #include <QTextStream>
 
 #include "core/Database.h"
-#include "core/Entry.h"
 #include "core/Group.h"
-#include "core/PasswordGenerator.h"
 #include "keys/CompositeKey.h"
 #include "cli/Utils.h"
 

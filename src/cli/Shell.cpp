@@ -24,13 +24,11 @@
 #include <QTextStream>
 
 #include "core/Database.h"
-#include "core/PasswordGenerator.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "core/Tools.h"
 #include "cli/Utils.h"
-#include "keys/CompositeKey.h"
 #include "config-keepassx.h"
 
 #ifdef WITH_XC_READLINE
