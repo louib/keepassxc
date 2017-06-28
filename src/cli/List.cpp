@@ -93,7 +93,7 @@ int List::execute(int argc, char** argv)
     return this->listGroup(db);
 }
 
-int List::executeFromShell(Database* database, QString databasePath, QStringList arguments)
+int List::executeFromShell(Database* database, QString, QStringList arguments)
 {
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
     if (arguments.size() > 1) {

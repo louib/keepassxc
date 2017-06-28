@@ -48,6 +48,17 @@ Database* database;
 
 
 #ifdef WITH_XC_READLINE
+
+// Each string the generator function returns as a match
+// must be allocated with malloc();
+char* createStringCopy(QString originalString)
+{
+    const char* original = qPrintable(originalString);
+    char* response = static_cast<char*>(malloc(sizeof(char) * strlen(original)));
+    strcpy(response, original);
+    return response;
+}
+
 char* commandArgumentsCompletion(const char*, int state)
 {
 
@@ -157,22 +168,18 @@ char* commandNameCompletion(const char* text, int state)
         currentIndex = 0;
     }
 
+    QString currentText(text);
+
     while (currentIndex < commandNames.size()) {
-
-        const char* commandName = qPrintable(commandNames.at(currentIndex++));
-
-        // Each string the generator function returns as a match
-        // must be allocated with malloc();
-        if (strncmp(commandName, text, strlen(text)) == 0) {
-            char* response = static_cast<char*>(malloc(sizeof(char) * strlen(commandName)));
-            strcpy(response, commandName);
-            return response;
+        QString commandName = commandNames.at(currentIndex++);
+        if (commandName.startsWith(currentText)) {
+            return createStringCopy(commandName);
         }
-
     }
 
     return nullptr;
 }
+
 
 char** keepassxc_completion(const char* text, int start, int)
 {
