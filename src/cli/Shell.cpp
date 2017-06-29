@@ -34,6 +34,29 @@
 #include <readline/history.h>
 #endif
 
+#ifdef Q_OS_UNIX
+#include <wordexp.h>
+#endif
+
+QStringList getArguments(QString line)
+{
+#ifdef Q_OS_UNIX
+    wordexp_t result;
+    int error = wordexp(qPrintable(line), &result, 0);
+    if (error) {
+        qCritical("Cannot parse line!");
+        return QStringList();
+    }
+    QStringList arguments;
+    for (int i = 0; i < result.we_wordc; ++i) {
+        arguments << QString(result.we_wordv[i]);
+    }
+    wordfree(&result);
+    return arguments;
+#endif
+    return QString::fromUtf8(rl_line_buffer).split(QRegExp(" "));
+}
+
 Shell::Shell()
 {
     this->name = QString("shell");
@@ -102,7 +125,8 @@ char* commandArgumentsCompletion(const char*, int state)
     while (currentIndex < suggestions.size()) {
         QString currentSuggestion = suggestions.at(currentIndex++);
         if (currentSuggestion.startsWith(currentText)) {
-            return createStringCopy(currentSuggestion);
+            // There must be a better way to escape this.
+            return createStringCopy(currentSuggestion.replace(" ", "\\ "));
         }
     }
 
@@ -199,7 +223,11 @@ int Shell::execute(int argc, char** argv)
           continue;
       }
 
-      QStringList arguments = line.trimmed().split(QRegExp(" "));
+      QStringList arguments = getArguments(line.trimmed());
+      if (arguments.isEmpty()) {
+          continue;
+      }
+
       QString commandName = arguments.takeFirst();
 
       Command* command = Command::getCommand(commandName);
