@@ -186,3 +186,5 @@ add_unit_test(NAME testdatabase SOURCES TestDatabase.cpp
 if(WITH_GUI_TESTS)
   add_subdirectory(gui)
 endif(WITH_GUI_TESTS)
+
+add_subdirectory(cli)

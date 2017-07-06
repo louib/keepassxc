@@ -25,6 +25,7 @@
 #endif
 
 #include <QTextStream>
+#include <QException>
 #include <QProcess>
 #include <QStringList>
 
@@ -142,3 +143,76 @@ char* Utils::createStringCopy(QString originalString)
     strcpy(response, original);
     return response;
 }
+
+/*
+ * The shell supports basic escaping. Escaped characters include space
+ * (\ ), double-quote (\") and backslash (\\). Any other espaced character
+ * is invalid. Arguments can be placed in double-quotes to allow spaces and
+ * double-quotes unescaped.
+ */
+QStringList Utils::getArguments(QString line)
+{
+    QStringList arguments;
+    QString currentArgument("");
+    bool escaping = false;
+    bool quoting = false;
+
+    for (int i = 0; i < line.size(); ++i) {
+        QChar currentChar = line.at(i);
+
+        // Support for escaping.
+        if (currentChar == '\\' && escaping == false) {
+            escaping = true;
+            continue;
+        }
+        if (((currentChar == ' ') || (currentChar == '"') || (currentChar == '\\')) && escaping == true) {
+            currentArgument.append(currentChar);
+            escaping = false;
+            continue;
+        }
+        if (escaping == true) {
+            return QStringList();
+        }
+
+
+        // Support for quoting.
+        if (currentChar == '"' && quoting) {
+            arguments << currentArgument;
+            currentArgument = QString("");
+            quoting = false;
+            continue;
+        }
+        if (currentChar == '"') {
+            quoting = true;
+            continue;
+        }
+        if (quoting) {
+            currentArgument.append(currentChar);
+            continue;
+        }
+
+        // Support for spaces.
+        if (currentChar == ' ' && currentArgument.isEmpty()) {
+            continue;
+        }
+        if (currentChar == ' ') {
+            arguments << currentArgument;
+            currentArgument = QString("");
+            continue;
+        }
+
+        currentArgument.append(currentChar);
+    }
+
+    // Finished parsing while handling quoted argument!
+    if (quoting) {
+        return QStringList();
+    }
+
+    if (!currentArgument.isEmpty()) {
+        arguments << currentArgument;
+    }
+
+    return arguments;
+}
+

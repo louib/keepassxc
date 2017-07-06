@@ -34,72 +34,6 @@
 #include <readline/history.h>
 #endif
 
-/*
- * The shell supports basic escaping. Escaped characters include space
- * (\ ), double-quote (\") and backslash (\\). Any other espaced character
- * is invalid. Arguments can be placed in double-quotes to allow spaces and
- * double-quotes unescaped.
- */
-QStringList getArguments(QString line)
-{
-    QStringList arguments;
-    QString currentArgument("");
-    bool escaping = false;
-    bool quoting = false;
-    for (int i = 0; i < line.size(); ++i) {
-        QChar currentChar = line.at(i);
-
-        // Support for quoting.
-        if (currentChar == '"' && quoting) {
-            arguments << currentArgument;
-            currentArgument = QString("");
-            quoting = false;
-            continue;
-        }
-        if (currentChar == '"') {
-            quoting = true;
-            continue;
-        }
-        if (quoting) {
-            currentArgument.append(currentChar);
-            continue;
-        }
-
-        // Support for escaping.
-        if (currentChar == '\\' && escaping == false) {
-            escaping = true;
-            continue;
-        }
-        if (((currentChar == ' ') || (currentChar == '"') || (currentChar == '\\')) && escaping == true) {
-            currentArgument.append(currentChar);
-            escaping = false;
-            continue;
-        }
-        if (escaping == true) {
-            // This is an error.
-            return QStringList();
-        }
-
-        // Support for spaces.
-        if (currentChar == ' ' && currentArgument.isEmpty()) {
-            continue;
-        }
-        if (currentChar == ' ') {
-            arguments << currentArgument;
-            currentArgument = QString("");
-            continue;
-        }
-
-        currentArgument.append(currentChar);
-    }
-
-    if (!currentArgument.isEmpty()) {
-        arguments << currentArgument;
-    }
-
-    return arguments;
-}
-
 // There must be a better way to escape this.
 QString escapeForShell(QString text)
 {
@@ -144,7 +78,7 @@ char* commandArgumentsCompletion(const char*, int state)
         currentIndex = 0;
     }
 
-    QStringList arguments = getArguments(QString::fromUtf8(rl_line_buffer));
+    QStringList arguments = Utils::getArguments(QString::fromUtf8(rl_line_buffer));
     QString currentText = arguments.last();
     QString commandName = arguments.takeFirst();
 
@@ -288,12 +222,14 @@ int Shell::execute(int argc, char** argv)
 
       out.flush();
       QString line = getLine("KeePassXC> ");
+      line = line.trimmed();
       if (line.isEmpty()) {
           continue;
       }
 
-      QStringList arguments = getArguments(line.trimmed());
+      QStringList arguments = Utils::getArguments(line);
       if (arguments.isEmpty()) {
+          qCritical("Unable to parse command line!");
           continue;
       }
 

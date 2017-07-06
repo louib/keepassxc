@@ -1,4 +1,5 @@
 /*
+ *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
  *  Copyright (C) 2017 KeePassXC Team <team@keepassxc.org>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -15,28 +16,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_UTILS_H
-#define KEEPASSXC_UTILS_H
+#ifndef KEEPASSX_TESTUTILS_H
+#define KEEPASSX_TESTUTILS_H
 
-#include <QtCore/qglobal.h>
+#include <QObject>
 
-#include <QStringList>
-
-#include "core/Database.h"
-#include "core/Group.h"
-#include "core/Metadata.h"
-
-class Utils
+class TestUtils : public QObject
 {
-public:
-    Utils();
-    static void setStdinEcho(bool enable);
-    static QString getPassword();
-    static bool askYesNoQuestion(QString question, bool askContinue = false);
-    static void createRecycleBin(Database* database);
-    static int clipText(QString text);
-    static char* createStringCopy(QString string);
-    static QStringList getArguments(QString line);
+    Q_OBJECT
+
+private slots:
+    void initTestCase();
+    void testGetArguments();
 };
 
-#endif // KEEPASSXC_UTILS_H
+#endif // KEEPASSX_TESTUTILS_H
