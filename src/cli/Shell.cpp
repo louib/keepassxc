@@ -58,7 +58,44 @@ Database* database;
 
 #ifdef WITH_XC_READLINE
 
-char* commandArgumentsCompletion(const char*, int state)
+char* commandNameCompletion(const char* text, int state)
+{
+
+    static int currentIndex;
+    static QStringList commandNames;
+
+    if (commandNames.isEmpty()) {
+        for (Command* command : Command::getShellCommands()) {
+            commandNames << command->name;
+        }
+        commandNames << QString("quit");
+        commandNames << QString("help");
+    }
+
+    if (state == 0) {
+        currentIndex = 0;
+    }
+
+    rl_completion_suppress_append = 0;
+    QStringList suggestions;
+    QString currentText = QString(text);
+
+    while (currentIndex < commandNames.size()) {
+        QString currentSuggestion = commandNames.at(currentIndex++);
+        if (currentSuggestion.startsWith(currentText)) {
+            // Each string the generator function returns as a match
+            // must be allocated with malloc();
+            return Utils::createStringCopy(escapeForShell(currentSuggestion));
+        }
+    }
+
+    // We don't want readline to perform its default completion if this function returns no matches
+    rl_attempted_completion_over = 1;
+    return nullptr;
+
+}
+
+char* commandArgumentsCompletion(const char* text, int state)
 {
 
     static int currentIndex;
@@ -79,23 +116,28 @@ char* commandArgumentsCompletion(const char*, int state)
     }
 
     QStringList arguments = Utils::getArguments(QString::fromUtf8(rl_line_buffer));
-    QString currentText = arguments.last();
+    QString currentText = QString(text).trimmed();
+    int index = arguments.indexOf(currentText);
+
+    if (currentText.isEmpty()) {
+        index = arguments.size();
+        arguments << QString("");
+    } else if (index == -1) {
+        qDebug("Unable to find text to complete in line buffer!");
+        return nullptr;
+    }
+
     QString commandName = arguments.takeFirst();
 
     QStringList suggestions;
     rl_completion_suppress_append = 1;
 
-    if (arguments.size() == 0) {
-        rl_completion_suppress_append = 0;
-        suggestions = allCommandNames;
-    } else {
-
-        Command* command = Command::getCommand(commandName);
-        if (commandName == "help" && arguments.size() == 1) {
-            suggestions = commandNames;
-        } else if (command) {
-            suggestions = command->getSuggestions(database, arguments);
-        }
+    Command* command = Command::getCommand(commandName);
+    if (commandName == "help" && index == 1) {
+        suggestions = commandNames;
+    } else if (command) {
+        // TODO use the index in getSuggestions.
+        suggestions = command->getSuggestions(database, arguments);
     }
 
     while (currentIndex < suggestions.size()) {
@@ -127,8 +169,12 @@ int charIsQuoted(char* line, int index)
     return !charIsQuoted(line, index - 1);
 }
 
-char** shellCompletion(const char* text, int, int)
+char** shellCompletion(const char* text, int start, int)
 {
+    // Dealing with a command name.
+    if (start == 0) {
+        return rl_completion_matches(text, commandNameCompletion);
+    }
     return rl_completion_matches(text, commandArgumentsCompletion);
 }
 #endif
