@@ -78,6 +78,12 @@ void TestUtils::testGetArguments()
     QVERIFY(arguments.at(0) == "command");
     QVERIFY(arguments.at(1) == "only command line argument");
 
+    // Even with quoting, we need a space to delimit arguments.
+    arguments = Utils::getArguments(QString("command first\"argument\""));
+    QVERIFY(arguments.size() == 2);
+    QVERIFY(arguments.at(0) == "command");
+    QVERIFY(arguments.at(1) == "firstargument");
+
     arguments = Utils::getArguments(QString("command with invalid escaped ch\\aracter   "));
     QVERIFY(arguments.size() == 0);
 
