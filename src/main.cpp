@@ -27,8 +27,8 @@
 #include "crypto/Crypto.h"
 #include "gui/Application.h"
 #include "gui/MainWindow.h"
-#include "gui/csvImport/CsvImportWizard.h"
 #include "gui/MessageBox.h"
+#include "gui/csvImport/CsvImportWizard.h"
 
 #if defined(WITH_ASAN) && defined(WITH_LSAN)
 #include <sanitizer/lsan_interface.h>
@@ -85,15 +85,24 @@ int main(int argc, char** argv)
                                      "keyfile");
     QCommandLineOption pwstdinOption("pw-stdin",
                                      QCoreApplication::translate("main", "read password of the database from stdin"));
+    QCommandLineOption debugInfoOption(QStringList() << "d"
+                                                     << "debug-info",
+                                       QObject::tr("Prints the debugging information."));
 
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(configOption);
     parser.addOption(keyfileOption);
     parser.addOption(pwstdinOption);
-
+    parser.addOption(debugInfoOption);
     parser.process(app);
     const QStringList args = parser.positionalArguments();
+
+    if (parser.isSet(debugInfoOption)) {
+        static QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+        outputTextStream << Tools::getDebugInfo() << endl;
+        return EXIT_SUCCESS;
+    }
 
     if (parser.isSet(configOption)) {
         Config::createConfigFromFile(parser.value(configOption));
@@ -118,20 +127,20 @@ int main(int argc, char** argv)
                         mainWindow.activateWindow();
                     });
     QObject::connect(&app, SIGNAL(openFile(QString)), &mainWindow, SLOT(openDatabase(QString)));
-    
+
     // start minimized if configured
     bool minimizeOnStartup = config()->get("GUI/MinimizeOnStartup").toBool();
-    bool minimizeToTray    = config()->get("GUI/MinimizeToTray").toBool();
+    bool minimizeToTray = config()->get("GUI/MinimizeToTray").toBool();
     if (minimizeOnStartup) {
         mainWindow.setWindowState(Qt::WindowMinimized);
     }
     if (!(minimizeOnStartup && minimizeToTray)) {
         mainWindow.show();
     }
-    
+
     if (config()->get("OpenPreviousDatabasesOnStartup").toBool()) {
         const QStringList filenames = config()->get("LastOpenedDatabases").toStringList();
-        for (int ii = filenames.size()-1; ii >= 0; ii--) {
+        for (int ii = filenames.size() - 1; ii >= 0; ii--) {
             QString filename = filenames.at(ii);
             if (!filename.isEmpty() && QFile::exists(filename)) {
                 mainWindow.openDatabase(filename, QString(), QString());
@@ -139,7 +148,7 @@ int main(int argc, char** argv)
         }
     }
 
-    for (int ii=0; ii < args.length(); ii++) {
+    for (int ii = 0; ii < args.length(); ii++) {
         QString filename = args[ii];
         if (!filename.isEmpty() && QFile::exists(filename)) {
             QString password;

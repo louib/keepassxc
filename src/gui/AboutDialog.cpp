@@ -20,12 +20,10 @@
 #include "ui_AboutDialog.h"
 
 #include "config-keepassx.h"
-#include "version.h"
 #include "core/FilePath.h"
-#include "crypto/Crypto.h"
+#include "core/Tools.h"
 
 #include <QClipboard>
-#include <QSysInfo>
 
 AboutDialog::AboutDialog(QWidget* parent)
     : QDialog(parent),
@@ -44,52 +42,7 @@ AboutDialog::AboutDialog(QWidget* parent)
 
     m_ui->iconLabel->setPixmap(filePath()->applicationIcon().pixmap(48));
 
-    QString commitHash;
-    if (!QString(GIT_HEAD).isEmpty()) {
-        commitHash = GIT_HEAD;
-    }
-    else if (!QString(DIST_HASH).contains("Format")) {
-        commitHash = DIST_HASH;
-    }
-
-    QString debugInfo = "KeePassXC - ";
-    debugInfo.append(tr("Version %1\n").arg(KEEPASSX_VERSION));
-    if (!commitHash.isEmpty()) {
-        debugInfo.append(tr("Revision: %1").arg(commitHash).append("\n\n"));
-    }
-
-    debugInfo.append(QString("%1\n- Qt %2\n- %3\n\n")
-             .arg(tr("Libraries:"),
-                  QString::fromLocal8Bit(qVersion()),
-                  Crypto::backendVersion()));
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
-    debugInfo.append(tr("Operating system: %1\nCPU architecture: %2\nKernel: %3 %4")
-             .arg(QSysInfo::prettyProductName(),
-                  QSysInfo::currentCpuArchitecture(),
-                  QSysInfo::kernelType(),
-                  QSysInfo::kernelVersion()));
-
-    debugInfo.append("\n\n");
-#endif
-
-    QString extensions;
-#ifdef WITH_XC_HTTP
-    extensions += "\n- KeePassHTTP";
-#endif
-#ifdef WITH_XC_AUTOTYPE
-    extensions += "\n- Auto-Type";
-#endif
-#ifdef WITH_XC_YUBIKEY
-    extensions += "\n- YubiKey";
-#endif
-
-    if (extensions.isEmpty())
-        extensions = " None";
-
-    debugInfo.append(tr("Enabled extensions:").append(extensions));
-
-    m_ui->debugInfo->setPlainText(debugInfo);
+    m_ui->debugInfo->setPlainText(Tools::getDebugInfo());
 
     setAttribute(Qt::WA_DeleteOnClose);
     connect(m_ui->buttonBox, SIGNAL(rejected()), SLOT(close()));

@@ -19,17 +19,21 @@
 
 #include "Tools.h"
 
+#include "crypto/Crypto.h"
+#include "version.h"
+
 #include <QCoreApplication>
-#include <QImageReader>
 #include <QIODevice>
+#include <QImageReader>
 #include <QLocale>
 #include <QStringList>
 
 #include <QElapsedTimer>
+#include <QSysInfo>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep(), SetDllDirectoryA(), SetSearchPathMode(), ...
-#include <aclapi.h>  // for SetSecurityInfo()
+#include <aclapi.h> // for SetSecurityInfo()
 #endif
 
 #ifdef Q_OS_UNIX
@@ -92,8 +96,7 @@ bool readFromDevice(QIODevice* device, QByteArray& data, int size)
     qint64 readResult = device->read(buffer.data(), size);
     if (readResult == -1) {
         return false;
-    }
-    else {
+    } else {
         buffer.resize(readResult);
         data = buffer;
         return true;
@@ -115,8 +118,7 @@ bool readAllFromDevice(QIODevice* device, QByteArray& data)
 
     if (readResult == -1) {
         return false;
-    }
-    else {
+    } else {
         result.resize(static_cast<int>(readBytes));
         data = result;
         return true;
@@ -194,8 +196,7 @@ void wait(int ms)
     if (ms <= 50) {
         QCoreApplication::processEvents(QEventLoop::AllEvents, ms);
         sleep(qMax(ms - static_cast<int>(timer.elapsed()), 0));
-    }
-    else {
+    } else {
         int timeLeft;
         do {
             timeLeft = ms - timer.elapsed();
@@ -355,6 +356,54 @@ Cleanup:
 #endif
 
     return bSuccess;
+}
+
+QString getDebugInfo()
+{
+
+    QString commitHash;
+    if (!QString(GIT_HEAD).isEmpty()) {
+        commitHash = GIT_HEAD;
+    } else if (!QString(DIST_HASH).contains("Format")) {
+        commitHash = DIST_HASH;
+    }
+
+    QString debugInfo = "KeePassXC - ";
+    debugInfo.append(QObject::tr("Version %1\n").arg(KEEPASSX_VERSION));
+    if (!commitHash.isEmpty()) {
+        debugInfo.append(QObject::tr("Revision: %1").arg(commitHash).append("\n\n"));
+    }
+
+    debugInfo.append(QString("%1\n- Qt %2\n- %3\n\n")
+                         .arg(QObject::tr("Libraries:"), QString::fromLocal8Bit(qVersion()), Crypto::backendVersion()));
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+    debugInfo.append(QObject::tr("Operating system: %1\nCPU architecture: %2\nKernel: %3 %4")
+                         .arg(QSysInfo::prettyProductName(),
+                              QSysInfo::currentCpuArchitecture(),
+                              QSysInfo::kernelType(),
+                              QSysInfo::kernelVersion()));
+
+    debugInfo.append("\n\n");
+#endif
+
+    QString extensions;
+#ifdef WITH_XC_HTTP
+    extensions += "\n- KeePassHTTP";
+#endif
+#ifdef WITH_XC_AUTOTYPE
+    extensions += "\n- Auto-Type";
+#endif
+#ifdef WITH_XC_YUBIKEY
+    extensions += "\n- YubiKey";
+#endif
+
+    if (extensions.isEmpty()) {
+        extensions = " None";
+    }
+
+    debugInfo.append(QObject::tr("Enabled extensions:").append(extensions));
+    return debugInfo;
 }
 
 } // namespace Tools
