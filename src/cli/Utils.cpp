@@ -60,17 +60,31 @@ void Utils::setStdinEcho(bool enable = true)
 QString Utils::getPassword()
 {
     static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
-    static QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
 
     setStdinEcho(false);
     QString line = inputTextStream.readLine();
     setStdinEcho(true);
 
-    // The new line was also not echoed, but we do want to echo it.
-    outputTextStream << "\n";
-    outputTextStream.flush();
-
     return line;
+}
+
+QString Utils::getPasswordForFile(QString fileName, bool quiet)
+{
+    QTextStream outputTextStream(stdout);
+    if (!quiet) {
+        outputTextStream << QObject::tr("Insert password to unlock %1: ").arg(fileName);
+        outputTextStream.flush();
+    }
+
+    QString password = Utils::getPassword();
+
+    if (!quiet) {
+        // The new line was also not echoed, but we do want to echo it.
+        outputTextStream << "\n";
+        outputTextStream.flush();
+    }
+
+    return password;
 }
 
 /*

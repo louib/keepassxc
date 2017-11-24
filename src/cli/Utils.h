@@ -25,6 +25,7 @@ class Utils
 public:
     static void setStdinEcho(bool enable);
     static QString getPassword();
+    static QString getPasswordForFile(QString fileName, bool quiet);
     static int clipText(QString text);
 };
 

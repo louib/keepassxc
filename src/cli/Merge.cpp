@@ -53,6 +53,7 @@ int Merge::execute(QStringList arguments)
                                QObject::tr("Key file of the database."),
                                QObject::tr("path"));
     parser.addOption(keyFile);
+    parser.addOption(Command::QuietOption);
     QCommandLineOption keyFileFrom(QStringList() << "f"
                                                  << "key-file-from",
                                QObject::tr("Key file of the database to merge from."),
@@ -69,14 +70,14 @@ int Merge::execute(QStringList arguments)
     }
 
 
-    Database* db1 = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db1 = Database::unlockFromStdin(args.at(0), parser.value(keyFile), parser.isSet(Command::QuietOption));
     if (db1 == nullptr) {
         return EXIT_FAILURE;
     }
 
     Database* db2;
     if (!parser.isSet("same-credentials")) {
-        db2 = Database::unlockFromStdin(args.at(1), parser.value(keyFileFrom));
+        db2 = Database::unlockFromStdin(args.at(1), parser.value(keyFileFrom), parser.isSet(Command::QuietOption));
     } else {
         db2 = Database::openDatabaseFile(args.at(1), *(db1->key().clone()));
     }

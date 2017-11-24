@@ -18,6 +18,7 @@
 #ifndef KEEPASSXC_COMMAND_H
 #define KEEPASSXC_COMMAND_H
 
+#include <QCommandLineParser>
 #include <QList>
 #include <QObject>
 #include <QString>
@@ -36,6 +37,9 @@ public:
 
     static QList<Command*> getCommands();
     static Command* getCommand(QString commandName);
+
+    // Commonly used CLI options.
+    static const QCommandLineOption QuietOption;
 };
 
 #endif // KEEPASSXC_COMMAND_H

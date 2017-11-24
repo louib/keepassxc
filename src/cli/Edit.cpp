@@ -54,6 +54,7 @@ int Edit::execute(QStringList arguments)
                                QObject::tr("Key file of the database."),
                                QObject::tr("path"));
     parser.addOption(keyFile);
+    parser.addOption(Command::QuietOption);
 
     QCommandLineOption username(QStringList() << "u"
                                               << "username",
@@ -98,7 +99,7 @@ int Edit::execute(QStringList arguments)
     QString databasePath = args.at(0);
     QString entryPath = args.at(1);
 
-    Database* db = Database::unlockFromStdin(databasePath, parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(databasePath, parser.value(keyFile), parser.isSet(Command::QuietOption));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }
