@@ -48,11 +48,7 @@ int Locate::execute(QStringList arguments)
     parser.setApplicationDescription(this->description);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
     parser.addPositionalArgument("term", QObject::tr("Search term."));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
+    parser.addOption(Command::KeyFileOption);
     parser.addOption(Command::QuietOption);
     parser.process(arguments);
 
@@ -62,7 +58,7 @@ int Locate::execute(QStringList arguments)
         return EXIT_FAILURE;
     }
 
-    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile), parser.isSet(Command::QuietOption));
+    Database* db = Database::unlockFromStdin(args.at(0), parser.value(Command::KeyFileOption), parser.isSet(Command::QuietOption));
     if (!db) {
         return EXIT_FAILURE;
     }

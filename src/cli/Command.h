@@ -40,6 +40,7 @@ public:
 
     // Commonly used CLI options.
     static const QCommandLineOption QuietOption;
+    static const QCommandLineOption KeyFileOption;
 };
 
 #endif // KEEPASSXC_COMMAND_H

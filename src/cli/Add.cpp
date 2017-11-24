@@ -49,11 +49,7 @@ int Add::execute(QStringList arguments)
     parser.setApplicationDescription(this->description);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
 
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
+    parser.addOption(Command::KeyFileOption);
     parser.addOption(Command::QuietOption);
 
     QCommandLineOption username(QStringList() << "u"

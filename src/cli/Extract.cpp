@@ -49,11 +49,7 @@ int Extract::execute(QStringList arguments)
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
     parser.addPositionalArgument("database", QObject::tr("Path of the database to extract."));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
+    parser.addOption(Command::KeyFileOption);
     parser.addOption(Command::QuietOption);
     parser.process(arguments);
 
@@ -71,7 +67,7 @@ int Extract::execute(QStringList arguments)
     passwordKey.setPassword(password);
     compositeKey.addKey(passwordKey);
 
-    QString keyFilePath = parser.value(keyFile);
+    QString keyFilePath = parser.value(Command::KeyFileOption);
     if (!keyFilePath.isEmpty()) {
         FileKey fileKey;
         QString errorMsg;
