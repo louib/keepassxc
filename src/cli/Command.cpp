@@ -23,8 +23,8 @@
 #include "Command.h"
 
 #include "Add.h"
-#include "Edit.h"
 #include "Clip.h"
+#include "Edit.h"
 #include "EntropyMeter.h"
 #include "Extract.h"
 #include "List.h"
@@ -33,8 +33,9 @@
 #include "Remove.h"
 #include "Show.h"
 
-
-const QCommandLineOption Command::QuietOption = QCommandLineOption(QStringList() << "q" << "quiet", QObject::tr("Quiets the password prompt."));
+const QCommandLineOption Command::QuietOption = QCommandLineOption(QStringList() << "q"
+                                                                                 << "quiet",
+                                                                   QObject::tr("Quiets the password prompt."));
 
 QMap<QString, Command*> commands;
 
