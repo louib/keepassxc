@@ -89,7 +89,7 @@ int Add::execute(QStringList arguments)
     QString databasePath = args.at(0);
     QString entryPath = args.at(1);
 
-    Database* db = Database::unlockFromStdin(databasePath, parser.value(keyFile), parser.isSet(Command::QuietOption));
+    Database* db = Database::unlockFromStdin(databasePath, parser.value(Command::KeyFileOption), parser.isSet(Command::QuietOption));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }
