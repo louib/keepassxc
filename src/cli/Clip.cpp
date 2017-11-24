@@ -53,6 +53,7 @@ int Clip::execute(QStringList arguments)
                                QObject::tr("Key file of the database."),
                                QObject::tr("path"));
     parser.addOption(keyFile);
+    parser.addOption(Command::QuietOption);
     parser.addPositionalArgument("entry", QObject::tr("Path of the entry to clip."));
     parser.addPositionalArgument(
         "timeout",
@@ -66,7 +67,7 @@ int Clip::execute(QStringList arguments)
         return EXIT_FAILURE;
     }
 
-    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile), parser.isSet(Command::QuietOption));
     if (!db) {
         return EXIT_FAILURE;
     }
