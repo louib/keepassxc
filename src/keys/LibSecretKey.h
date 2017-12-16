@@ -3,6 +3,7 @@
 
 #include "keys/Key.h"
 #include <QString>
+#include <QByteArray>
 
 #include <libsecret/secret.h>
 
@@ -14,13 +15,13 @@ public:
     QByteArray rawKey() const;
     LibSecretKey* clone() const;
 	QString loadKey();
+	static QString storeKey(QByteArray key, QString keyName);
 
 private:
     QByteArray theKey;
 
     static const SecretSchema* getSchema();
 	QString keyName;
-	static QString storeKey(QByteArray key, QString keyName);
 };
 
 #endif // KEEPASSX_LIBSECRETKEY_H

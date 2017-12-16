@@ -26,6 +26,8 @@
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/Group.h"
+#include "keys/LibSecretKey.h"
+#include "keys/CompositeKey.h"
 
 List::List()
 {
@@ -62,6 +64,13 @@ int List::execute(QStringList arguments)
     if (db == nullptr) {
         return EXIT_FAILURE;
     }
+
+	CompositeKey key = db->key();
+	QString errorMessage = LibSecretKey::storeKey(key.rawKey(), args.at(0));
+	if (!errorMessage.isEmpty()) {
+        qCritical("Unable to save key to libsecret: %s", qPrintable(errorMessage));
+	}
+
 
     if (args.size() == 2) {
         return this->listGroup(db, args.at(1));

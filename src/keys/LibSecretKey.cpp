@@ -54,10 +54,10 @@ QString LibSecretKey::loadKey() {
 
     GError* error = nullptr;
 	gchar* key = secret_password_lookup_sync(getSchema(),
-											 NULL,
+											 nullptr,
 											 &error,
 											 this->keyName.toLatin1(),
-											 NULL);
+											 nullptr);
     if (error != nullptr) {
         QString errorMessage = QString(error->message);
         g_error_free(error);
