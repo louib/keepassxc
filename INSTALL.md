@@ -91,6 +91,7 @@ These steps place the compiled KeePassXC binary inside the `./build/src/` direct
 	  -DWITH_GUI_TESTS=[ON|OFF] Enable/Disable building of GUI tests (default: OFF)
 	  -DWITH_DEV_BUILD=[ON|OFF] Enable/Disable deprecated method warnings (default: OFF)
 	  -DWITH_ASAN=[ON|OFF] Enable/Disable address sanitizer checks (Linux / macOS only) (default: OFF)
+    -DWITH_LIBSECRET=[ON|OFF] Enable using libsecret to store a key in the keyring
 	  -DWITH_COVERAGE=[ON|OFF] Enable/Disable coverage tests (GCC only) (default: OFF)
 	```
 

@@ -214,6 +214,10 @@ if(MINGW)
       ${CMAKE_SOURCE_DIR}/share/windows/icon.rc)
 endif()
 
+if (WITH_LIBSECRET)
+  list(APPEND keepassx_SOURCES keys/LibSecretKey.cpp)
+endif()
+
 if(WITH_XC_YUBIKEY)
   list(APPEND keepassx_SOURCES keys/drivers/YubiKey.cpp)
 else()
@@ -231,6 +235,7 @@ set_target_properties(keepassx_core PROPERTIES COMPILE_DEFINITIONS KEEPASSX_BUIL
 target_link_libraries(keepassx_core
                       ${keepasshttp_LIB}
                       ${autotype_LIB}
+                      ${LIBSECRET_LIBRARIES}
                       ${sshagent_LIB}
                       ${YUBIKEY_LIBRARIES}
                       ${ZXCVBN_LIBRARIES}
