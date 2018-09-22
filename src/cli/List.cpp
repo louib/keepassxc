@@ -39,26 +39,24 @@ List::~List()
 
 int List::execute(const QStringList& arguments)
 {
-    QTextStream out(stdout);
+    QTextStream errorTextStream(stdout, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
+    parser.addOption(Command::SilentOption);
+    parser.addOption(Command::KeyFileOption);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
     parser.addPositionalArgument("group", QObject::tr("Path of the group to list. Default is /"), QString("[group]"));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
     parser.process(arguments);
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 1 && args.size() != 2) {
-        out << parser.helpText().replace("keepassxc-cli", "keepassxc-cli ls");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli ls");
         return EXIT_FAILURE;
     }
 
-    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(
+        args.at(0), parser.value(Command::KeyFileOption), parser.isSet(Command::SilentOption));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }

@@ -39,16 +39,13 @@ Show::~Show()
 
 int Show::execute(const QStringList& arguments)
 {
-    QTextStream out(stdout);
+    QTextStream errorTextStream(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
+    parser.addOption(Command::SilentOption);
+    parser.addOption(Command::SilentOption);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
     QCommandLineOption attributes(
         QStringList() << "a"
                       << "attributes",
@@ -63,11 +60,12 @@ int Show::execute(const QStringList& arguments)
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 2) {
-        out << parser.helpText().replace("keepassxc-cli", "keepassxc-cli show");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli show");
         return EXIT_FAILURE;
     }
 
-    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db =
+        Database::unlockFromStdin(args.at(0), parser.value(Command::SilentOption), parser.isSet(Command::SilentOption));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }
@@ -78,7 +76,6 @@ int Show::execute(const QStringList& arguments)
 int Show::showEntry(Database* database, QStringList attributes, QString entryPath)
 {
 
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
 
     Entry* entry = database->rootGroup()->findEntry(entryPath);

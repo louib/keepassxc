@@ -36,22 +36,19 @@ Merge::~Merge()
 
 int Merge::execute(const QStringList& arguments)
 {
-    QTextStream out(stdout);
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    QTextStream errorTextStream(stdout, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
+    parser.addOption(Command::SilentOption);
+    parser.addOption(Command::KeyFileOption);
     parser.addPositionalArgument("database1", QObject::tr("Path of the database to merge into."));
     parser.addPositionalArgument("database2", QObject::tr("Path of the database to merge from."));
 
     QCommandLineOption samePasswordOption(QStringList() << "s"
                                                         << "same-credentials",
                                           QObject::tr("Use the same credentials for both database files."));
-
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
     QCommandLineOption keyFileFrom(QStringList() << "f"
                                                  << "key-file-from",
                                    QObject::tr("Key file of the database to merge from."),
@@ -63,18 +60,19 @@ int Merge::execute(const QStringList& arguments)
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 2) {
-        out << parser.helpText().replace("keepassxc-cli", "keepassxc-cli merge");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli merge");
         return EXIT_FAILURE;
     }
 
-    Database* db1 = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db1 = Database::unlockFromStdin(
+        args.at(0), parser.value(Command::KeyFileOption), parser.isSet(Command::SilentOption));
     if (db1 == nullptr) {
         return EXIT_FAILURE;
     }
 
     Database* db2;
     if (!parser.isSet("same-credentials")) {
-        db2 = Database::unlockFromStdin(args.at(1), parser.value(keyFileFrom));
+        db2 = Database::unlockFromStdin(args.at(1), parser.value(keyFileFrom), parser.isSet(Command::SilentOption));
     } else {
         db2 = Database::openDatabaseFile(args.at(1), *(db1->key().clone()));
     }
@@ -90,6 +88,8 @@ int Merge::execute(const QStringList& arguments)
         return EXIT_FAILURE;
     }
 
-    out << "Successfully merged the database files.\n";
+    if (!parser.isSet(Command::SilentOption)) {
+        outputTextStream << "Successfully merged the database files." << endl;
+    }
     return EXIT_SUCCESS;
 }

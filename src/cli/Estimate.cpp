@@ -20,6 +20,10 @@
 #include <QCommandLineParser>
 #include <QTextStream>
 
+#include <QTextStream>
+
+#include "cli/Utils.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -140,7 +144,6 @@ static void estimate(const char* pwd, bool advanced)
 
 int Estimate::execute(const QStringList& arguments)
 {
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
@@ -162,7 +165,7 @@ int Estimate::execute(const QStringList& arguments)
     if (args.size() == 1) {
         password = args.at(0);
     } else {
-        password = inputTextStream.readLine();
+        password = Utils::getFromStdin();
     }
 
     estimate(password.toLatin1(), parser.isSet(advancedOption));

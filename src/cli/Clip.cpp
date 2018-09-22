@@ -43,16 +43,11 @@ Clip::~Clip()
 int Clip::execute(const QStringList& arguments)
 {
 
-    QTextStream out(stdout);
-
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
+    parser.addOption(Command::SilentOption);
+    parser.addOption(Command::KeyFileOption);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
     parser.addPositionalArgument("entry", QObject::tr("Path of the entry to clip.", "clip = copy to clipboard"));
     parser.addPositionalArgument(
         "timeout", QObject::tr("Timeout in seconds before clearing the clipboard."), QString("[timeout]"));
@@ -60,19 +55,21 @@ int Clip::execute(const QStringList& arguments)
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 2 && args.size() != 3) {
-        out << parser.helpText().replace("keepassxc-cli", "keepassxc-cli clip");
+        QTextStream errorTextStream(stderr, QIODevice::WriteOnly);
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli clip");
         return EXIT_FAILURE;
     }
 
-    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(
+        args.at(0), parser.value(Command::KeyFileOption), parser.isSet(Command::SilentOption));
     if (!db) {
         return EXIT_FAILURE;
     }
 
-    return this->clipEntry(db, args.at(1), args.value(2));
+    return this->clipEntry(db, args.at(1), args.value(2), parser.isSet(Command::SilentOption));
 }
 
-int Clip::clipEntry(Database* database, QString entryPath, QString timeout)
+int Clip::clipEntry(Database* database, QString entryPath, QString timeout, bool silent)
 {
 
     int timeoutSeconds = 0;
@@ -83,7 +80,6 @@ int Clip::clipEntry(Database* database, QString entryPath, QString timeout)
         timeoutSeconds = timeout.toInt();
     }
 
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
     Entry* entry = database->rootGroup()->findEntry(entryPath);
     if (!entry) {
         qCritical("Entry %s not found.", qPrintable(entryPath));
@@ -95,20 +91,26 @@ int Clip::clipEntry(Database* database, QString entryPath, QString timeout)
         return exitCode;
     }
 
-    outputTextStream << "Entry's password copied to the clipboard!" << endl;
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    if (!silent) {
+        outputTextStream << "Entry's password copied to the clipboard!" << endl;
+    }
 
     if (!timeoutSeconds) {
         return exitCode;
     }
 
     while (timeoutSeconds > 0) {
-        outputTextStream << "\rClearing the clipboard in " << timeoutSeconds << " seconds...";
-        outputTextStream.flush();
+        if (!silent) {
+            outputTextStream << "\rClearing the clipboard in " << timeoutSeconds << " ..." << endl;
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         timeoutSeconds--;
     }
     Utils::clipText("");
-    outputTextStream << "\nClipboard cleared!" << endl;
+    if (!silent) {
+        outputTextStream << "\nClipboard cleared!" << endl;
+    }
 
     return EXIT_SUCCESS;
 }

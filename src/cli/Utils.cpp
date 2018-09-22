@@ -58,11 +58,10 @@ void Utils::setStdinEcho(bool enable = true)
 
 QString Utils::getPassword()
 {
-    static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
     static QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
 
     setStdinEcho(false);
-    QString line = inputTextStream.readLine();
+    QString line = getFromStdin();
     setStdinEcho(true);
 
     // The new line was also not echoed, but we do want to echo it.
@@ -119,4 +118,14 @@ int Utils::clipText(const QString& text)
     clipProcess->waitForFinished();
 
     return clipProcess->exitCode();
+}
+
+/*
+ * This is to avoid creating multiple QTextStream to
+ * read from stdin.
+ */
+QString Utils::getFromStdin()
+{
+    static QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
+    return inputTextStream.readLine();
 }

@@ -42,26 +42,24 @@ Locate::~Locate()
 int Locate::execute(const QStringList& arguments)
 {
 
-    QTextStream out(stdout);
+    QTextStream errorTextStream(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
+    parser.addOption(Command::SilentOption);
+    parser.addOption(Command::KeyFileOption);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
     parser.addPositionalArgument("term", QObject::tr("Search term."));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
     parser.process(arguments);
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 2) {
-        out << parser.helpText().replace("keepassxc-cli", "keepassxc-cli locate");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli locate");
         return EXIT_FAILURE;
     }
 
-    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(
+        args.at(0), parser.value(Command::KeyFileOption), parser.isSet(Command::SilentOption));
     if (!db) {
         return EXIT_FAILURE;
     }

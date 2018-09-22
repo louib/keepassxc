@@ -43,27 +43,26 @@ Extract::~Extract()
 
 int Extract::execute(const QStringList& arguments)
 {
-    QTextStream out(stdout);
-    QTextStream errorTextStream(stderr);
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    QTextStream errorTextStream(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
+    parser.addOption(Command::SilentOption);
+    parser.addOption(Command::KeyFileOption);
     parser.addPositionalArgument("database", QObject::tr("Path of the database to extract."));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
     parser.process(arguments);
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 1) {
-        out << parser.helpText().replace("keepassxc-cli", "keepassxc-cli extract");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli extract");
         return EXIT_FAILURE;
     }
 
-    out << QObject::tr("Insert password to unlock %1: ").arg(args.at(0));
-    out.flush();
+    if (!parser.isSet(Command::SilentOption)) {
+        outputTextStream << QObject::tr("Insert password to unlock %1: ").arg(args.at(0));
+        outputTextStream.flush();
+    }
 
     CompositeKey compositeKey;
 
@@ -72,7 +71,7 @@ int Extract::execute(const QStringList& arguments)
     passwordKey.setPassword(line);
     compositeKey.addKey(passwordKey);
 
-    QString keyFilePath = parser.value(keyFile);
+    QString keyFilePath = parser.value(Command::KeyFileOption);
     if (!keyFilePath.isEmpty()) {
         FileKey fileKey;
         QString errorMsg;
@@ -119,7 +118,7 @@ int Extract::execute(const QStringList& arguments)
         return EXIT_FAILURE;
     }
 
-    out << xmlData.constData() << "\n";
+    outputTextStream << xmlData.constData() << "\n";
 
     return EXIT_SUCCESS;
 }

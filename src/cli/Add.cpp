@@ -42,18 +42,14 @@ Add::~Add()
 int Add::execute(const QStringList& arguments)
 {
 
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    QTextStream errorTextStream(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
-
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
+    parser.addOption(Command::KeyFileOption);
+    parser.addOption(Command::SilentOption);
 
     QCommandLineOption username(QStringList() << "u"
                                               << "username",
@@ -85,14 +81,15 @@ int Add::execute(const QStringList& arguments)
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 2) {
-        outputTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli add");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli add");
         return EXIT_FAILURE;
     }
 
     QString databasePath = args.at(0);
     QString entryPath = args.at(1);
 
-    Database* db = Database::unlockFromStdin(databasePath, parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(
+            databasePath, parser.value(Command::KeyFileOption), parser.isSet(Command::SilentOption));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }
@@ -120,8 +117,10 @@ int Add::execute(const QStringList& arguments)
     }
 
     if (parser.isSet(prompt)) {
-        outputTextStream << "Enter password for new entry: ";
-        outputTextStream.flush();
+        if (!parser.isSet(Command::SilentOption)) {
+            outputTextStream << "Enter password for new entry: ";
+            outputTextStream.flush();
+        }
         QString password = Utils::getPassword();
         entry->setPassword(password);
     } else if (parser.isSet(generate)) {
@@ -145,6 +144,9 @@ int Add::execute(const QStringList& arguments)
         return EXIT_FAILURE;
     }
 
-    outputTextStream << "Successfully added entry " << entry->title() << "." << endl;
+    if (!parser.isSet(Command::SilentOption)) {
+        outputTextStream << "Successfully added entry " << entry->title() << "." << endl;
+    }
+
     return EXIT_SUCCESS;
 }

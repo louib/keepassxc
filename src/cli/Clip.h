@@ -26,7 +26,7 @@ public:
     Clip();
     ~Clip();
     int execute(const QStringList& arguments);
-    int clipEntry(Database* database, QString entryPath, QString timeout);
+    int clipEntry(Database* database, QString entryPath, QString timeout, bool silent);
 };
 
 #endif // KEEPASSXC_CLIP_H

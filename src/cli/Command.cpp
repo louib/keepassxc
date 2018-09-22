@@ -35,6 +35,15 @@
 #include "Remove.h"
 #include "Show.h"
 
+const QCommandLineOption Command::SilentOption =
+    QCommandLineOption(QStringList() << "s"
+                                     << "silent",
+                       QObject::tr("Silence password prompt and other secondary outputs."));
+const QCommandLineOption Command::KeyFileOption(QStringList() << "k"
+                                                              << "key-file",
+                                                QObject::tr("Key file of the database."),
+                                                QObject::tr("path"));
+
 QMap<QString, Command*> commands;
 
 Command::~Command()

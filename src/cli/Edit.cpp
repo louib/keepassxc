@@ -41,19 +41,14 @@ Edit::~Edit()
 
 int Edit::execute(const QStringList& arguments)
 {
-
-    QTextStream inputTextStream(stdin, QIODevice::ReadOnly);
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    QTextStream errorTextStream(stdout, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(this->description);
+    parser.addOption(Command::KeyFileOption);
+    parser.addOption(Command::SilentOption);
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
-
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
 
     QCommandLineOption username(QStringList() << "u"
                                               << "username",
@@ -91,14 +86,15 @@ int Edit::execute(const QStringList& arguments)
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 2) {
-        outputTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli edit");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli edit");
         return EXIT_FAILURE;
     }
 
     QString databasePath = args.at(0);
     QString entryPath = args.at(1);
 
-    Database* db = Database::unlockFromStdin(databasePath, parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(
+            databasePath, parser.value(Command::KeyFileOption), parser.isSet(Command::SilentOption));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }
@@ -116,8 +112,7 @@ int Edit::execute(const QStringList& arguments)
     }
 
     if (parser.value("username").isEmpty() && parser.value("url").isEmpty() && parser.value("title").isEmpty()
-        && !parser.isSet(prompt)
-        && !parser.isSet(generate)) {
+        && !parser.isSet(prompt) && !parser.isSet(generate)) {
         qCritical("Not changing any field for entry %s.", qPrintable(entryPath));
         return EXIT_FAILURE;
     }
@@ -137,9 +132,18 @@ int Edit::execute(const QStringList& arguments)
     }
 
     if (parser.isSet(prompt)) {
-        outputTextStream << "Enter new password for entry: ";
-        outputTextStream.flush();
-        QString password = Utils::getPassword();
+        if (!parser.isSet(Command::SilentOption)) {
+            outputTextStream << "Enter new password for entry: ";
+            outputTextStream.flush();
+        }
+        Utils::setStdinEcho(false);
+        QString password = Utils::getFromStdin();
+        Utils::setStdinEcho(true);
+        if (!parser.isSet(Command::SilentOption)) {
+            outputTextStream << "\n";
+            outputTextStream.flush();
+        }
+
         entry->setPassword(password);
     } else if (parser.isSet(generate)) {
         PasswordGenerator passwordGenerator;
@@ -164,6 +168,8 @@ int Edit::execute(const QStringList& arguments)
         return EXIT_FAILURE;
     }
 
-    outputTextStream << "Successfully edited entry " << entry->title() << "." << endl;
+    if (!parser.isSet(Command::SilentOption)) {
+        outputTextStream << "Successfully edited entry " << entry->title() << "." << endl;
+    }
     return EXIT_SUCCESS;
 }

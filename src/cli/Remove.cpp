@@ -44,34 +44,32 @@ Remove::~Remove()
 
 int Remove::execute(const QStringList& arguments)
 {
-    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
+    QTextStream errorTextStream(stderr, QIODevice::WriteOnly);
 
     QCommandLineParser parser;
+    parser.addOption(Command::SilentOption);
+    parser.addOption(Command::KeyFileOption);
     parser.setApplicationDescription(QCoreApplication::translate("main", "Remove an entry from the database."));
     parser.addPositionalArgument("database", QCoreApplication::translate("main", "Path of the database."));
-    QCommandLineOption keyFile(QStringList() << "k"
-                                             << "key-file",
-                               QObject::tr("Key file of the database."),
-                               QObject::tr("path"));
-    parser.addOption(keyFile);
     parser.addPositionalArgument("entry", QCoreApplication::translate("main", "Path of the entry to remove."));
     parser.process(arguments);
 
     const QStringList args = parser.positionalArguments();
     if (args.size() != 2) {
-        outputTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli rm");
+        errorTextStream << parser.helpText().replace("keepassxc-cli", "keepassxc-cli rm");
         return EXIT_FAILURE;
     }
 
-    Database* db = Database::unlockFromStdin(args.at(0), parser.value(keyFile));
+    Database* db = Database::unlockFromStdin(
+        args.at(0), parser.value(Command::KeyFileOption), parser.isSet(Command::SilentOption));
     if (db == nullptr) {
         return EXIT_FAILURE;
     }
 
-    return this->removeEntry(db, args.at(0), args.at(1));
+    return this->removeEntry(db, args.at(0), args.at(1), parser.isSet(Command::SilentOption));
 }
 
-int Remove::removeEntry(Database* database, QString databasePath, QString entryPath)
+int Remove::removeEntry(Database* database, QString databasePath, QString entryPath, bool silent)
 {
 
     QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
@@ -96,9 +94,9 @@ int Remove::removeEntry(Database* database, QString databasePath, QString entryP
         return EXIT_FAILURE;
     }
 
-    if (recycled) {
+    if (recycled && !silent) {
         outputTextStream << "Successfully recycled entry " << entryTitle << "." << endl;
-    } else {
+    } else if (!silent) {
         outputTextStream << "Successfully deleted entry " << entryTitle << "." << endl;
     }
 

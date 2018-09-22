@@ -26,6 +26,7 @@ public:
     static void setStdinEcho(bool enable);
     static QString getPassword();
     static int clipText(const QString& text);
+    static QString getFromStdin();
 };
 
 #endif // KEEPASSXC_UTILS_H

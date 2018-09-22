@@ -459,16 +459,26 @@ Database* Database::openDatabaseFile(QString fileName, CompositeKey key)
     return db;
 }
 
-Database* Database::unlockFromStdin(QString databaseFilename, QString keyFilename)
+Database* Database::unlockFromStdin(QString databaseFilename, QString keyFilename, bool silent)
 {
     CompositeKey compositeKey;
     QTextStream outputTextStream(stdout);
     QTextStream errorTextStream(stderr);
 
-    outputTextStream << QObject::tr("Insert password to unlock %1: ").arg(databaseFilename);
-    outputTextStream.flush();
+    if (!silent) {
+        outputTextStream << QObject::tr("Insert password to unlock %1: ").arg(databaseFilename);
+        outputTextStream.flush();
+    }
 
-    QString line = Utils::getPassword();
+    Utils::setStdinEcho(false);
+    QString line = Utils::getFromStdin();
+    Utils::setStdinEcho(true);
+
+    if (!silent) {
+        outputTextStream << "\n";
+        outputTextStream.flush();
+    }
+
     PasswordKey passwordKey;
     passwordKey.setPassword(line);
     compositeKey.addKey(passwordKey);

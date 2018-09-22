@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     QCoreApplication app(argc, argv);
     app.setApplicationVersion(KEEPASSX_VERSION);
 
-    QTextStream out(stdout);
+    QTextStream outputTextStream(stdout, QIODevice::WriteOnly);
     QStringList arguments;
     for (int i = 0; i < argc; ++i) {
         arguments << QString(argv[i]);
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
     if (parser.positionalArguments().size() < 1) {
         if (parser.isSet("version")) {
             // Switch to parser.showVersion() when available (QT 5.4).
-            out << KEEPASSX_VERSION << endl;
+            outputTextStream << KEEPASSX_VERSION << endl;
             return EXIT_SUCCESS;
         }
         parser.showHelp();
