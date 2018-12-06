@@ -50,6 +50,9 @@ int Locate::execute(const QStringList& arguments)
     parser.addPositionalArgument("term", QObject::tr("Search term."));
     parser.addOption(Command::QuietOption);
     parser.addOption(Command::KeyFileOption);
+#ifdef WITH_XC_YUBIKEY
+    parser.addOption(Command::YubiKeyOption);
+#endif
     parser.addHelpOption();
     parser.process(arguments);
 
@@ -61,6 +64,7 @@ int Locate::execute(const QStringList& arguments)
 
     auto db = Utils::unlockDatabase(args.at(0),
                                     parser.value(Command::KeyFileOption),
+                                    parser.value(Command::YubiKeyOption),
                                     parser.isSet(Command::QuietOption) ? Utils::DEVNULL : Utils::STDOUT,
                                     Utils::STDERR);
     if (!db) {

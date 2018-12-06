@@ -46,6 +46,11 @@ const QCommandLineOption Command::KeyFileOption = QCommandLineOption(QStringList
                                                                      QObject::tr("Key file of the database."),
                                                                      QObject::tr("path"));
 
+const QCommandLineOption Command::YubiKeyOption = QCommandLineOption(QStringList() << "y"
+                                                                                   << "yubikey",
+                                                                     QObject::tr("Yubikey used to encrypt the database."),
+                                                                     QObject::tr("yubikey"));
+
 QMap<QString, Command*> commands;
 
 Command::~Command()

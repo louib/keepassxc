@@ -52,12 +52,22 @@ int Merge::execute(const QStringList& arguments)
                                           QObject::tr("Use the same credentials for both database files."));
     parser.addOption(samePasswordOption);
     parser.addOption(Command::KeyFileOption);
+#ifdef WITH_XC_YUBIKEY
+    parser.addOption(Command::YubiKeyOption);
+#endif
 
     QCommandLineOption keyFileFromOption(QStringList() << "f"
                                                        << "key-file-from",
                                          QObject::tr("Key file of the database to merge from."),
                                          QObject::tr("path"));
     parser.addOption(keyFileFromOption);
+
+#ifdef WITH_XC_YUBIKEY
+    QCommandLineOption yubikeyFromOption(QStringList() << "yubikey-from",
+                                         QObject::tr("Yubikey slot for the second database."),
+                                         QObject::tr("slot"));
+    parser.addOption(yubikeyFromOption);
+#endif
 
     parser.addHelpOption();
     parser.process(arguments);
@@ -70,6 +80,7 @@ int Merge::execute(const QStringList& arguments)
 
     auto db1 = Utils::unlockDatabase(args.at(0),
                                      parser.value(Command::KeyFileOption),
+                                     parser.value(Command::YubiKeyOption),
                                      parser.isSet(Command::QuietOption) ? Utils::DEVNULL : Utils::STDOUT,
                                      Utils::STDERR);
     if (!db1) {
@@ -80,6 +91,7 @@ int Merge::execute(const QStringList& arguments)
     if (!parser.isSet("same-credentials")) {
         db2 = Utils::unlockDatabase(args.at(1),
                                     parser.value(keyFileFromOption),
+                                    parser.value(yubikeyFromOption),
                                     parser.isSet(Command::QuietOption) ? Utils::DEVNULL : Utils::STDOUT,
                                     Utils::STDERR);
         if (!db2) {

@@ -23,6 +23,8 @@
 #include "keys/CompositeKey.h"
 #include "keys/FileKey.h"
 #include "keys/PasswordKey.h"
+#include "keys/YkChallengeResponseKey.h"
+#include "keys/YkChallengeResponseKeyCLI.h"
 #include <QtCore/qglobal.h>
 
 namespace Utils
@@ -37,6 +39,7 @@ namespace Utils
     int clipText(const QString& text);
     QSharedPointer<Database> unlockDatabase(const QString& databaseFilename,
                                             const QString& keyFilename = {},
+                                            const QString& yubikeySlot = {},
                                             FILE* outputDescriptor = STDOUT,
                                             FILE* errorDescriptor = STDERR);
 

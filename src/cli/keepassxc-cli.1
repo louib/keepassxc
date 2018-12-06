@@ -59,6 +59,9 @@ Shows the title, username, password, URL and notes of a database entry. Can also
 .IP "-k, --key-file <path>"
 Specifies a path to a key file for unlocking the database. In a merge operation this option is used to specify the key file path for the first database.
 
+.IP "-y, --yubikey <path>"
+Specifies a yubikey slot for unlocking the database. In a merge operation this option is used to specify the yubikey slot path the first database.
+
 .IP "-q, --quiet <path>"
 Silence password prompt and other secondary outputs.
 
@@ -73,6 +76,9 @@ Shows the program version.
 
 .IP "-f, --key-file-from <path>"
 Path of the key file for the second database.
+
+.IP --yubikey-from <path>"
+Yubikey slot for the second database.
 
 .IP "-s, --same-credentials"
 Use the same credentials for unlocking both database.

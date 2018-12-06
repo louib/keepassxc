@@ -49,6 +49,9 @@ int Edit::execute(const QStringList& arguments)
     parser.addPositionalArgument("database", QObject::tr("Path of the database."));
     parser.addOption(Command::QuietOption);
     parser.addOption(Command::KeyFileOption);
+#ifdef WITH_XC_YUBIKEY
+    parser.addOption(Command::YubiKeyOption);
+#endif
 
     QCommandLineOption username(QStringList() << "u"
                                               << "username",
@@ -96,6 +99,7 @@ int Edit::execute(const QStringList& arguments)
 
     auto db = Utils::unlockDatabase(databasePath,
                                     parser.value(Command::KeyFileOption),
+                                    parser.value(Command::YubiKeyOption),
                                     parser.isSet(Command::QuietOption) ? Utils::DEVNULL : Utils::STDOUT,
                                     Utils::STDERR);
     if (!db) {

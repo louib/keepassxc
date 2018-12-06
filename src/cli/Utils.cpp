@@ -99,6 +99,7 @@ namespace Utils
 
     QSharedPointer<Database> unlockDatabase(const QString& databaseFilename,
                                             const QString& keyFilename,
+                                            const QString& yubikeySlot,
                                             FILE* outputDescriptor,
                                             FILE* errorDescriptor)
     {
@@ -131,6 +132,18 @@ namespace Utils
             // LCOV_EXCL_STOP
 
             compositeKey->addKey(fileKey);
+        }
+
+        if (!yubikeySlot.isEmpty()) {
+            int slot = yubikeySlot.toInt();
+            auto key = QSharedPointer<YkChallengeResponseKeyCLI>(new YkChallengeResponseKeyCLI(
+                        slot,
+                        QString("Please touch the button on your YubiKey to unlock " + databaseFilename),
+                        QString("Challenge-response with YubiKey " + QString::number(slot) + " succeeded!!!"),
+                        QString("Failed to unlock " + databaseFilename + " with YubiKey " + QString::number(slot)),
+                        outputDescriptor,
+                        errorDescriptor));
+            compositeKey->addChallengeResponseKey(key);
         }
 
         auto db = QSharedPointer<Database>::create();

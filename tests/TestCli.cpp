@@ -131,7 +131,7 @@ void TestCli::cleanupTestCase()
 QSharedPointer<Database> TestCli::readTestDatabase() const
 {
     Utils::Test::setNextPassword("a");
-    auto db = QSharedPointer<Database>(Utils::unlockDatabase(m_dbFile->fileName(), "", m_stdoutHandle));
+    auto db = QSharedPointer<Database>(Utils::unlockDatabase(m_dbFile->fileName(), "", "", m_stdoutHandle));
     m_stdoutFile->seek(ftell(m_stdoutHandle)); // re-synchronize handles
     return db;
 }
@@ -320,7 +320,7 @@ void TestCli::testCreate()
     QCOMPARE(m_stdoutFile->readLine(), QByteArray("Successfully created new database.\n"));
 
     Utils::Test::setNextPassword("a");
-    auto db = QSharedPointer<Database>(Utils::unlockDatabase(databaseFilename, "", Utils::DEVNULL));
+    auto db = QSharedPointer<Database>(Utils::unlockDatabase(databaseFilename, "", "", Utils::DEVNULL));
     QVERIFY(db);
 
     // Should refuse to create the database if it already exists.
@@ -349,7 +349,7 @@ void TestCli::testCreate()
     QCOMPARE(m_stdoutFile->readLine(), QByteArray("Successfully created new database.\n"));
 
     Utils::Test::setNextPassword("a");
-    auto db2 = QSharedPointer<Database>(Utils::unlockDatabase(databaseFilename2, keyfilePath, Utils::DEVNULL));
+    auto db2 = QSharedPointer<Database>(Utils::unlockDatabase(databaseFilename2, keyfilePath, "", Utils::DEVNULL));
     QVERIFY(db2);
 
     // Testing with existing keyfile
@@ -366,7 +366,7 @@ void TestCli::testCreate()
     QCOMPARE(m_stdoutFile->readLine(), QByteArray("Successfully created new database.\n"));
 
     Utils::Test::setNextPassword("a");
-    auto db3 = QSharedPointer<Database>(Utils::unlockDatabase(databaseFilename3, keyfilePath, Utils::DEVNULL));
+    auto db3 = QSharedPointer<Database>(Utils::unlockDatabase(databaseFilename3, keyfilePath, "", Utils::DEVNULL));
     QVERIFY(db3);
 }
 
