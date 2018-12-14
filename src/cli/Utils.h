@@ -25,6 +25,9 @@
 #include "keys/PasswordKey.h"
 #include <QtCore/qglobal.h>
 
+#include <libsecret/secret.h>
+
+
 namespace Utils
 {
     extern FILE* STDOUT;
