@@ -16,13 +16,18 @@
  */
 
 #include <cstdlib>
+// move this and the fork to cli/Utils
+#include <unistd.h>
 
 #include <QCommandLineParser>
-#include <QCoreApplication>
 #include <QStringList>
+#include <QProcess>
 
+#include "cli/ShellApplication.h"
 #include "cli/TextStream.h"
+#include "cli/List.h"
 #include <cli/Command.h>
+#include "cli/Utils.h"
 
 #include "config-keepassx.h"
 #include "core/Bootstrap.h"
@@ -39,29 +44,34 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationVersion(KEEPASSXC_VERSION);
+    ShellApplication app(argc, argv);
+    ShellApplication::setApplicationVersion(KEEPASSXC_VERSION);
+
 
     Bootstrap::bootstrap();
 
     TextStream out(stdout);
+    TextStream errorTextStream(Utils::STDERR, QIODevice::WriteOnly);
     QStringList arguments;
     for (int i = 0; i < argc; ++i) {
         arguments << QString(argv[i]);
     }
-    QCommandLineParser parser;
 
-    QString description("KeePassXC command line interface.");
+    QString description("KeePassXC database shell.");
     description = description.append(QObject::tr("\n\nAvailable commands:\n"));
     for (Command* command : Command::getCommands()) {
         description = description.append(command->getDescriptionLine());
     }
-    parser.setApplicationDescription(description);
 
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription(description);
     parser.addPositionalArgument("command", QObject::tr("Name of the command to execute."));
 
     parser.addHelpOption();
     parser.addVersionOption();
+    parser.addOption(Command::QuietOption);
+    parser.addOption(Command::KeyFileOption);
     // TODO : use the setOptionsAfterPositionalArgumentsMode (Qt 5.6) function
     // when available. Until then, options passed to sub-commands won't be
     // recognized by this parser.
@@ -76,19 +86,52 @@ int main(int argc, char** argv)
         parser.showHelp();
     }
 
-    QString commandName = parser.positionalArguments().at(0);
-    Command* command = Command::getCommand(commandName);
 
-    if (command == nullptr) {
-        qCritical("Invalid command %s.", qPrintable(commandName));
-        // showHelp exits the application immediately, so we need to set the
-        // exit code here.
-        parser.showHelp(EXIT_FAILURE);
+    QString commandName = parser.positionalArguments().at(0);
+    if (commandName == QString("unlock")) {
+        if (arguments.size() != 3) {
+            errorTextStream << parser.helpText().replace("keepassxc-shell", "keepassxc-shell unlock");
+            return EXIT_FAILURE;
+        }
+        auto db = Utils::unlockDatabase(arguments.at(2),
+                                        parser.value(Command::KeyFileOption),
+                                        parser.isSet(Command::QuietOption) ? Utils::DEVNULL : Utils::STDOUT,
+                                        Utils::STDERR);
+        if (!db) {
+            return EXIT_FAILURE;
+        }
+        app.setDatabase(db);
+        // TODO print database name instead if populated??
+        out << QObject::tr("🔓 Successfully unlocked database %1 🔓").arg(arguments.at(2)) << endl;
+        if (!app.isAlreadyRunning()) {
+
+            pid_t processId = fork();
+            // parent process. Nothing more to do 🔫.
+            if (processId > 0) {
+                errorTextStream << QObject::tr("Forked process %1 🍴🍴").arg(processId) << endl;
+                app.preserveLock();
+                return EXIT_SUCCESS;
+
+            } else if (processId < 0) {
+                errorTextStream << QObject::tr("Could not fork 🍴🍴") << endl;
+                return EXIT_FAILURE;
+            }
+
+            qDebug("yo whats up!!");
+            int exitCode = ShellApplication::exec();
+            qDebug("daemon killed 🔫 %1", qPrintable(exitCode));
+            return exitCode;
+        } else {
+            return EXIT_SUCCESS;
+        }
     }
 
-    // Removing the first argument (keepassxc-cli).
-    arguments.removeFirst();
-    int exitCode = command->execute(arguments);
+    if (!app.isAlreadyRunning()) {
+        out << QObject::tr("🔑 No database unlocked 🔑") << endl;
+        return EXIT_FAILURE;
+    }
+
+    app.sendArgumentsToRunningInstance(arguments);
 
 #if defined(WITH_ASAN) && defined(WITH_LSAN)
     // do leak check here to prevent massive tail of end-of-process leak errors from third-party libraries
@@ -96,5 +139,5 @@ int main(int argc, char** argv)
     __lsan_disable();
 #endif
 
-    return exitCode;
+    return EXIT_SUCCESS;
 }

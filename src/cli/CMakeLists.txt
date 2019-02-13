@@ -27,6 +27,7 @@ set(cli_SOURCES
         Locate.cpp
         Merge.cpp
         Remove.cpp
+        ShellApplication.cpp
         Show.cpp)
 
 add_library(cli STATIC ${cli_SOURCES})
@@ -42,8 +43,18 @@ target_link_libraries(keepassxc-cli
         ${GPGERROR_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${ZXCVBN_LIBRARIES})
+add_executable(keepassxc-shell keepassxc-shell.cpp)
+target_link_libraries(keepassxc-shell
+        cli
+        keepassx_core
+        Qt5::Core
+        ${GCRYPT_LIBRARIES}
+        ${ARGON2_LIBRARIES}
+        ${GPGERROR_LIBRARIES}
+        ${ZLIB_LIBRARIES}
+        ${ZXCVBN_LIBRARIES})
 
-install(TARGETS keepassxc-cli
+install(TARGETS keepassxc-cli keepassxc-shell
         BUNDLE DESTINATION . COMPONENT Runtime
         RUNTIME DESTINATION ${CLI_INSTALL_DIR} COMPONENT Runtime)
 
@@ -94,5 +105,6 @@ endif()
 
 if(APPLE OR UNIX)
     install(FILES keepassxc-cli.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
+    install(FILES keepassxc-shell.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
     execute_process(COMMAND mandb -q)
 endif()
