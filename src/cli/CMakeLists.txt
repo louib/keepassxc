@@ -37,6 +37,7 @@ set(cli_SOURCES
         Open.cpp
         Remove.cpp
         RemoveGroup.cpp
+        Search.cpp
         Show.cpp)
 
 add_library(cli STATIC ${cli_SOURCES})

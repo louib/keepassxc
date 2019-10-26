@@ -44,6 +44,7 @@
 #include "Open.h"
 #include "Remove.h"
 #include "RemoveGroup.h"
+#include "Search.h"
 #include "Show.h"
 #include "TextStream.h"
 #include "Utils.h"
@@ -174,6 +175,7 @@ namespace Commands
         s_commands.insert(QStringLiteral("open"), QSharedPointer<Command>(new Open()));
         s_commands.insert(QStringLiteral("rm"), QSharedPointer<Command>(new Remove()));
         s_commands.insert(QStringLiteral("rmdir"), QSharedPointer<Command>(new RemoveGroup()));
+        s_commands.insert(QStringLiteral("search"), QSharedPointer<Command>(new Search()));
         s_commands.insert(QStringLiteral("show"), QSharedPointer<Command>(new Show()));
 
         if (interactive) {
