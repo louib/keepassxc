@@ -112,7 +112,7 @@ int Clip::executeWithDatabase(QSharedPointer<Database> database, QSharedPointer<
     if (clipTotp) {
         outputTextStream << QObject::tr("Entry's current TOTP copied to the clipboard!") << endl;
     } else if (clipAttributeName.length()) {
-        outputTextStream << QObject::tr("Entry's %s copied to the clipboard!").arg(clipAttributeName) << endl;
+        outputTextStream << QObject::tr("Entry's %1 copied to the clipboard!").arg(clipAttributeName) << endl;
     } else {
         outputTextStream << QObject::tr("Entry's password copied to the clipboard!") << endl;
     }
