@@ -32,11 +32,17 @@ const QCommandLineOption Clip::TotpOption = QCommandLineOption(QStringList() << 
                                                                              << "totp",
                                                                QObject::tr("Copy the current TOTP to the clipboard."));
 
+const QCommandLineOption Clip::AttributeOption = QCommandLineOption(QStringList() << "a"
+                                                                             << "attribute",
+                                                               QObject::tr("Copy an attribute to the clipboard."),
+                                                               QObject::tr("attribute"));
+
 Clip::Clip()
 {
     name = QString("clip");
     description = QObject::tr("Copy an entry's password to the clipboard.");
     options.append(Clip::TotpOption);
+    options.append(Clip::AttributeOption);
     positionalArguments.append(
         {QString("entry"), QObject::tr("Path of the entry to clip.", "clip = copy to clipboard"), QString("")});
     optionalArguments.append(
@@ -52,7 +58,17 @@ int Clip::executeWithDatabase(QSharedPointer<Database> database, QSharedPointer<
         timeout = args.at(2);
     }
     bool clipTotp = parser->isSet(Clip::TotpOption);
+    QString clipAttributeName = parser->value(Clip::AttributeOption);
+
+    TextStream outputTextStream(parser->isSet(Command::QuietOption) ? Utils::DEVNULL : Utils::STDOUT,
+                                QIODevice::WriteOnly);
     TextStream errorTextStream(Utils::STDERR);
+
+    // Cannot use those 2 options at the same time!
+    if (clipTotp && clipAttributeName.length()) {
+        errorTextStream << QObject::tr("Cannot clip TOTP and another attribute at the same time!") << endl;
+        return EXIT_FAILURE;
+    }
 
     int timeoutSeconds = 0;
     if (!timeout.isEmpty() && timeout.toInt() <= 0) {
@@ -62,8 +78,6 @@ int Clip::executeWithDatabase(QSharedPointer<Database> database, QSharedPointer<
         timeoutSeconds = timeout.toInt();
     }
 
-    TextStream outputTextStream(parser->isSet(Command::QuietOption) ? Utils::DEVNULL : Utils::STDOUT,
-                                QIODevice::WriteOnly);
     Entry* entry = database->rootGroup()->findEntryByPath(entryPath);
     if (!entry) {
         errorTextStream << QObject::tr("Entry %1 not found.").arg(entryPath) << endl;
@@ -78,6 +92,14 @@ int Clip::executeWithDatabase(QSharedPointer<Database> database, QSharedPointer<
         }
 
         value = entry->totp();
+    } else if (clipAttributeName.length()) {
+        if (!entry->attributes()->contains(clipAttributeName)) {
+            errorTextStream << QObject::tr("ERROR: unknown attribute %1.").arg(clipAttributeName) << endl;
+            return EXIT_FAILURE;
+        }
+        // value = entry->resolveMultiplePlaceholders(entry->attributes()->value(clipAttributeName));
+        value = entry->attributes()->value(clipAttributeName);
+
     } else {
         value = entry->password();
     }
@@ -89,6 +111,8 @@ int Clip::executeWithDatabase(QSharedPointer<Database> database, QSharedPointer<
 
     if (clipTotp) {
         outputTextStream << QObject::tr("Entry's current TOTP copied to the clipboard!") << endl;
+    } else if (clipAttributeName.length()) {
+        outputTextStream << QObject::tr("Entry's %s copied to the clipboard!").arg(clipAttributeName) << endl;
     } else {
         outputTextStream << QObject::tr("Entry's password copied to the clipboard!") << endl;
     }

@@ -488,11 +488,23 @@ void TestCli::testClip()
     QCOMPARE(m_stdoutFile->readAll(), QByteArray(""));
     QCOMPARE(clipboard->text(), QString("Password"));
 
+    // Clip other attribute
+    pos = m_stdoutFile->pos();
+    Utils::Test::setNextPassword("a");
+    clipCmd.execute({"clip", m_dbFile->fileName(), "/Sample Entry", "--attribute", "url"});
+    m_stdoutFile->seek(pos);
+    m_stdoutFile->readLine(); // skip prompt line
+    QCOMPARE(m_stdoutFile->readAll(), QByteArray("Entry's url copied to the clipboard!"));
+    QCOMPARE(clipboard->text(), QString("lol"));
+
     // TOTP
+    pos = m_stdoutFile->pos();
     Utils::Test::setNextPassword("a");
     clipCmd.execute({"clip", m_dbFile->fileName(), "/Sample Entry", "--totp"});
-
+    m_stdoutFile->seek(pos);
+    m_stdoutFile->readLine(); // skip prompt line
     QVERIFY(isTOTP(clipboard->text()));
+    QCOMPARE(m_stdoutFile->readLine(), QByteArray("Entry's current TOTP copied to the clipboard!\n"));
 
     // Password with timeout
     Utils::Test::setNextPassword("a");
