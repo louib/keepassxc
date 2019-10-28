@@ -506,6 +506,17 @@ void TestCli::testClip()
     QCOMPARE(m_stdoutFile->readAll(), QByteArray("Entry's URL copied to the clipboard!\n"));
     QCOMPARE(clipboard->text(), QString("http://www.somesite.com/"));
 
+    // Handles invalid attribute names
+    pos = m_stdoutFile->pos();
+    qint64 posErr = m_stderrFile->pos();
+    Utils::Test::setNextPassword("a");
+    clipCmd.execute({"clip", m_dbFile->fileName(), "/Sample Entry", "-a", "invalid"});
+    m_stdoutFile->seek(pos);
+    m_stderrFile->seek(posErr);
+    m_stdoutFile->readLine(); // skip prompt line
+    QCOMPARE(m_stdoutFile->readAll(), QByteArray(""));
+    QCOMPARE(m_stderrFile->readAll(), QByteArray("ERROR: unknown attribute invalid.\n"));
+
     // Password with timeout
     Utils::Test::setNextPassword("a");
     // clang-format off
@@ -530,7 +541,7 @@ void TestCli::testClip()
 
     future.waitForFinished();
 
-    qint64 posErr = m_stderrFile->pos();
+    posErr = m_stderrFile->pos();
     Utils::Test::setNextPassword("a");
     clipCmd.execute({"clip", m_dbFile->fileName(), "--totp", "/Sample Entry", "0"});
     m_stderrFile->seek(posErr);
