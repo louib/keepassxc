@@ -41,6 +41,7 @@
 #include "Locate.h"
 #include "Merge.h"
 #include "Move.h"
+#include "MoveGroup.h"
 #include "Open.h"
 #include "Remove.h"
 #include "RemoveGroup.h"
@@ -171,6 +172,7 @@ namespace Commands
         s_commands.insert(QStringLiteral("merge"), QSharedPointer<Command>(new Merge()));
         s_commands.insert(QStringLiteral("mkdir"), QSharedPointer<Command>(new AddGroup()));
         s_commands.insert(QStringLiteral("mv"), QSharedPointer<Command>(new Move()));
+        s_commands.insert(QStringLiteral("mvdir"), QSharedPointer<Command>(new MoveGroup()));
         s_commands.insert(QStringLiteral("open"), QSharedPointer<Command>(new Open()));
         s_commands.insert(QStringLiteral("rm"), QSharedPointer<Command>(new Remove()));
         s_commands.insert(QStringLiteral("rmdir"), QSharedPointer<Command>(new RemoveGroup()));

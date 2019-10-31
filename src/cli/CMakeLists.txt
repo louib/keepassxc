@@ -34,6 +34,7 @@ set(cli_SOURCES
         Locate.cpp
         Merge.cpp
         Move.cpp
+        MoveGroup.cpp
         Open.cpp
         Remove.cpp
         RemoveGroup.cpp

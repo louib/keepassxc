@@ -67,6 +67,7 @@ private slots:
     void testLocate();
     void testMerge();
     void testMove();
+    void testMoveGroup();
     void testOpen();
     void testRemove();
     void testRemoveGroup();

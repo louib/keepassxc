@@ -48,6 +48,7 @@
 #include "cli/Locate.h"
 #include "cli/Merge.h"
 #include "cli/Move.h"
+#include "cli/MoveGroup.h"
 #include "cli/Open.h"
 #include "cli/Remove.h"
 #include "cli/RemoveGroup.h"
@@ -210,7 +211,7 @@ void TestCli::testBatchCommands()
     QVERIFY(Commands::getCommand("rmdir"));
     QVERIFY(Commands::getCommand("show"));
     QVERIFY(!Commands::getCommand("doesnotexist"));
-    QCOMPARE(Commands::getCommands().size(), 21);
+    QCOMPARE(Commands::getCommands().size(), 22);
 }
 
 void TestCli::testInteractiveCommands()
@@ -238,7 +239,7 @@ void TestCli::testInteractiveCommands()
     QVERIFY(Commands::getCommand("rmdir"));
     QVERIFY(Commands::getCommand("show"));
     QVERIFY(!Commands::getCommand("doesnotexist"));
-    QCOMPARE(Commands::getCommands().size(), 21);
+    QCOMPARE(Commands::getCommands().size(), 22);
 }
 
 void TestCli::testAdd()
@@ -1477,6 +1478,23 @@ void TestCli::testMove()
     db = readTestDatabase();
     entry = db->rootGroup()->findEntryByPath("General/Sample Entry");
     QVERIFY(entry);
+}
+
+void TestCli::testMoveGroup()
+{
+    MoveGroup moveGroupCmd;
+    QVERIFY(!moveGroupCmd.name.isEmpty());
+    QVERIFY(moveGroupCmd.getDescriptionLine().contains(moveGroupCmd.name));
+
+    qint64 pos = m_stdoutFile->pos();
+    qint64 posErr = m_stderrFile->pos();
+    Utils::Test::setNextPassword("a");
+    moveGroupCmd.execute({"mvdir", m_dbFile->fileName(), "Homebanking/Subgroup", "General/"});
+    m_stdoutFile->seek(pos);
+    m_stderrFile->seek(posErr);
+    m_stdoutFile->readLine(); // skip prompt line
+    QCOMPARE(m_stdoutFile->readLine(), QByteArray("Successfully moved group Subgroup to group General/.\n"));
+    QCOMPARE(m_stderrFile->readLine(), QByteArray(""));
 }
 
 void TestCli::testRemove()
