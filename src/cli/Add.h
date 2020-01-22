@@ -29,6 +29,7 @@ public:
 
     static const QCommandLineOption UsernameOption;
     static const QCommandLineOption UrlOption;
+    static const QCommandLineOption TagsOption;
     static const QCommandLineOption PasswordPromptOption;
     static const QCommandLineOption GenerateOption;
     static const QCommandLineOption PasswordLengthOption;

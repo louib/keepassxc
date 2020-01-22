@@ -36,6 +36,9 @@ const QCommandLineOption Add::UsernameOption = QCommandLineOption(QStringList() 
 const QCommandLineOption Add::UrlOption =
     QCommandLineOption(QStringList() << "url", QObject::tr("URL for the entry."), QObject::tr("URL"));
 
+const QCommandLineOption Add::TagsOption =
+    QCommandLineOption(QStringList() << "tags", QObject::tr("Comma-separated tags for the entry."), QObject::tr("tags"));
+
 const QCommandLineOption Add::PasswordPromptOption =
     QCommandLineOption(QStringList() << "p"
                                      << "password-prompt",
@@ -51,6 +54,7 @@ Add::Add()
     description = QObject::tr("Add a new entry to a database.");
     options.append(Add::UsernameOption);
     options.append(Add::UrlOption);
+    options.append(Add::TagsOption);
     options.append(Add::PasswordPromptOption);
     positionalArguments.append({QString("entry"), QObject::tr("Path of the entry to add."), QString("")});
 
@@ -104,6 +108,10 @@ int Add::executeWithDatabase(QSharedPointer<Database> database, QSharedPointer<Q
 
     if (!parser->value(Add::UrlOption).isEmpty()) {
         entry->setUrl(parser->value(Add::UrlOption));
+    }
+
+    if (!parser->value(Add::TagsOption).isEmpty()) {
+        entry->setTags(parser->value(Add::TagsOption));
     }
 
     if (parser->isSet(Add::PasswordPromptOption)) {

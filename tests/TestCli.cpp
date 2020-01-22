@@ -352,6 +352,31 @@ void TestCli::testAdd()
     QCOMPARE(entry->username(), QString("newuser4"));
     QCOMPARE(entry->password().size(), 20);
     QVERIFY(!defaultPasswordClassesRegex.match(entry->password()).hasMatch());
+
+    // Can add a new entry with tags
+    pos = m_stdoutFile->pos();
+    posErr = m_stderrFile->pos();
+    Utils::Test::setNextPassword("a");
+    addCmd.execute({"add",
+                    "-g",
+                    "-L",
+                    "20",
+                    "--tags",
+                    "social,work,school",
+                    m_dbFile->fileName(),
+                    "/newuser-entry5"});
+    m_stdoutFile->seek(pos);
+    m_stderrFile->seek(posErr);
+    m_stdoutFile->readLine(); // skip password prompt
+    QCOMPARE(m_stderrFile->readAll(), QByteArray(""));
+    QCOMPARE(m_stdoutFile->readAll(), QByteArray("Successfully added entry newuser-entry5.\n"));
+
+    db = readTestDatabase();
+    entry = db->rootGroup()->findEntryByPath("/newuser-entry5");
+    QVERIFY(entry);
+    // sanity check on the password length.
+    QCOMPARE(entry->password().size(), 20);
+    QCOMPARE(entry->tags(), QString("social,work,school"));
 }
 
 void TestCli::testAddGroup()
@@ -758,6 +783,14 @@ void TestCli::testEdit()
     entry = db->rootGroup()->findEntryByPath("/evennewertitle");
     QVERIFY(entry);
     QCOMPARE(entry->password(), QString("newpassword"));
+
+    // Test that we can edit the tags.
+    Utils::Test::setNextPassword("a");
+    editCmd.execute({"edit", m_dbFile->fileName(), "/evennewertitle", "--tags", "school,work,social"});
+    db = readTestDatabase();
+    entry = db->rootGroup()->findEntryByPath("/evennewertitle");
+    QVERIFY(entry);
+    QCOMPARE(entry->tags(), QString("school,work,social"));
 }
 
 void TestCli::testEstimate_data()
@@ -1785,7 +1818,8 @@ void TestCli::testShow()
                         "UserName: User Name\n"
                         "Password: PROTECTED\n"
                         "URL: http://www.somesite.com/\n"
-                        "Notes: Notes\n"));
+                        "Notes: Notes\n"
+                        "Tags: tag\n"));
 
     qint64 pos = m_stdoutFile->pos();
     Utils::Test::setNextPassword("a");
@@ -1797,7 +1831,8 @@ void TestCli::testShow()
                         "UserName: User Name\n"
                         "Password: Password\n"
                         "URL: http://www.somesite.com/\n"
-                        "Notes: Notes\n"));
+                        "Notes: Notes\n"
+                        "Tags: tag\n"));
 
     pos = m_stdoutFile->pos();
     Utils::Test::setNextPassword("a");
@@ -1808,7 +1843,8 @@ void TestCli::testShow()
                         "UserName: User Name\n"
                         "Password: PROTECTED\n"
                         "URL: http://www.somesite.com/\n"
-                        "Notes: Notes\n"));
+                        "Notes: Notes\n"
+                        "Tags: tag\n"));
 
     pos = m_stdoutFile->pos();
     Utils::Test::setNextPassword("a");
@@ -1832,6 +1868,14 @@ void TestCli::testShow()
     QCOMPARE(m_stdoutFile->readAll(),
              QByteArray("Sample Entry\n"
                         "http://www.somesite.com/\n"));
+
+    //pos = m_stdoutFile->pos();
+    //Utils::Test::setNextPassword("a");
+    //showCmd.execute({"show", "-a", "Tags", m_dbFile->fileName(), "/Sample Entry"});
+    //m_stdoutFile->seek(pos);
+    //m_stdoutFile->readLine(); // skip password prompt
+    //QCOMPARE(m_stdoutFile->readAll(),
+             //QByteArray("tag\n"));
 
     pos = m_stdoutFile->pos();
     Utils::Test::setNextPassword("a");
