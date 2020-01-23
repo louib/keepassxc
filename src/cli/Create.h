@@ -28,6 +28,7 @@ public:
     Create();
     int execute(const QStringList& arguments) override;
 
+    static const QCommandLineOption SetYubikeyOption;
     static const QCommandLineOption DecryptionTimeOption;
 
 private:

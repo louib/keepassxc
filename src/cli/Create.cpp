@@ -36,12 +36,19 @@ const QCommandLineOption Create::DecryptionTimeOption =
                        QObject::tr("Target decryption time in MS for the database."),
                        QObject::tr("time"));
 
+const QCommandLineOption Create::SetYubikeyOption =
+    QCommandLineOption(QStringList() << "y"
+                                     << "set-yubikey",
+                       QObject::tr("Set the yubikey slot for the database."),
+                       QObject::tr("slot"));
+
 Create::Create()
 {
     name = QString("db-create");
     description = QObject::tr("Create a new database.");
     positionalArguments.append({QString("database"), QObject::tr("Path of the database."), QString("")});
     options.append(Command::KeyFileOption);
+    options.append(Create::SetYubikeyOption);
     options.append(Create::DecryptionTimeOption);
 }
 
@@ -113,6 +120,31 @@ int Create::execute(const QStringList& arguments)
     if (!fileKey.isNull()) {
         key->addKey(fileKey);
     }
+
+#ifdef WITH_XC_YUBIKEY
+    QString yubikeySlot = parser->value(Create::SetYubikeyOption);
+    if (!yubikeySlot.isEmpty()) {
+        bool ok = false;
+        int slot = yubikeySlot.toInt(&ok, 10);
+        if (!ok || (slot != 1 && slot != 2)) {
+            err << QObject::tr("Invalid YubiKey slot %1").arg(yubikeySlot) << endl;
+            return EXIT_FAILURE;
+        }
+
+        QString errorMessage;
+        bool blocking = YubiKey::instance()->checkSlotIsBlocking(slot, errorMessage);
+        if (!errorMessage.isEmpty()) {
+            err << errorMessage << endl;
+            return EXIT_FAILURE;
+        }
+        QSharedPointer<YkChallengeResponseKeyCLI> crKey(new YkChallengeResponseKeyCLI(
+            slot,
+            blocking,
+            QObject::tr("Please touch the button on your YubiKey to encrypt %1").arg(databaseFilename),
+            Utils::STDOUT));
+        key->addChallengeResponseKey(crKey);
+    }
+#endif // WITH_XC_YUBIKEY
 
     if (key->isEmpty()) {
         err << QObject::tr("No key is set. Aborting database creation.") << endl;
