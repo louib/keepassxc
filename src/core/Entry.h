@@ -19,9 +19,11 @@
 #ifndef KEEPASSX_ENTRY_H
 #define KEEPASSX_ENTRY_H
 
+// FIXME remove those 2 imports
 #include <QImage>
-#include <QMap>
 #include <QPixmap>
+
+#include <QMap>
 #include <QPointer>
 #include <QSet>
 #include <QUrl>

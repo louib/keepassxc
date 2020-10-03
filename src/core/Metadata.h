@@ -18,12 +18,14 @@
 #ifndef KEEPASSX_METADATA_H
 #define KEEPASSX_METADATA_H
 
-#include <QDateTime>
-#include <QHash>
+// FIXME remove those.
 #include <QIcon>
 #include <QImage>
 #include <QPixmap>
 #include <QPixmapCache>
+
+#include <QDateTime>
+#include <QHash>
 #include <QPointer>
 #include <QSize>
 #include <QUuid>

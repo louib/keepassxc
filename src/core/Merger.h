@@ -18,9 +18,10 @@
 #ifndef KEEPASSXC_MERGER_H
 #define KEEPASSXC_MERGER_H
 
-#include "core/Group.h"
 #include <QObject>
 #include <QPointer>
+
+#include "core/Group.h"
 
 class Database;
 class Entry;

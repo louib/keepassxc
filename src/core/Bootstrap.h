@@ -18,6 +18,7 @@
 #ifndef KEEPASSXC_BOOTSTRAP_H
 #define KEEPASSXC_BOOTSTRAP_H
 
+// FIXME do we need to remove this?
 #include "gui/MainWindow.h"
 
 namespace Bootstrap

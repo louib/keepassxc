@@ -163,6 +163,7 @@ const QString Entry::uuidToHex() const
 QImage Entry::icon() const
 {
     if (m_data.customIcon.isNull()) {
+        // QPixmap can be transformed to QImage with toImage().
         return databaseIcons()->icon(m_data.iconNumber).toImage();
     } else {
         Q_ASSERT(database());

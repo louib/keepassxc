@@ -19,8 +19,10 @@
 #ifndef KEEPASSX_GROUP_H
 #define KEEPASSX_GROUP_H
 
+// FIXME remove those 2 imports
 #include <QImage>
 #include <QPixmap>
+
 #include <QPointer>
 
 #include "core/CustomData.h"

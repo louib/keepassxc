@@ -18,6 +18,7 @@
 
 #include "Resources.h"
 
+// FIXME QBitmap is also a GUI class.
 #include <QBitmap>
 #include <QDir>
 #include <QLibrary>

@@ -27,6 +27,8 @@
 typedef QStringList CsvRow;
 typedef QList<CsvRow> CsvTable;
 
+
+// FIXME this should be moved to format/
 class CsvParser
 {
 
