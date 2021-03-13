@@ -235,3 +235,18 @@ QPixmap Icons::customIconPixmap(const Database* db, const QUuid& uuid, IconSize 
     auto basePixmap = QPixmap::fromImage(icon.scaled(64, 64, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     return QIcon(basePixmap).pixmap(databaseIcons()->iconSize(size));
 }
+
+QImage Icons::entryIcon(const Entry* entry)
+{
+    if (entry->iconUuid().isNull()) {
+        return databaseIcons()->icon(entry->iconNumber()).toImage();
+    } else {
+        Q_ASSERT(entry->database());
+
+        if (entry->database()) {
+            return Icons::customIcon(entry->database(), entry->iconUuid());
+        } else {
+            return QImage();
+        }
+    }
+}

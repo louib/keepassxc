@@ -40,6 +40,7 @@ public:
 
     static QImage customIcon(const Database* db, const QUuid& uuid);
     static QPixmap customIconPixmap(const Database* db, const QUuid& uuid, IconSize size);
+    static QImage entryIcon(const Entry* entry);
 
     static Icons* instance();
 
