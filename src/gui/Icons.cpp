@@ -283,3 +283,27 @@ QImage Icons::groupIcon(const Group* group)
         }
     }
 }
+
+QPixmap Icons::groupIconPixmap(const Group* group, IconSize size)
+{
+    QPixmap icon(size, size);
+    if (group->iconUuid().isNull()) {
+        icon = databaseIcons()->icon(group->iconNumber(), size);
+    } else {
+        Q_ASSERT(group->database());
+        if (group->database()) {
+            icon = Icons::customIconPixmap(group->database(), group->iconUuid(), size);
+        }
+    }
+
+    if (group->isExpired()) {
+        icon = databaseIcons()->applyBadge(icon, DatabaseIcons::Badges::Expired);
+    }
+#ifdef WITH_XC_KEESHARE
+    else if (KeeShare::isShared(group)) {
+        icon = KeeShare::indicatorBadge(group, icon);
+    }
+#endif
+
+    return icon;
+}

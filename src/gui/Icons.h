@@ -43,6 +43,7 @@ public:
     static QImage entryIcon(const Entry* entry);
     static QPixmap entryIconPixmap(const Entry* entry, IconSize size);
     static QImage groupIcon(const Group* group);
+    static QPixmap groupIconPixmap(const Group* group, IconSize size);
 
     static Icons* instance();
 
