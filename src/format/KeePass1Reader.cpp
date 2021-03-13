@@ -862,6 +862,7 @@ bool KeePass1Reader::parseCustomIcons4(const QByteArray& data)
         QImage icon = QImage::fromData(data.mid(pos, iconSize));
         pos += iconSize;
 
+        // TODO this was already migrated to Icons::customIcon
         if (icon.width() != 16 || icon.height() != 16) {
             icon = icon.scaled(16, 16);
         }

@@ -214,5 +214,12 @@ Icons* Icons::instance()
 
 QImage Icons::customIcon(const Database* db, const QUuid& uuid)
 {
-    return db->metadata()->customIcon(uuid);
+    QByteArray rawIcon = db->metadata()->customIconRaw(uuid);
+    QImage icon = QImage::fromData(rawIcon);
+
+    if (icon.width() != 16 || icon.height() != 16) {
+        icon = icon.scaled(16, 16);
+    }
+
+    return icon;
 }
