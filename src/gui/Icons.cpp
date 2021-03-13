@@ -26,6 +26,7 @@
 
 #include "config-keepassx.h"
 #include "core/Config.h"
+#include "core/DatabaseIcons.h"
 #include "gui/MainWindow.h"
 #include "gui/osutils/OSUtils.h"
 
@@ -222,4 +223,15 @@ QImage Icons::customIcon(const Database* db, const QUuid& uuid)
     }
 
     return icon;
+}
+
+QPixmap Icons::customIconPixmap(const Database* db, const QUuid& uuid, IconSize size)
+{
+    if (!db->metadata()->hasCustomIcon(uuid)) {
+        return {};
+    }
+    QImage icon = Icons::customIcon(db, uuid);
+    // Generate QIcon with pre-baked resolutions
+    auto basePixmap = QPixmap::fromImage(icon.scaled(64, 64, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    return QIcon(basePixmap).pixmap(databaseIcons()->iconSize(size));
 }

@@ -25,6 +25,7 @@
 #include <QString>
 
 #include <core/Database.h>
+#include <core/Global.h>
 
 class Icons
 {
@@ -38,6 +39,7 @@ public:
     QIcon onOffIcon(const QString& name, bool on, bool recolor = true);
 
     static QImage customIcon(const Database* db, const QUuid& uuid);
+    static QPixmap customIconPixmap(const Database* db, const QUuid& uuid, IconSize size);
 
     static Icons* instance();
 
