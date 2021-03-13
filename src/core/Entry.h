@@ -19,7 +19,6 @@
 #ifndef KEEPASSX_ENTRY_H
 #define KEEPASSX_ENTRY_H
 
-#include <QImage>
 #include <QMap>
 #include <QPixmap>
 #include <QPointer>
@@ -84,7 +83,6 @@ public:
     ~Entry();
     const QUuid& uuid() const;
     const QString uuidToHex() const;
-    QImage icon() const;
     QPixmap iconPixmap(IconSize size = IconSize::Default) const;
     int iconNumber() const;
     const QUuid& iconUuid() const;

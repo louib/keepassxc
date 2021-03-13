@@ -159,21 +159,6 @@ const QString Entry::uuidToHex() const
     return Tools::uuidToHex(m_uuid);
 }
 
-QImage Entry::icon() const
-{
-    if (m_data.customIcon.isNull()) {
-        return databaseIcons()->icon(m_data.iconNumber).toImage();
-    } else {
-        Q_ASSERT(database());
-
-        if (database()) {
-            return database()->metadata()->customIcon(m_data.customIcon);
-        } else {
-            return QImage();
-        }
-    }
-}
-
 QPixmap Entry::iconPixmap(IconSize size) const
 {
     QPixmap icon(size, size);
@@ -1217,7 +1202,7 @@ void Entry::setGroup(Group* group)
             // copy custom icon to the new database
             if (!iconUuid().isNull() && group->database() && m_group->database()->metadata()->hasCustomIcon(iconUuid())
                 && !group->database()->metadata()->hasCustomIcon(iconUuid())) {
-                group->database()->metadata()->addCustomIcon(iconUuid(), icon());
+                group->database()->metadata()->addCustomIcon(iconUuid(), database()->metadata()->customIcon(iconUuid()));
             }
         }
     }

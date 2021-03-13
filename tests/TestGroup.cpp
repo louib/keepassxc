@@ -1144,10 +1144,8 @@ void TestGroup::testApplyGroupIconRecursively()
     QVERIFY(database.rootGroup()->iconNumber() == rootIconNumber);
     QCOMPARE(subgroup->iconUuid(), subgroupIconUuid);
     QCOMPARE(subgroupEntry->iconUuid(), subgroupIconUuid);
-    QCOMPARE(subgroupEntry->icon(), subgroupIcon);
     QCOMPARE(subsubgroup->iconUuid(), subgroupIconUuid);
     QCOMPARE(subsubgroupEntry->iconUuid(), subgroupIconUuid);
-    QCOMPARE(subsubgroupEntry->icon(), subgroupIcon);
 
     // Reset all icons to root icon
     database.rootGroup()->setIcon(rootIconNumber);
