@@ -360,6 +360,23 @@ void Metadata::setProtectNotes(bool value)
     set(m_data.protectNotes, value);
 }
 
+void Metadata::addCustomIconRaw(const QUuid& uuid, const QByteArray& rawIcon)
+{
+    Q_ASSERT(!uuid.isNull());
+    Q_ASSERT(!m_customIconsRawer.contains(uuid));
+
+    m_customIconsRawer[uuid] = rawIcon;
+    // remove all uuids to prevent duplicates in release mode
+    m_customIconsOrder.removeAll(uuid);
+    m_customIconsOrder.append(uuid);
+    // Associate image hash to uuid
+    QByteArray hash = hashIcon(rawIcon);
+    m_customIconsHashes[hash] = uuid;
+    Q_ASSERT(m_customIconsRawer.count() == m_customIconsOrder.count());
+
+    emit metadataModified();
+}
+
 void Metadata::addCustomIcon(const QUuid& uuid, const QImage& image)
 {
     Q_ASSERT(!uuid.isNull());
@@ -423,6 +440,11 @@ void Metadata::copyCustomIcons(const QSet<QUuid>& iconList, const Metadata* othe
             addCustomIcon(uuid, otherMetadata->customIcon(uuid));
         }
     }
+}
+
+QByteArray Metadata::hashIcon(const QByteArray& icon)
+{
+    return QCryptographicHash::hash(icon, QCryptographicHash::Md5);
 }
 
 QByteArray Metadata::hashImage(const QImage& image)

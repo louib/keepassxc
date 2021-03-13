@@ -121,6 +121,7 @@ public:
     void setProtectPassword(bool value);
     void setProtectUrl(bool value);
     void setProtectNotes(bool value);
+    void addCustomIconRaw(const QUuid& uuid, const QByteArray& rawIcon);
     void addCustomIcon(const QUuid& uuid, const QImage& image);
     void removeCustomIcon(const QUuid& uuid);
     void copyCustomIcons(const QSet<QUuid>& iconList, const Metadata* otherMetadata);
@@ -155,7 +156,9 @@ private:
     template <class P, class V> bool set(P& property, const V& value);
     template <class P, class V> bool set(P& property, const V& value, QDateTime& dateTime);
 
+    // TODO remove this function.
     QByteArray hashImage(const QImage& image);
+    QByteArray hashIcon(const QByteArray& icon);
 
     MetadataData m_data;
 
