@@ -164,7 +164,7 @@ void ReportsWidgetHibp::makeHibpTable()
 
         auto row = QList<QStandardItem*>();
         row << new QStandardItem(entry->iconPixmap(), title)
-            << new QStandardItem(group->iconPixmap(), group->hierarchy().join("/"))
+            << new QStandardItem(Icons::groupIconPixmap(group), group->hierarchy().join("/"))
             << new QStandardItem(countToText(count));
 
         if (entry->excludeFromReports()) {

@@ -20,6 +20,7 @@
 #include "core/DatabaseIcons.h"
 #include "core/Metadata.h"
 #include "crypto/Crypto.h"
+#include "gui/Icons.h"
 
 void TestGuiPixmaps::initTestCase()
 {
@@ -64,7 +65,7 @@ void TestGuiPixmaps::testGroupIcons()
 
     // Test setting standard icon
     group->setIcon(10);
-    auto pixmap = group->iconPixmap();
+    auto pixmap = Icons::groupIconPixmap(group);
     QCOMPARE(pixmap.cacheKey(), databaseIcons()->icon(10).cacheKey());
 
     // Test setting custom icon
@@ -75,7 +76,7 @@ void TestGuiPixmaps::testGroupIcons()
     db->metadata()->addCustomIcon(iconUuid, icon);
 
     group->setIcon(iconUuid);
-    pixmap = group->iconPixmap();
+    pixmap = Icons::groupIconPixmap(group);
     QCOMPARE(pixmap.cacheKey(), db->metadata()->customIconPixmap(iconUuid).cacheKey());
 }
 

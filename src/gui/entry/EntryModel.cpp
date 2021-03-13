@@ -280,7 +280,7 @@ QVariant EntryModel::data(const QModelIndex& index, int role) const
         switch (index.column()) {
         case ParentGroup:
             if (entry->group()) {
-                return entry->group()->iconPixmap();
+                return Icons::groupIconPixmap(entry->group());
             }
             break;
         case Title:
