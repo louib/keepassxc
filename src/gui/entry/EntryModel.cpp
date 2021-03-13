@@ -22,7 +22,7 @@
 #include <QPainter>
 #include <QPalette>
 
-#include "core/DatabaseIcons.h"
+#include "gui/DatabaseIcons.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
@@ -280,11 +280,11 @@ QVariant EntryModel::data(const QModelIndex& index, int role) const
         switch (index.column()) {
         case ParentGroup:
             if (entry->group()) {
-                return entry->group()->iconPixmap();
+                return Icons::groupIconPixmap(entry->group());
             }
             break;
         case Title:
-            return entry->iconPixmap();
+            return Icons::entryIconPixmap(entry);
         case Paperclip:
             if (!entry->attachments()->isEmpty()) {
                 return icons()->icon("paperclip");

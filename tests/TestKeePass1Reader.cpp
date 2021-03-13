@@ -110,25 +110,6 @@ void TestKeePass1Reader::testMasterKey()
     QCOMPARE(m_db->kdf()->rounds(), 713);
 }
 
-void TestKeePass1Reader::testCustomIcons()
-{
-    QCOMPARE(m_db->metadata()->customIconsOrder().size(), 1);
-
-    Entry* entry = m_db->rootGroup()->children().at(1)->entries().at(0);
-
-    QCOMPARE(entry->icon().width(), 16);
-    QCOMPARE(entry->icon().height(), 16);
-
-    for (int x = 0; x < 16; x++) {
-        for (int y = 0; y < 16; y++) {
-            QRgb rgb = entry->icon().pixel(x, y);
-            QCOMPARE(qRed(rgb), 8);
-            QCOMPARE(qGreen(rgb), 160);
-            QCOMPARE(qBlue(rgb), 60);
-        }
-    }
-}
-
 void TestKeePass1Reader::testGroupExpanded()
 {
     QCOMPARE(m_db->rootGroup()->children().at(0)->isExpanded(), true);
