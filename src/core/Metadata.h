@@ -160,9 +160,12 @@ private:
 
     MetadataData m_data;
 
+    // TODO remove this field.
     QHash<QUuid, QIcon> m_customIcons;
+    // TODO remove this field.
     QHash<QUuid, QImage> m_customIconsRaw;
     QList<QUuid> m_customIconsOrder;
+    QHash<QUuid, QByteArray> m_customIconsRawer;
     QHash<QByteArray, QUuid> m_customIconsHashes;
 
     QPointer<Group> m_recycleBin;
