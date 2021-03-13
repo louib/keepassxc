@@ -211,3 +211,8 @@ Icons* Icons::instance()
 
     return m_instance;
 }
+
+QImage Icons::customIcon(const Database* db, const QUuid& uuid)
+{
+    return db->metadata()->customIcon(uuid);
+}
