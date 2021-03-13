@@ -269,3 +269,17 @@ QPixmap Icons::entryIconPixmap(const Entry* entry, IconSize size)
 
     return icon;
 }
+
+QImage Icons::groupIcon(const Group* group)
+{
+    if (group->iconUuid().isNull()) {
+        return databaseIcons()->icon(group->iconNumber()).toImage();
+    } else {
+        Q_ASSERT(group->database());
+        if (group->database()) {
+            return Icons::customIcon(group->database(), group->iconUuid());
+        } else {
+            return QImage();
+        }
+    }
+}

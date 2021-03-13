@@ -42,6 +42,7 @@ public:
     static QPixmap customIconPixmap(const Database* db, const QUuid& uuid, IconSize size);
     static QImage entryIcon(const Entry* entry);
     static QPixmap entryIconPixmap(const Entry* entry, IconSize size);
+    static QImage groupIcon(const Group* group);
 
     static Icons* instance();
 
