@@ -26,10 +26,6 @@
 #include "core/Metadata.h"
 #include "core/Tools.h"
 
-#ifdef WITH_XC_KEESHARE
-#include "keeshare/KeeShare.h"
-#endif
-
 #include <QtConcurrent>
 
 const int Group::DefaultIconNumber = 48;

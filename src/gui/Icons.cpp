@@ -31,6 +31,10 @@
 #include "gui/MainWindow.h"
 #include "gui/osutils/OSUtils.h"
 
+#ifdef WITH_XC_KEESHARE
+#include "keeshare/KeeShare.h"
+#endif
+
 class AdaptiveIconEngine : public QIconEngine
 {
 public:
