@@ -250,3 +250,22 @@ QImage Icons::entryIcon(const Entry* entry)
         }
     }
 }
+
+QPixmap Icons::entryIconPixmap(const Entry* entry, IconSize size)
+{
+    QPixmap icon(size, size);
+    if (entry->iconUuid().isNull()) {
+        icon = databaseIcons()->icon(entry->iconNumber(), size);
+    } else {
+        Q_ASSERT(entry->database());
+        if (entry->database()) {
+            icon = Icons::customIconPixmap(entry->database(), entry->iconUuid(), size);
+        }
+    }
+
+    if (entry->isExpired()) {
+        icon = databaseIcons()->applyBadge(icon, DatabaseIcons::Badges::Expired);
+    }
+
+    return icon;
+}
