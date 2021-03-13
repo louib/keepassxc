@@ -23,7 +23,6 @@
 #include <QIcon>
 #include <QImage>
 #include <QPixmap>
-#include <QPixmapCache>
 #include <QPointer>
 #include <QSize>
 #include <QUuid>
