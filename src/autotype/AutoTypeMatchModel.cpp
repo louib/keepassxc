@@ -122,7 +122,7 @@ QVariant AutoTypeMatchModel::data(const QModelIndex& index, int role) const
             }
             break;
         case Title:
-            return match.first->iconPixmap();
+            return Icons::entryIconPixmap(match.first);
         }
     } else if (role == Qt::FontRole) {
         QFont font;

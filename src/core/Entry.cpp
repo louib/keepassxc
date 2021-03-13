@@ -159,25 +159,6 @@ const QString Entry::uuidToHex() const
     return Tools::uuidToHex(m_uuid);
 }
 
-QPixmap Entry::iconPixmap(IconSize size) const
-{
-    QPixmap icon(size, size);
-    if (m_data.customIcon.isNull()) {
-        icon = databaseIcons()->icon(m_data.iconNumber, size);
-    } else {
-        Q_ASSERT(database());
-        if (database()) {
-            icon = database()->metadata()->customIconPixmap(m_data.customIcon, size);
-        }
-    }
-
-    if (isExpired()) {
-        icon = databaseIcons()->applyBadge(icon, DatabaseIcons::Badges::Expired);
-    }
-
-    return icon;
-}
-
 int Entry::iconNumber() const
 {
     return m_data.iconNumber;

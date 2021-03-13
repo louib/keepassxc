@@ -43,7 +43,7 @@ void TestGuiPixmaps::testEntryIcons()
 
     // Test setting standard icon
     entry->setIcon(10);
-    auto pixmap = entry->iconPixmap();
+    auto pixmap = Icons::entryIconPixmap(entry);
     QCOMPARE(pixmap.cacheKey(), databaseIcons()->icon(10).cacheKey());
 
     // Test setting custom icon
@@ -54,7 +54,7 @@ void TestGuiPixmaps::testEntryIcons()
     db->metadata()->addCustomIcon(iconUuid, icon);
 
     entry->setIcon(iconUuid);
-    pixmap = entry->iconPixmap();
+    pixmap = Icons::entryIconPixmap(entry);
     QCOMPARE(pixmap.cacheKey(), db->metadata()->customIconPixmap(iconUuid).cacheKey());
 }
 

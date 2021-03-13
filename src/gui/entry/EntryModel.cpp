@@ -284,7 +284,7 @@ QVariant EntryModel::data(const QModelIndex& index, int role) const
             }
             break;
         case Title:
-            return entry->iconPixmap();
+            return Icons::entryIconPixmap(entry);
         case Paperclip:
             if (!entry->attachments()->isEmpty()) {
                 return icons()->icon("paperclip");
