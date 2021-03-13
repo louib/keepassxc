@@ -24,6 +24,7 @@
 #include "core/Global.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
+#include "gui/Icons.h"
 
 namespace
 {
@@ -139,7 +140,7 @@ bool HtmlExporter::writeGroup(QIODevice& device, const Group& group, QString pat
 
         // Header line
         auto header = QString("<hr><h2>");
-        header.append(PixmapToHTML(group.iconPixmap(IconSize::Medium)));
+        header.append(PixmapToHTML(Icons::groupIconPixmap(&group, IconSize::Medium)));
         header.append("&nbsp;");
         header.append(path);
         header.append("</h2>\n");

@@ -325,7 +325,7 @@ void EntryPreviewWidget::updateGroupHeaderLine()
 {
     Q_ASSERT(m_currentGroup);
     m_ui->groupTitleLabel->setRawText(hierarchy(m_currentGroup, {}));
-    m_ui->groupIcon->setPixmap(m_currentGroup->iconPixmap(IconSize::Large));
+    m_ui->groupIcon->setPixmap(Icons::groupIconPixmap(m_currentGroup, IconSize::Large));
 }
 
 void EntryPreviewWidget::updateGroupGeneralTab()

@@ -25,6 +25,7 @@
 #include "core/Global.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
+#include "gui/Icons.h"
 
 AutoTypeMatchModel::AutoTypeMatchModel(QObject* parent)
     : QAbstractTableModel(parent)
@@ -117,7 +118,7 @@ QVariant AutoTypeMatchModel::data(const QModelIndex& index, int role) const
         switch (index.column()) {
         case ParentGroup:
             if (match.first->group()) {
-                return match.first->group()->iconPixmap();
+                return Icons::groupIconPixmap(match.first->group());
             }
             break;
         case Title:

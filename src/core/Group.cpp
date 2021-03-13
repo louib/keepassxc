@@ -125,30 +125,6 @@ QString Group::notes() const
     return m_data.notes;
 }
 
-QPixmap Group::iconPixmap(IconSize size) const
-{
-    QPixmap icon(size, size);
-    if (m_data.customIcon.isNull()) {
-        icon = databaseIcons()->icon(m_data.iconNumber, size);
-    } else {
-        Q_ASSERT(m_db);
-        if (m_db) {
-            icon = m_db->metadata()->customIconPixmap(m_data.customIcon, size);
-        }
-    }
-
-    if (isExpired()) {
-        icon = databaseIcons()->applyBadge(icon, DatabaseIcons::Badges::Expired);
-    }
-#ifdef WITH_XC_KEESHARE
-    else if (KeeShare::isShared(this)) {
-        icon = KeeShare::indicatorBadge(this, icon);
-    }
-#endif
-
-    return icon;
-}
-
 int Group::iconNumber() const
 {
     return m_data.iconNumber;
