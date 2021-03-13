@@ -19,7 +19,6 @@
 #ifndef KEEPASSX_GROUP_H
 #define KEEPASSX_GROUP_H
 
-#include <QImage>
 #include <QPixmap>
 #include <QPointer>
 
@@ -85,7 +84,6 @@ public:
     const QString uuidToHex() const;
     QString name() const;
     QString notes() const;
-    QImage icon() const;
     QPixmap iconPixmap(IconSize size = IconSize::Default) const;
     int iconNumber() const;
     const QUuid& iconUuid() const;
