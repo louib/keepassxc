@@ -20,6 +20,7 @@
 
 #include <QBitmap>
 #include <QIconEngine>
+#include <QImageReader>
 #include <QPaintDevice>
 #include <QPainter>
 #include <QStyle>
@@ -306,4 +307,22 @@ QPixmap Icons::groupIconPixmap(const Group* group, IconSize size)
 #endif
 
     return icon;
+}
+
+QString Icons::imageReaderFilter()
+{
+    const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    QStringList formatsStringList;
+
+    for (const QByteArray& format : formats) {
+        for (char codePoint : format) {
+            if (!QChar(codePoint).isLetterOrNumber()) {
+                continue;
+            }
+        }
+
+        formatsStringList.append("*." + QString::fromLatin1(format).toLower());
+    }
+
+    return formatsStringList.join(" ");
 }

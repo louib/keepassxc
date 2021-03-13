@@ -25,8 +25,8 @@
 #include "core/Config.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
-#include "core/Tools.h"
 #include "gui/IconModels.h"
+#include "gui/Icons.h"
 #include "gui/MessageBox.h"
 #ifdef WITH_XC_NETWORKING
 #include "gui/IconDownloader.h"
@@ -234,7 +234,7 @@ void EditWidgetIcons::addCustomIconFromFile()
         return;
     }
 
-    QString filter = QString("%1 (%2);;%3 (*)").arg(tr("Images"), Tools::imageReaderFilter(), tr("All files"));
+    QString filter = QString("%1 (%2);;%3 (*)").arg(tr("Images"), Icons::imageReaderFilter(), tr("All files"));
 
     auto filenames = QFileDialog::getOpenFileNames(this, tr("Select Image(s)"), "", filter);
     if (!filenames.empty()) {

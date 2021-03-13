@@ -45,6 +45,8 @@ public:
     static QImage groupIcon(const Group* group);
     static QPixmap groupIconPixmap(const Group* group, IconSize size);
 
+    static QString imageReaderFilter();
+
     static Icons* instance();
 
 private:
