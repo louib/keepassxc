@@ -27,7 +27,7 @@
 
 #include "config-keepassx.h"
 #include "core/Config.h"
-#include "core/DatabaseIcons.h"
+#include "gui/DatabaseIcons.h"
 #include "gui/MainWindow.h"
 #include "gui/osutils/OSUtils.h"
 

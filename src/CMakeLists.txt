@@ -41,7 +41,6 @@ set(keepassx_SOURCES
         core/CsvParser.cpp
         core/CustomData.cpp
         core/Database.cpp
-        core/DatabaseIcons.cpp
         core/Entry.cpp
         core/EntryAttachments.cpp
         core/EntryAttributes.cpp
@@ -101,6 +100,7 @@ set(keepassx_SOURCES
         gui/CategoryListWidget.cpp
         gui/Clipboard.cpp
         gui/CloneDialog.cpp
+        gui/DatabaseIcons.cpp
         gui/DatabaseOpenWidget.cpp
         gui/DatabaseTabWidget.cpp
         gui/DatabaseWidget.cpp
