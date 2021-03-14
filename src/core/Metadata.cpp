@@ -415,18 +415,17 @@ void Metadata::addCustomIcon(const QUuid& uuid, const QImage& image)
 void Metadata::removeCustomIcon(const QUuid& uuid)
 {
     Q_ASSERT(!uuid.isNull());
-    Q_ASSERT(m_customIconsRaw.contains(uuid));
+    Q_ASSERT(m_customIconsRawer.contains(uuid));
 
     // Remove hash record only if this is the same uuid
-    QByteArray hash = hashImage(m_customIconsRaw[uuid]);
+    QByteArray hash = hashIcon(m_customIconsRawer[uuid]);
     if (m_customIconsHashes.contains(hash) && m_customIconsHashes[hash] == uuid) {
         m_customIconsHashes.remove(hash);
     }
 
-    m_customIcons.remove(uuid);
-    m_customIconsRaw.remove(uuid);
+    m_customIconsRawer.remove(uuid);
     m_customIconsOrder.removeAll(uuid);
-    Q_ASSERT(m_customIconsRaw.count() == m_customIconsOrder.count());
+    Q_ASSERT(m_customIconsRawer.count() == m_customIconsOrder.count());
     emit metadataModified();
 }
 
