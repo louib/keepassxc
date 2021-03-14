@@ -26,6 +26,9 @@
 #include "core/Metadata.h"
 #include "crypto/Crypto.h"
 
+// FIXME remove that dependency and all the icons tests from this file.
+#include "gui/Icons.h"
+
 QTEST_GUILESS_MAIN(TestGroup)
 
 namespace
@@ -317,12 +320,12 @@ void TestGroup::testCopyCustomIcon()
     // QUuid groupIconUuid = QUuid::createUuid();
     // QImage groupIcon(16, 16, QImage::Format_RGB32);
     // groupIcon.setPixel(0, 0, qRgb(255, 0, 0));
-    // dbSource->metadata()->addCustomIcon(groupIconUuid, groupIcon);
+    // dbSource->metadata()->addCustomIconRaw(groupIconUuid, Icons::saveToBytes(groupIcon));
 
     // QUuid entryIconUuid = QUuid::createUuid();
     // QImage entryIcon(16, 16, QImage::Format_RGB32);
     // entryIcon.setPixel(0, 0, qRgb(255, 0, 0));
-    // dbSource->metadata()->addCustomIcon(entryIconUuid, entryIcon);
+    // dbSource->metadata()->addCustomIconRaw(entryIconUuid, Icons::saveToBytes(entryIcon));
 
     // Group* group = new Group();
     // group->setParent(dbSource->rootGroup());
@@ -434,30 +437,30 @@ void TestGroup::testCopyCustomIcons()
     QScopedPointer<Group> group1(new Group());
     group1->setParent(dbSource->rootGroup());
     QUuid group1Icon = QUuid::createUuid();
-    dbSource->metadata()->addCustomIcon(group1Icon, iconImage1);
+    dbSource->metadata()->addCustomIconRaw(group1Icon, Icons::saveToBytes(iconImage1));
     group1->setIcon(group1Icon);
 
     QScopedPointer<Group> group2(new Group());
     group2->setParent(group1.data());
     QUuid group2Icon = QUuid::createUuid();
-    dbSource->metadata()->addCustomIcon(group2Icon, iconImage1);
+    dbSource->metadata()->addCustomIconRaw(group2Icon, Icons::saveToBytes(iconImage1));
     group2->setIcon(group2Icon);
 
     QScopedPointer<Entry> entry1(new Entry());
     entry1->setGroup(group2.data());
     QUuid entry1IconOld = QUuid::createUuid();
-    dbSource->metadata()->addCustomIcon(entry1IconOld, iconImage1);
+    dbSource->metadata()->addCustomIconRaw(entry1IconOld, Icons::saveToBytes(iconImage1));
     entry1->setIcon(entry1IconOld);
 
     // add history item
     entry1->beginUpdate();
     QUuid entry1IconNew = QUuid::createUuid();
-    dbSource->metadata()->addCustomIcon(entry1IconNew, iconImage1);
+    dbSource->metadata()->addCustomIconRaw(entry1IconNew, Icons::saveToBytes(iconImage1));
     entry1->setIcon(entry1IconNew);
     entry1->endUpdate();
 
     // test that we don't overwrite icons
-    dbTarget->metadata()->addCustomIcon(group2Icon, iconImage2);
+    dbTarget->metadata()->addCustomIconRaw(group2Icon, Icons::saveToBytes(iconImage2));
 
     dbTarget->metadata()->copyCustomIcons(group1->customIconsRecursive(), dbSource->metadata());
 
@@ -1137,7 +1140,7 @@ void TestGroup::testApplyGroupIconRecursively()
     const QUuid subgroupIconUuid = QUuid::createUuid();
     QImage subgroupIcon(16, 16, QImage::Format_RGB32);
     subgroupIcon.setPixel(0, 0, qRgb(255, 0, 0));
-    database.metadata()->addCustomIcon(subgroupIconUuid, subgroupIcon);
+    database.metadata()->addCustomIconRaw(subgroupIconUuid, Icons::saveToBytes(subgroupIcon));
     subgroup->setIcon(subgroupIconUuid);
     subgroup->applyGroupIconToChildGroups();
     subgroup->applyGroupIconToChildEntries();

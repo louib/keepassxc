@@ -363,36 +363,6 @@ void Metadata::addCustomIconRaw(const QUuid& uuid, const QByteArray& rawIcon)
     emit metadataModified();
 }
 
-void Metadata::addCustomIcon(const QUuid& uuid, const QImage& image)
-{
-    Q_ASSERT(!uuid.isNull());
-    Q_ASSERT(!m_customIconsRaw.contains(uuid));
-
-    m_customIconsRaw[uuid] = image;
-    // remove all uuids to prevent duplicates in release mode
-    m_customIconsOrder.removeAll(uuid);
-    m_customIconsOrder.append(uuid);
-    // Associate image hash to uuid
-    QByteArray hash = hashImage(image);
-    m_customIconsHashes[hash] = uuid;
-    Q_ASSERT(m_customIconsRaw.count() == m_customIconsOrder.count());
-
-    // TODO: This check can go away when we move all QIcon handling outside of core
-    // On older versions of Qt, loading a QPixmap from QImage outside of a GUI
-    // environment causes ASAN to fail and crash on nullptr violation
-    static bool isGui = qApp->inherits("QGuiApplication");
-    if (isGui) {
-        // Generate QIcon with pre-baked resolutions
-        auto basePixmap = QPixmap::fromImage(image.scaled(64, 64, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        QIcon icon(basePixmap);
-        m_customIcons.insert(uuid, icon);
-    } else {
-        m_customIcons.insert(uuid, QIcon());
-    }
-
-    emit metadataModified();
-}
-
 void Metadata::removeCustomIcon(const QUuid& uuid)
 {
     Q_ASSERT(!uuid.isNull());

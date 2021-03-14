@@ -23,6 +23,9 @@
 #include "core/Metadata.h"
 #include "crypto/Crypto.h"
 
+// FIXME remove that dependency and all the icons tests from this file.
+#include "gui/Icons.h"
+
 #include <QSignalSpy>
 
 QTEST_GUILESS_MAIN(TestMerge)
@@ -999,7 +1002,7 @@ void TestMerge::testUpdateGroup()
     groupSourceInitial->setNotes("updated notes");
     QUuid customIconId = QUuid::createUuid();
     QImage customIcon;
-    dbSource->metadata()->addCustomIcon(customIconId, customIcon);
+    dbSource->metadata()->addCustomIconRaw(customIconId, Icons::saveToBytes(customIcon));
     groupSourceInitial->setIcon(customIconId);
 
     QPointer<Entry> entrySourceInitial = dbSource->rootGroup()->findEntryByPath("entry1");
@@ -1115,7 +1118,7 @@ void TestMerge::testMergeCustomIcons()
     QUuid customIconId = QUuid::createUuid();
     QImage customIcon;
 
-    dbSource->metadata()->addCustomIcon(customIconId, customIcon);
+    dbSource->metadata()->addCustomIconRaw(customIconId, Icons::saveToBytes(customIcon));
     // Sanity check.
     QVERIFY(dbSource->metadata()->hasCustomIcon(customIconId));
 
@@ -1140,8 +1143,8 @@ void TestMerge::testMergeDuplicateCustomIcons()
     QUuid customIconId = QUuid::createUuid();
     QImage customIcon;
 
-    dbSource->metadata()->addCustomIcon(customIconId, customIcon);
-    dbDestination->metadata()->addCustomIcon(customIconId, customIcon);
+    dbSource->metadata()->addCustomIconRaw(customIconId, Icons::saveToBytes(customIcon));
+    dbDestination->metadata()->addCustomIconRaw(customIconId, Icons::saveToBytes(customIcon));
     // Sanity check.
     QVERIFY(dbSource->metadata()->hasCustomIcon(customIconId));
     QVERIFY(dbDestination->metadata()->hasCustomIcon(customIconId));
