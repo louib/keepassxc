@@ -21,7 +21,6 @@
 #include <QtCore/QCryptographicHash>
 
 #include "core/Clock.h"
-#include "core/DatabaseIcons.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Tools.h"
