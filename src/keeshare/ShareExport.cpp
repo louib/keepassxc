@@ -79,8 +79,7 @@ namespace
             targetEntry->setUpdateTimeinfo(updateTimeinfoEntry);
             const auto iconUuid = targetEntry->iconUuid();
             if (!iconUuid.isNull() && !targetMetadata->hasCustomIcon(iconUuid)) {
-                // TODO move to raw version
-                targetMetadata->addCustomIcon(iconUuid, Icons::entryIcon(sourceEntry));
+                targetMetadata->addCustomIconRaw(iconUuid, sourceEntry->database()->metadata()->customIconRaw(iconUuid));
             }
         }
 
