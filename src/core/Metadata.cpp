@@ -396,16 +396,6 @@ QByteArray Metadata::hashIcon(const QByteArray& icon)
     return QCryptographicHash::hash(icon, QCryptographicHash::Md5);
 }
 
-QByteArray Metadata::hashImage(const QImage& image)
-{
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    auto data = QByteArray(reinterpret_cast<const char*>(image.bits()), static_cast<int>(image.sizeInBytes()));
-#else
-    auto data = QByteArray(reinterpret_cast<const char*>(image.bits()), image.byteCount());
-#endif
-    return QCryptographicHash::hash(data, QCryptographicHash::Md5);
-}
-
 void Metadata::setRecycleBinEnabled(bool value)
 {
     set(m_data.recycleBinEnabled, value);

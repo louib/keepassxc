@@ -22,7 +22,6 @@
 #include <QHash>
 #include <QIcon>
 #include <QImage>
-#include <QPixmap>
 #include <QPointer>
 #include <QSize>
 #include <QUuid>
@@ -153,8 +152,6 @@ private:
     template <class P, class V> bool set(P& property, const V& value);
     template <class P, class V> bool set(P& property, const V& value, QDateTime& dateTime);
 
-    // TODO remove this function.
-    QByteArray hashImage(const QImage& image);
     QByteArray hashIcon(const QByteArray& icon);
 
     MetadataData m_data;
