@@ -65,7 +65,6 @@ void Metadata::init()
 void Metadata::clear()
 {
     init();
-    m_customIcons.clear();
     m_customIconsRaw.clear();
     m_customIconsRawer.clear();
     m_customIconsOrder.clear();
