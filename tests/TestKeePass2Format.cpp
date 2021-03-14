@@ -115,7 +115,8 @@ void TestKeePass2Format::testXmlCustomIcons()
     QVERIFY(m_xmlDb->metadata()->hasCustomIcon(uuid));
     QByteArray icon = m_xmlDb->metadata()->customIcon(uuid);
 
-    QVERIFY(icon.startsWith("\x89PNG\r\n\x1A\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10\b\x06\x00\x00\x00\x1F\xF3\xFF"));
+    QVERIFY(icon.startsWith(
+        "\x89PNG\r\n\x1A\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10\b\x06\x00\x00\x00\x1F\xF3\xFF"));
 }
 
 void TestKeePass2Format::testXmlGroupRoot()
