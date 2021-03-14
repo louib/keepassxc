@@ -1,5 +1,6 @@
 /*
  *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
+ *  Copyright (C) 2021 KeePassXC Team <team@keepassxc.org>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,7 +66,6 @@ void Metadata::init()
 void Metadata::clear()
 {
     init();
-    m_customIconsRaw.clear();
     m_customIconsRawer.clear();
     m_customIconsOrder.clear();
     m_customIconsHashes.clear();
@@ -184,7 +184,7 @@ QByteArray Metadata::customIconRaw(const QUuid& uuid) const
 
 bool Metadata::hasCustomIcon(const QUuid& uuid) const
 {
-    return m_customIconsRaw.contains(uuid);
+    return m_customIconsRawer.contains(uuid);
 }
 
 QList<QUuid> Metadata::customIconsOrder() const

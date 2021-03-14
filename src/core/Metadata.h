@@ -1,5 +1,6 @@
 /*
  *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
+ *  Copyright (C) 2021 KeePassXC Team <team@keepassxc.org>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +21,6 @@
 
 #include <QDateTime>
 #include <QHash>
-#include <QIcon>
-#include <QImage>
 #include <QPointer>
 #include <QSize>
 #include <QUuid>
@@ -156,8 +155,6 @@ private:
 
     MetadataData m_data;
 
-    // TODO remove this field.
-    QHash<QUuid, QImage> m_customIconsRaw;
     QList<QUuid> m_customIconsOrder;
     QHash<QUuid, QByteArray> m_customIconsRawer;
     QHash<QByteArray, QUuid> m_customIconsHashes;
