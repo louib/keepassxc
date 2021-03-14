@@ -55,7 +55,7 @@ void TestGuiPixmaps::testEntryIcons()
 
     entry->setIcon(iconUuid);
     pixmap = Icons::entryIconPixmap(entry);
-    QCOMPARE(pixmap.cacheKey(), db->metadata()->customIconPixmap(iconUuid).cacheKey());
+    QCOMPARE(pixmap.cacheKey(), Icons::customIconPixmap(db.data(), iconUuid).cacheKey());
 }
 
 void TestGuiPixmaps::testGroupIcons()
@@ -77,7 +77,7 @@ void TestGuiPixmaps::testGroupIcons()
 
     group->setIcon(iconUuid);
     pixmap = Icons::groupIconPixmap(group);
-    QCOMPARE(pixmap.cacheKey(), db->metadata()->customIconPixmap(iconUuid).cacheKey());
+    QCOMPARE(pixmap.cacheKey(), Icons::customIconPixmap(db.data(), iconUuid).cacheKey());
 }
 
 QTEST_MAIN(TestGuiPixmaps)

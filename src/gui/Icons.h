@@ -39,7 +39,7 @@ public:
     QIcon onOffIcon(const QString& name, bool on, bool recolor = true);
 
     static QImage customIcon(const Database* db, const QUuid& uuid);
-    static QPixmap customIconPixmap(const Database* db, const QUuid& uuid, IconSize size);
+    static QPixmap customIconPixmap(const Database* db, const QUuid& uuid, IconSize size = IconSize::Default);
     static QHash<QUuid, QPixmap> customIconsPixmaps(const Database* db, IconSize size = IconSize::Default);
     static QImage entryIcon(const Entry* entry);
     static QPixmap entryIconPixmap(const Entry* entry, IconSize size = IconSize::Default);
