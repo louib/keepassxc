@@ -1183,7 +1183,7 @@ void Entry::setGroup(Group* group)
             if (!iconUuid().isNull() && group->database() && m_group->database()->metadata()->hasCustomIcon(iconUuid())
                 && !group->database()->metadata()->hasCustomIcon(iconUuid())) {
                 group->database()->metadata()->addCustomIcon(iconUuid(),
-                                                             database()->metadata()->customIcon(iconUuid()));
+                                                             m_group->database()->metadata()->customIcon(iconUuid()));
             }
         }
     }

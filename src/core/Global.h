@@ -46,14 +46,6 @@
 static const auto TRUE_STR = QStringLiteral("true");
 static const auto FALSE_STR = QStringLiteral("false");
 
-// TODO move to gui/Icons when everything is migrated.
-enum IconSize
-{
-    Default,
-    Medium,
-    Large
-};
-
 enum class AuthDecision
 {
     Undecided,

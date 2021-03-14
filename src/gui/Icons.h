@@ -25,7 +25,7 @@
 #include <QString>
 
 #include <core/Database.h>
-#include <core/Global.h>
+#include <gui/DatabaseIcons.h>
 
 class Icons
 {

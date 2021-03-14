@@ -397,7 +397,6 @@ void Group::setParent(Group* parent, int index)
             recCreateDelObjects();
 
             // copy custom icon to the new database
-            // TODO migrate to raw versions.
             if (!iconUuid().isNull() && parent->m_db && m_db->metadata()->hasCustomIcon(iconUuid())
                 && !parent->m_db->metadata()->hasCustomIcon(iconUuid())) {
                 parent->m_db->metadata()->addCustomIcon(iconUuid(), m_db->metadata()->customIcon(iconUuid()));
