@@ -22,11 +22,11 @@
 #include <QPainter>
 #include <QPalette>
 
-#include "gui/DatabaseIcons.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "core/PasswordHealth.h"
+#include "gui/DatabaseIcons.h"
 #include "gui/Icons.h"
 #include "gui/styles/StateColorPalette.h"
 #ifdef Q_OS_MACOS

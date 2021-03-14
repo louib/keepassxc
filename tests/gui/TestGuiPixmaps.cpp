@@ -17,9 +17,9 @@
 
 #include "TestGuiPixmaps.h"
 #include "TestGlobal.h"
-#include "gui/DatabaseIcons.h"
 #include "core/Metadata.h"
 #include "crypto/Crypto.h"
+#include "gui/DatabaseIcons.h"
 #include "gui/Icons.h"
 
 void TestGuiPixmaps::initTestCase()

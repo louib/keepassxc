@@ -1182,7 +1182,8 @@ void Entry::setGroup(Group* group)
             // copy custom icon to the new database
             if (!iconUuid().isNull() && group->database() && m_group->database()->metadata()->hasCustomIcon(iconUuid())
                 && !group->database()->metadata()->hasCustomIcon(iconUuid())) {
-                group->database()->metadata()->addCustomIcon(iconUuid(), database()->metadata()->customIcon(iconUuid()));
+                group->database()->metadata()->addCustomIcon(iconUuid(),
+                                                             database()->metadata()->customIcon(iconUuid()));
             }
         }
     }

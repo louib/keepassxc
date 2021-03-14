@@ -21,10 +21,10 @@
 #include <QMimeData>
 
 #include "core/Database.h"
-#include "gui/DatabaseIcons.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "core/Tools.h"
+#include "gui/DatabaseIcons.h"
 #include "gui/Icons.h"
 #include "keeshare/KeeShare.h"
 

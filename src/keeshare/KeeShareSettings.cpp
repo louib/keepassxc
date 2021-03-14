@@ -18,10 +18,10 @@
 #include "KeeShareSettings.h"
 #include "core/CustomData.h"
 #include "core/Database.h"
-#include "gui/DatabaseIcons.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "crypto/ssh/OpenSSHKey.h"
+#include "gui/DatabaseIcons.h"
 #include "keeshare/Signature.h"
 
 #include <QMessageBox>

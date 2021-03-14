@@ -20,11 +20,11 @@
 
 #include <QFont>
 
-#include "gui/DatabaseIcons.h"
 #include "core/Entry.h"
 #include "core/Global.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
+#include "gui/DatabaseIcons.h"
 #include "gui/Icons.h"
 
 AutoTypeMatchModel::AutoTypeMatchModel(QObject* parent)
