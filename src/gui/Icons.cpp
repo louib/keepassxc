@@ -241,6 +241,17 @@ QPixmap Icons::customIconPixmap(const Database* db, const QUuid& uuid, IconSize 
     return QIcon(basePixmap).pixmap(databaseIcons()->iconSize(size));
 }
 
+QHash<QUuid, QPixmap> Icons::customIconsPixmaps(const Database* db, IconSize size)
+{
+    QHash<QUuid, QPixmap> result;
+
+    for (const QUuid& uuid : db->metadata()->customIconsOrder()) {
+        result.insert(uuid, Icons::customIconPixmap(db, uuid, size));
+    }
+
+    return result;
+}
+
 QImage Icons::entryIcon(const Entry* entry)
 {
     if (entry->iconUuid().isNull()) {
