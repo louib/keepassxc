@@ -178,11 +178,6 @@ bool Metadata::protectNotes() const
     return m_data.protectNotes;
 }
 
-QImage Metadata::customIcon(const QUuid& uuid) const
-{
-    return m_customIconsRaw.value(uuid);
-}
-
 QByteArray Metadata::customIconRaw(const QUuid& uuid) const
 {
     return m_customIconsRawer.value(uuid);
