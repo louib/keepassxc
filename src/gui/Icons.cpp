@@ -339,3 +339,14 @@ QByteArray Icons::getBytes(const QImage& image)
     return QByteArray(reinterpret_cast<const char*>(image.bits()), image.byteCount());
 #endif
 }
+
+QByteArray Icons::saveToBytes(const QImage& image)
+{
+    QByteArray ba;
+    QBuffer buffer(&ba);
+    buffer.open(QIODevice::WriteOnly);
+    // TODO: check !icon.save()
+    image.save(&buffer, "PNG");
+    buffer.close();
+    return ba;
+}
