@@ -137,10 +137,11 @@ void IconDownloaderDialog::downloadFinished(const QString& url, const QImage& ic
             scaledIcon = icon.scaled(128, 128);
         }
 
-        QUuid uuid = m_db->metadata()->findCustomIcon(Icons::getBytes(scaledIcon));
+        QByteArray serializedIcon = Icons::saveToBytes(scaledIcon);
+        QUuid uuid = m_db->metadata()->findCustomIcon(serializedIcon);
         if (uuid.isNull()) {
             uuid = QUuid::createUuid();
-            m_db->metadata()->addCustomIcon(uuid, Icons::saveToBytes(scaledIcon));
+            m_db->metadata()->addCustomIcon(uuid, serializedIcon);
             updateTable(url, tr("Ok"));
         } else {
             updateTable(url, tr("Already Exists"));

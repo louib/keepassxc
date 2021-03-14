@@ -46,8 +46,6 @@ public:
     static QImage groupIcon(const Group* group);
     static QPixmap groupIconPixmap(const Group* group, IconSize size = IconSize::Default);
 
-    static QByteArray getBytes(const QImage& image);
-    // TODO is there really a difference with getBytes???
     static QByteArray saveToBytes(const QImage& image);
     static QString imageReaderFilter();
 

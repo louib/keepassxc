@@ -289,10 +289,11 @@ bool EditWidgetIcons::addCustomIcon(const QImage& icon)
             scaledIcon = icon.scaled(128, 128);
         }
 
-        QUuid uuid = m_db->metadata()->findCustomIcon(Icons::getBytes(scaledIcon));
+        QByteArray serializedIcon = Icons::saveToBytes(scaledIcon);
+        QUuid uuid = m_db->metadata()->findCustomIcon(serializedIcon);
         if (uuid.isNull()) {
             uuid = QUuid::createUuid();
-            m_db->metadata()->addCustomIcon(uuid, Icons::saveToBytes(scaledIcon));
+            m_db->metadata()->addCustomIcon(uuid, serializedIcon);
             m_customIconModel->setIcons(Icons::customIconsPixmaps(m_db.data(), IconSize::Default),
                                         m_db->metadata()->customIconsOrder());
             added = true;
