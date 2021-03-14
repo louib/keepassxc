@@ -330,3 +330,12 @@ QString Icons::imageReaderFilter()
 
     return formatsStringList.join(" ");
 }
+
+QByteArray Icons::getBytes(const QImage& image)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    return QByteArray(reinterpret_cast<const char*>(image.bits()), static_cast<int>(image.sizeInBytes()));
+#else
+    return QByteArray(reinterpret_cast<const char*>(image.bits()), image.byteCount());
+#endif
+}
