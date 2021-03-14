@@ -188,25 +188,6 @@ QByteArray Metadata::customIconRaw(const QUuid& uuid) const
     return m_customIconsRawer.value(uuid);
 }
 
-QPixmap Metadata::customIconPixmap(const QUuid& uuid, IconSize size) const
-{
-    if (!hasCustomIcon(uuid)) {
-        return {};
-    }
-    return m_customIcons.value(uuid).pixmap(databaseIcons()->iconSize(size));
-}
-
-QHash<QUuid, QPixmap> Metadata::customIconsPixmaps(IconSize size) const
-{
-    QHash<QUuid, QPixmap> result;
-
-    for (const QUuid& uuid : m_customIconsOrder) {
-        result.insert(uuid, customIconPixmap(uuid, size));
-    }
-
-    return result;
-}
-
 bool Metadata::hasCustomIcon(const QUuid& uuid) const
 {
     return m_customIconsRaw.contains(uuid);

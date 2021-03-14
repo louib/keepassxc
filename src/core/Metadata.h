@@ -85,8 +85,6 @@ public:
     QImage customIcon(const QUuid& uuid) const;
     QByteArray customIconRaw(const QUuid& uuid) const;
     bool hasCustomIcon(const QUuid& uuid) const;
-    QPixmap customIconPixmap(const QUuid& uuid, IconSize size = IconSize::Default) const;
-    QHash<QUuid, QPixmap> customIconsPixmaps(IconSize size = IconSize::Default) const;
     QList<QUuid> customIconsOrder() const;
     bool recycleBinEnabled() const;
     Group* recycleBin();

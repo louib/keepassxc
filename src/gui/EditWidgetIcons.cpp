@@ -131,7 +131,7 @@ void EditWidgetIcons::load(const QUuid& currentUuid,
     m_currentUuid = currentUuid;
     setUrl(url);
 
-    m_customIconModel->setIcons(database->metadata()->customIconsPixmaps(IconSize::Default),
+    m_customIconModel->setIcons(Icons::customIconsPixmaps(database.data(), IconSize::Default),
                                 database->metadata()->customIconsOrder());
 
     QUuid iconUuid = iconStruct.uuid;
