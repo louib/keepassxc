@@ -400,7 +400,7 @@ void Group::setParent(Group* parent, int index)
             // TODO migrate to raw versions.
             if (!iconUuid().isNull() && parent->m_db && m_db->metadata()->hasCustomIcon(iconUuid())
                 && !parent->m_db->metadata()->hasCustomIcon(iconUuid())) {
-                parent->m_db->metadata()->addCustomIcon(iconUuid(), m_db->metadata()->customIcon(iconUuid()));
+                parent->m_db->metadata()->addCustomIconRaw(iconUuid(), m_db->metadata()->customIconRaw(iconUuid()));
             }
         }
         if (m_db != parent->m_db) {

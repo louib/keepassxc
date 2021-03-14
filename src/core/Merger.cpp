@@ -614,8 +614,7 @@ Merger::ChangeList Merger::mergeMetadata(const MergeContext& context)
 
     for (const auto& iconUuid : sourceMetadata->customIconsOrder()) {
         if (!targetMetadata->hasCustomIcon(iconUuid)) {
-            QImage customIcon = sourceMetadata->customIcon(iconUuid);
-            targetMetadata->addCustomIcon(iconUuid, customIcon);
+            targetMetadata->addCustomIconRaw(iconUuid, sourceMetadata->customIconRaw(iconUuid));
             changes << tr("Adding missing icon %1").arg(QString::fromLatin1(iconUuid.toRfc4122().toHex()));
         }
     }
