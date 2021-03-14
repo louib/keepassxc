@@ -115,15 +115,7 @@ void TestKeePass2Format::testXmlCustomIcons()
     QVERIFY(m_xmlDb->metadata()->hasCustomIcon(uuid));
     QByteArray icon = m_xmlDb->metadata()->customIcon(uuid);
 
-    // TODO migrate this test.
-    //for (int x = 0; x < 16; x++) {
-        //for (int y = 0; y < 16; y++) {
-            //QRgb rgb = icon.pixel(x, y);
-            //QCOMPARE(qRed(rgb), 128);
-            //QCOMPARE(qGreen(rgb), 0);
-            //QCOMPARE(qBlue(rgb), 128);
-        //}
-    //}
+    QVERIFY(icon.startsWith("\x89PNG\r\n\x1A\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10\b\x06\x00\x00\x00\x1F\xF3\xFF"));
 }
 
 void TestKeePass2Format::testXmlGroupRoot()
