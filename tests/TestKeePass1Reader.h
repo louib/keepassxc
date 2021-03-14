@@ -32,6 +32,7 @@ private slots:
     void initTestCase();
     void testBasic();
     void testMasterKey();
+    void testCustomIcons();
     void testGroupExpanded();
     void testAutoType();
     void testFileKey();
