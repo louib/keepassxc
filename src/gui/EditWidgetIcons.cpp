@@ -293,7 +293,7 @@ bool EditWidgetIcons::addCustomIcon(const QImage& icon)
         if (uuid.isNull()) {
             uuid = QUuid::createUuid();
             m_db->metadata()->addCustomIconRaw(uuid, Icons::saveToBytes(scaledIcon));
-            m_customIconModel->setIcons(m_db->metadata()->customIconsPixmaps(IconSize::Default),
+            m_customIconModel->setIcons(Icons::customIconsPixmaps(m_db.data(), IconSize::Default),
                                         m_db->metadata()->customIconsOrder());
             added = true;
         }

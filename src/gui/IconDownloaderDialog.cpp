@@ -27,6 +27,7 @@
 #include "core/Tools.h"
 #include "gui/IconDownloader.h"
 #include "gui/IconModels.h"
+#include "gui/Icons.h"
 #ifdef Q_OS_MACOS
 #include "gui/osutils/macutils/MacUtils.h"
 #endif
@@ -136,10 +137,10 @@ void IconDownloaderDialog::downloadFinished(const QString& url, const QImage& ic
             scaledIcon = icon.scaled(128, 128);
         }
 
-        QUuid uuid = m_db->metadata()->findCustomIcon(scaledIcon);
+        QUuid uuid = m_db->metadata()->findCustomIconRaw(Icons::getBytes(scaledIcon));
         if (uuid.isNull()) {
             uuid = QUuid::createUuid();
-            m_db->metadata()->addCustomIcon(uuid, scaledIcon);
+            m_db->metadata()->addCustomIconRaw(uuid, Icons::saveToBytes(scaledIcon));
             updateTable(url, tr("Ok"));
         } else {
             updateTable(url, tr("Already Exists"));
