@@ -51,7 +51,7 @@ void TestGuiPixmaps::testEntryIcons()
     QImage icon(2, 1, QImage::Format_RGB32);
     icon.setPixel(0, 0, qRgb(0, 0, 0));
     icon.setPixel(1, 0, qRgb(0, 0, 50));
-    db->metadata()->addCustomIcon(iconUuid, icon);
+    db->metadata()->addCustomIconRaw(iconUuid, Icons::saveToBytes(icon));
 
     entry->setIcon(iconUuid);
     pixmap = Icons::entryIconPixmap(entry);
@@ -73,7 +73,7 @@ void TestGuiPixmaps::testGroupIcons()
     QImage icon(2, 1, QImage::Format_RGB32);
     icon.setPixel(0, 0, qRgb(0, 0, 0));
     icon.setPixel(1, 0, qRgb(0, 0, 50));
-    db->metadata()->addCustomIcon(iconUuid, icon);
+    db->metadata()->addCustomIconRaw(iconUuid, Icons::saveToBytes(icon));
 
     group->setIcon(iconUuid);
     pixmap = Icons::groupIconPixmap(group);
