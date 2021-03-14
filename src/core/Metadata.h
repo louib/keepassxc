@@ -127,6 +127,7 @@ public:
     void removeCustomIcon(const QUuid& uuid);
     void copyCustomIcons(const QSet<QUuid>& iconList, const Metadata* otherMetadata);
     QUuid findCustomIcon(const QImage& candidate);
+    QUuid findCustomIconRaw(const QByteArray& candidate);
     void setRecycleBinEnabled(bool value);
     void setRecycleBin(Group* group);
     void setRecycleBinChanged(const QDateTime& value);

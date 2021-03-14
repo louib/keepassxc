@@ -131,15 +131,15 @@ void IconDownloaderDialog::downloadFinished(const QString& url, const QImage& ic
 
     if (m_db && !icon.isNull()) {
         // Don't add an icon larger than 128x128, but retain original size if smaller
-        auto scaledicon = icon;
+        auto scaledIcon = icon;
         if (icon.width() > 128 || icon.height() > 128) {
-            scaledicon = icon.scaled(128, 128);
+            scaledIcon = icon.scaled(128, 128);
         }
 
-        QUuid uuid = m_db->metadata()->findCustomIcon(scaledicon);
+        QUuid uuid = m_db->metadata()->findCustomIcon(scaledIcon);
         if (uuid.isNull()) {
             uuid = QUuid::createUuid();
-            m_db->metadata()->addCustomIcon(uuid, scaledicon);
+            m_db->metadata()->addCustomIcon(uuid, scaledIcon);
             updateTable(url, tr("Ok"));
         } else {
             updateTable(url, tr("Already Exists"));

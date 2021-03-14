@@ -436,6 +436,12 @@ QUuid Metadata::findCustomIcon(const QImage& candidate)
     return m_customIconsHashes.value(hash, QUuid());
 }
 
+QUuid Metadata::findCustomIconRaw(const QByteArray& candidate)
+{
+    QByteArray hash = hashIcon(candidate);
+    return m_customIconsHashes.value(hash, QUuid());
+}
+
 void Metadata::copyCustomIcons(const QSet<QUuid>& iconList, const Metadata* otherMetadata)
 {
     for (const QUuid& uuid : iconList) {
